@@ -1,18 +1,18 @@
-// Cart Management
+// quản lý giỏ hàng
 const CART_KEY = 'dh_pharmacy_cart';
 
-// Get cart from localStorage
+// lấy giỏ hàng từ localStorage
 const getCart = () => {
   const cartStr = localStorage.getItem(CART_KEY);
   return cartStr ? JSON.parse(cartStr) : { items: [] };
 };
 
-// Save cart to localStorage
+// lưu giỏ hàng vào localStorage
 const saveCart = (cart) => {
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
 };
 
-// Add item to cart
+// thêm sản phẩm vào giỏ hàng
 const addToCart = (productId, quantity = 1) => {
   const cart = getCart();
   const existingItem = cart.items.find(item => item.productId === productId);
@@ -29,7 +29,7 @@ const addToCart = (productId, quantity = 1) => {
   return cart;
 };
 
-// Remove item from cart
+// xoá sản phẩm ra khỏi giỏ hàng
 const removeFromCart = (productId) => {
   const cart = getCart();
   cart.items = cart.items.filter(item => item.productId !== productId);
@@ -38,7 +38,7 @@ const removeFromCart = (productId) => {
   return cart;
 };
 
-// Update item quantity
+// cập nhật số lượng sản phẩm
 const updateCartItem = (productId, quantity) => {
   if (quantity <= 0) {
     return removeFromCart(productId);
@@ -56,19 +56,19 @@ const updateCartItem = (productId, quantity) => {
   return cart;
 };
 
-// Clear cart
+// xoá toàn bộ sản phẩm trong giỏ hàng
 const clearCart = () => {
   localStorage.removeItem(CART_KEY);
   updateCartUI();
 };
 
-// Get cart item count
+// lấy số lượng sản phẩm trong giỏ hàng
 const getCartItemCount = () => {
   const cart = getCart();
   return cart.items.reduce((sum, item) => sum + item.quantity, 0);
 };
 
-// Get cart total
+// lấy tổng sản phẩm trong giỏ hàng
 const getCartTotal = async () => {
   const cart = getCart();
   let total = 0;
@@ -85,7 +85,7 @@ const getCartTotal = async () => {
   return total;
 };
 
-// Update cart UI (badge, etc.)
+// cập nhật UI(giao diện) giỏ hàng
 const updateCartUI = () => {
   const count = getCartItemCount();
   const cartBadges = document.querySelectorAll('.cart-badge, .cart-count');
@@ -96,9 +96,9 @@ const updateCartUI = () => {
   });
 };
 
-// Show notification
+// hiện thông báo
 const showNotification = (message, type = 'info') => {
-  // Create notification element
+  // tạo thông báo
   const notification = document.createElement('div');
   notification.className = `alert alert-${type}`;
   notification.textContent = message;
@@ -117,7 +117,7 @@ const showNotification = (message, type = 'info') => {
   }, 3000);
 };
 
-// Initialize cart UI on page load
+// Khởi tạo giao diện giỏ hàng khi tải trang
 document.addEventListener('DOMContentLoaded', () => {
   updateCartUI();
 });
