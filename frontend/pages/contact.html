@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liên hệ - DH Pharmacy</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <div class="container">
+                <div>📞 Hotline: 0344864576 | 💬 Zalo: 0344864576</div>
+                <div>🚚 Giao hàng nhanh 2-4 giờ | ✅ Đảm bảo chất lượng</div>
+            </div>
+        </div>
+        <div class="header-main">
+            <div class="container">
+                <a href="/pages/index.html" class="logo">
+                    <span>💊</span>
+                    <span>DH Pharmacy</span>
+                </a>
+                <div class="search-bar">
+                    <form>
+                        <div class="input-search">
+                            <input type="text" placeholder="Tìm kiếm thuốc, hoạt chất, triệu chứng...">
+                        </div>
+                        <div class="submit-button">
+                        </div>
+                    </form>
+                </div>
+                <nav class="nav">
+                    <a href="/pages/index.html" class="nav-link">Trang chủ</a>
+                    <a href="/pages/products.html" class="nav-link">Sản phẩm</a>
+                    <a href="/pages/consultation.html" class="nav-link">Tư vấn</a>
+                    <a href="/pages/about.html" class="nav-link">Giới thiệu</a>
+                    <div class="cart-icon">
+                        <a href="/pages/cart.html" class="nav-link">🛒 Giỏ hàng</a>
+                        <span class="cart-badge" style="display: none;">0</span>
+                    </div>
+                    <div class="user-menu">
+                        <a href="/pages/login.html" class="nav-link">Đăng nhập</a>
+                        <a href="/pages/register.html" class="nav-link">Đăng ký</a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main style="padding: 60px 0;">
+        <div class="container">
+            <h1 style="text-align: center; margin-bottom: 60px;">Liên hệ với chúng tôi</h1>
+
+            <div class="grid grid-2" style="gap: 40px;">
+                <div>
+                    <div class="card" style="margin-bottom: 24px;">
+                        <div class="card-body">
+                            <h3 style="margin-bottom: 16px;">Thông tin liên hệ</h3>
+                            <p style="margin-bottom: 16px;"><strong>📞 Hotline:</strong> 0344864576</p>
+                            <p style="margin-bottom: 16px;"><strong>💬 Zalo:</strong> 0344864576</p>
+                            <p style="margin-bottom: 16px;"><strong>📧 Email:</strong> dhpharmacy@gmail.com</p>
+                            <p style="margin-bottom: 16px;"><strong>📍 Địa chỉ:</strong> Số 3 Đông Ngàn - Từ Sơn - Bắc Ninh</p>
+                            <p><strong>🕐 Giờ làm việc:</strong> 24/7</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 style="margin-bottom: 16px;">Gửi tin nhắn</h3>
+                            <form onsubmit="sendMessage(event)">
+                                <div class="form-group">
+                                    <label class="form-label">Họ tên *</label>
+                                    <input type="text" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Email *</label>
+                                    <input type="email" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Số điện thoại</label>
+                                    <input type="tel" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Nội dung *</label>
+                                    <textarea class="form-control" rows="5" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-block">Gửi tin nhắn</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 style="margin-bottom: 24px;">Bản đồ</h3>
+                            <div style="width: 100%; height: 400px; background: var(--bg-light); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                <p style="color: var(--text-light);">Bản đồ sẽ được tích hợp Google Maps</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>DH Pharmacy</h3>
+                    <p>Nhà thuốc trực tuyến uy tín, giao hàng nhanh, tư vấn chuyên nghiệp.</p>
+                    <p>Giấy phép: Số 12345/GP-BYT</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Liên hệ</h3>
+                    <p>📞 Hotline: 0344864576</p>
+                    <p>💬 Zalo: 0344864576</p>
+                    <p>📧 Email: dhpharmacy@gmail.com</p>
+                    <p>📍 Địa chỉ: Số 3 Đông Ngàn - Từ Sơn - Bắc Ninh</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Hỗ trợ</h3>
+                    <a href="/pages/about.html">Giới thiệu</a>
+                    <a href="/pages/contact.html">Liên hệ</a>
+                    <a href="#">Chính sách bảo mật</a>
+                    <a href="#">Điều khoản sử dụng</a>
+                    <a href="#">Câu hỏi thường gặp</a>
+                </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 DH Pharmacy. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/main.js"></script>
+    <script>
+        function sendMessage(e) {
+            e.preventDefault();
+            alert('Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm nhất có thể.');
+            e.target.reset();
+        }
+    </script>
+</body>
+</html>
+

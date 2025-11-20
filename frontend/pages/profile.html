@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tài khoản - DH Pharmacy</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <div class="container">
+                <div>📞 Hotline:0344864576 | 💬 Zalo: 0344864576</div>
+                <div>🚚 Giao hàng nhanh 2-4 giờ | ✅ Đảm bảo chất lượng</div>
+            </div>
+        </div>
+        <div class="header-main">
+            <div class="container">
+                <a href="/pages/index.html" class="logo">
+                    <span>💊</span>
+                    <span>DH Pharmacy</span>
+                </a>
+                <div class="search-bar">
+                    <form>
+                        <div class="input-search">
+                            <input type="text" placeholder="Tìm kiếm thuốc, hoạt chất, triệu chứng...">
+                        </div>
+                        <div class="submit-button">
+                            <button type="submit">🔍</button>
+                        </div>
+                    </form>
+                </div>
+                <nav class="nav">
+                    <a href="/pages/index.html" class="nav-link">Trang chủ</a>
+                    <a href="/pages/products.html" class="nav-link">Sản phẩm</a>
+                    <a href="/pages/consultation.html" class="nav-link">Tư vấn</a>
+                    <a href="/pages/about.html" class="nav-link">Giới thiệu</a>
+                    <div class="cart-icon">
+                        <a href="/pages/cart.html" class="nav-link">🛒 Giỏ hàng</a>
+                        <span class="cart-badge" style="display: none;">0</span>
+                    </div>
+                    <div class="user-menu">
+                        <a href="/pages/login.html" class="nav-link">Đăng nhập</a>
+                        <a href="/pages/register.html" class="nav-link">Đăng ký</a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main style="padding: 40px 0;">
+        <div class="container">
+            <h1 style="margin-bottom: 30px;">Tài khoản của tôi</h1>
+
+            <div class="grid grid-2" style="gap: 24px;">
+                <div>
+                    <div class="card" style="margin-bottom: 24px;">
+                        <div class="card-header">
+                            <h3>Thông tin cá nhân</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="profile-form" onsubmit="updateProfile(event)">
+                                <div class="form-group">
+                                    <label class="form-label">Họ tên</label>
+                                    <input type="text" class="form-control" id="name">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Số điện thoại</label>
+                                    <input type="tel" class="form-control" id="phone">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Cập nhật</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-bottom: 24px;">
+                        <div class="card-header">
+                            <h3>Đổi mật khẩu</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="password-form" onsubmit="changePassword(event)">
+                                <div class="form-group">
+                                    <label class="form-label">Mật khẩu hiện tại</label>
+                                    <input type="password" class="form-control" id="current-password" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Mật khẩu mới</label>
+                                    <input type="password" class="form-control" id="new-password" required minlength="6">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Xác nhận mật khẩu mới</label>
+                                    <input type="password" class="form-control" id="confirm-new-password" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Đổi mật khẩu</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="card" style="margin-bottom: 24px;">
+                        <div class="card-header">
+                            <h3>Địa chỉ giao hàng</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="addresses-list"></div>
+                            <button class="btn btn-outline" onclick="showAddAddressForm()" style="margin-top: 16px;">Thêm địa chỉ</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Hồ sơ sức khỏe</h3>
+                        </div>
+                        <div class="card-body">
+                            <p>Quản lý thông tin sức khỏe để được tư vấn tốt hơn</p>
+                            <a href="/pages/health-profile.html" class="btn btn-outline">Cập nhật hồ sơ</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>DH Pharmacy</h3>
+                    <p>Nhà thuốc trực tuyến uy tín, giao hàng nhanh, tư vấn chuyên nghiệp.</p>
+                    <p>Giấy phép: Số 12345/GP-BYT</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Liên hệ</h3>
+                    <p>📞 Hotline: 0344864576</p>
+                    <p>💬 Zalo: 0344864576</p>
+                    <p>📧 Email: dhpharmacy@gmail.com</p>
+                    <p>📍 Địa chỉ: Số 3 Đông Ngàn - Từ Sơn  - Bắc Ninh</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Hỗ trợ</h3>
+                    <a href="/pages/about.html">Giới thiệu</a>
+                    <a href="/pages/contact.html">Liên hệ</a>
+                    <a href="#">Chính sách bảo mật</a>
+                    <a href="#">Điều khoản sử dụng</a>
+                    <a href="#">Câu hỏi thường gặp</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 DH Pharmacy. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/main.js"></script>
+    <script>
+        async function loadProfile() {
+            try {
+                const response = await window.API.auth.getMe();
+                const user = response.user;
+
+                document.getElementById('name').value = user.name || '';
+                document.getElementById('email').value = user.email || '';
+                document.getElementById('phone').value = user.phone || '';
+
+                await loadAddresses();
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                if (error.message.includes('401')) {
+                    window.location.href = '/pages/login.html';
+                }
+            }
+        }
+
+        async function loadAddresses() {
+            try {
+                const response = await window.API.users.getAddresses();
+                const addresses = response.data || [];
+                const container = document.getElementById('addresses-list');
+
+                if (addresses.length === 0) {
+                    container.innerHTML = '<p>Chưa có địa chỉ nào</p>';
+                    return;
+                }
+
+                container.innerHTML = addresses.map((addr, index) => `
+                    <div class="card" style="margin-bottom: 16px;">
+                        <div class="card-body">
+                            <div style="display: flex; justify-content: space-between; align-items: start;">
+                                <div>
+                                    <strong>${addr.name}</strong>
+                                    ${addr.isDefault ? '<span class="badge badge-primary">Mặc định</span>' : ''}
+                                    <p style="margin-top: 8px; margin-bottom: 0;">
+                                        ${addr.address}, ${addr.ward}, ${addr.district}, ${addr.city}
+                                    </p>
+                                    <p style="margin-top: 4px; color: var(--text-light);">${addr.phone}</p>
+                                </div>
+                                <div>
+                                    <button class="btn btn-sm btn-outline" onclick="editAddress('${addr._id}')">Sửa</button>
+                                    <button class="btn btn-sm btn-outline" onclick="deleteAddress('${addr._id}')" style="color: var(--error-color);">Xóa</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading addresses:', error);
+            }
+        }
+
+        async function updateProfile(e) {
+            e.preventDefault();
+            try {
+                await window.API.auth.updateProfile({
+                    name: document.getElementById('name').value,
+                    phone: document.getElementById('phone').value
+                });
+                alert('Cập nhật thành công!');
+            } catch (error) {
+                alert('Cập nhật thất bại: ' + error.message);
+            }
+        }
+
+        async function changePassword(e) {
+            e.preventDefault();
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-new-password').value;
+
+            if (newPassword !== confirmPassword) {
+                alert('Mật khẩu xác nhận không khớp');
+                return;
+            }
+
+            try {
+                await window.API.auth.changePassword(
+                    document.getElementById('current-password').value,
+                    newPassword
+                );
+                alert('Đổi mật khẩu thành công!');
+                document.getElementById('password-form').reset();
+            } catch (error) {
+                alert('Đổi mật khẩu thất bại: ' + error.message);
+            }
+        }
+
+        function showAddAddressForm() {
+            const name = prompt('Họ tên:');
+            const phone = prompt('Số điện thoại:');
+            const address = prompt('Địa chỉ:');
+            const ward = prompt('Phường/Xã:');
+            const district = prompt('Quận/Huyện:');
+            const city = prompt('Thành phố:');
+
+            if (name && phone && address && ward && district && city) {
+                window.API.users.addAddress({
+                    name, phone, address, ward, district, city
+                }).then(() => {
+                    loadAddresses();
+                }).catch(error => {
+                    alert('Thêm địa chỉ thất bại: ' + error.message);
+                });
+            }
+        }
+
+        async function deleteAddress(addressId) {
+            if (confirm('Bạn có chắc muốn xóa địa chỉ này?')) {
+                try {
+                    await window.API.users.deleteAddress(addressId);
+                    loadAddresses();
+                } catch (error) {
+                    alert('Xóa địa chỉ thất bại: ' + error.message);
+                }
+            }
+        }
+
+        // Initialize
+        loadProfile();
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết sản phẩm - DH Pharmacy</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <div class="container">
+                <div>📞 Hotline: 0344864576 | 💬 Zalo: 0344864576</div>
+                <div>🚚 Giao hàng nhanh 2-4 giờ | ✅ Đảm bảo chất lượng</div>
+            </div>
+        </div>
+        <div class="header-main">
+            <div class="container">
+                <a href="/pages/index.html" class="logo">
+                    <span>💊</span>
+                    <span>DH Pharmacy</span>
+                </a>
+                <div class="search-bar">
+                    <form>
+                        <div class="input-search">
+                            <input type="text" placeholder="Tìm kiếm thuốc, hoạt chất, triệu chứng...">
+                        </div>
+                        <div class="submit-button">
+                        </div>
+                    </form>
+                </div>
+                <nav class="nav">
+                    <a href="/pages/index.html" class="nav-link">Trang chủ</a>
+                    <a href="/pages/products.html" class="nav-link">Sản phẩm</a>
+                    <a href="/pages/consultation.html" class="nav-link">Tư vấn</a>
+                    <a href="/pages/about.html" class="nav-link">Giới thiệu</a>
+                    <div class="cart-icon">
+                        <a href="/pages/cart.html" class="nav-link">🛒 Giỏ hàng</a>
+                        <span class="cart-badge" style="display: none;">0</span>
+                    </div>
+                    <div class="user-menu">
+                        <a href="/pages/login.html" class="nav-link">Đăng nhập</a>
+                        <a href="/pages/register.html" class="nav-link">Đăng ký</a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main style="padding: 40px 0;">
+        <div class="container">
+            <div id="product-detail">
+                <div class="text-center">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>DH Pharmacy</h3>
+                    <p>Nhà thuốc trực tuyến uy tín, giao hàng nhanh, tư vấn chuyên nghiệp.</p>
+                    <p>Giấy phép: Số 12345/GP-BYT</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Liên hệ</h3>
+                    <p>📞 Hotline: 0344864576</p>
+                    <p>💬 Zalo: 0344864576</p>
+                    <p>📧 Email: dhpharmacy@gmail.com</p>
+                    <p>📍 Địa chỉ: Số 3 Đông Ngàn - Từ Sơn - Bắc Ninh</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Hỗ trợ</h3>
+                    <a href="/pages/about.html">Giới thiệu</a>
+                    <a href="/pages/contact.html">Liên hệ</a>
+                    <a href="#">Chính sách bảo mật</a>
+                    <a href="#">Điều khoản sử dụng</a>
+                    <a href="#">Câu hỏi thường gặp</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 DH Pharmacy. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/cart.js"></script>
+    <script src="/js/main.js"></script>
+    <script>
+        // Get product identifier from URL (id or slug)
+        const urlParams = new URLSearchParams(window.location.search);
+        const productIdParam = urlParams.get('id') || urlParams.get('slug');
+
+        // Load product detail
+        async function loadProductDetail() {
+            const container = document.getElementById('product-detail');
+            
+            if (!productIdParam) {
+                container.innerHTML = '<p class="text-center text-error">Không tìm thấy sản phẩm</p>';
+                return;
+            }
+
+            try {
+                let product = null;
+
+                // Try fetching by ID first
+                try {
+                    const response = await window.API.products.getById(productIdParam);
+                    product = response.data;
+                } catch (err) {
+                    // If fetching by ID fails (maybe param is slug), try by slug
+                    try {
+                        const resp2 = await window.API.products.getBySlug(productIdParam);
+                        product = resp2.data;
+                    } catch (err2) {
+                        throw err; // rethrow original
+                    }
+                }
+
+                if (!product) {
+                    container.innerHTML = '<p class="text-center text-error">Không tìm thấy sản phẩm</p>';
+                    return;
+                }
+
+                container.innerHTML = `
+                    <div class="grid grid-2" style="gap: 40px; margin-bottom: 40px;">
+                        <div>
+                            <img src="${product.images?.[0]?.url || '/assets/images/placeholder.jpg'}" 
+                                 alt="${product.name}" 
+                                 style="width: 100%; border-radius: 12px; box-shadow: var(--shadow-lg);"
+                                 onerror="this.src='/assets/images/placeholder.jpg'">
+                        </div>
+                        <div>
+                            <h1 style="margin-bottom: 16px;">${product.name}</h1>
+                            ${product.nameEn ? `<p style="color: var(--text-light); margin-bottom: 16px;">${product.nameEn}</p>` : ''}
+                            
+                            <div style="margin-bottom: 24px;">
+                                <div style="font-size: 32px; font-weight: 700; color: var(--primary-color); margin-bottom: 8px;">
+                                    ${window.utils?.formatCurrency(product.price) || (product.price ? product.price.toLocaleString('vi-VN') + ' đ' : '')}
+                                </div>
+                                ${product.originalPrice ? `
+                                    <div style="color: var(--text-light); text-decoration: line-through;">
+                                        ${window.utils?.formatCurrency(product.originalPrice) || product.originalPrice.toLocaleString('vi-VN') + ' đ'}
+                                    </div>
+                                ` : ''}
+                            </div>
+
+                            ${product.type === 'prescription' ? `
+                                <div class="alert alert-warning" style="margin-bottom: 24px;">
+                                    <strong>⚠️ Thuốc kê đơn:</strong> Sản phẩm này cần có đơn thuốc từ bác sĩ.
+                                </div>
+                            ` : ''}
+
+                            <div style="margin-bottom: 24px;">
+                                <label class="form-label">Số lượng:</label>
+                                <div style="display: flex; gap: 16px; align-items: center;">
+                                    <button class="btn btn-outline" onclick="updateQuantity(-1)">-</button>
+                                    <input type="number" id="quantity" value="1" min="1" max="${product.maxOrderQuantity || 10}" 
+                                           style="width: 80px; text-align: center;" class="form-control">
+                                    <button class="btn btn-outline" onclick="updateQuantity(1)">+</button>
+                                    <span style="color: var(--text-light);">
+                                        (Còn ${product.stock} sản phẩm)
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; gap: 16px; margin-bottom: 24px;">
+                                <button class="btn btn-primary btn-lg" onclick="addToCart()" style="flex: 1;">
+                                    🛒 Thêm vào giỏ hàng
+                                </button>
+                                <button class="btn btn-secondary btn-lg" onclick="buyNow()" style="flex: 1;">
+                                    Mua ngay
+                                </button>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-body">
+                                    <h3 style="margin-bottom: 16px;">Thông tin sản phẩm</h3>
+                                    <table style="width: 100%;">
+                                        <tr>
+                                            <td style="padding: 8px 0; font-weight: 600;">Hoạt chất:</td>
+                                            <td style="padding: 8px 0;">${product.genericName || 'N/A'}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 8px 0; font-weight: 600;">Nhà sản xuất:</td>
+                                            <td style="padding: 8px 0;">${product.manufacturer || 'N/A'}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 8px 0; font-weight: 600;">Quy cách:</td>
+                                            <td style="padding: 8px 0;">${product.specifications?.packageSize || 'N/A'}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 8px 0; font-weight: 600;">Đánh giá:</td>
+                                            <td style="padding: 8px 0;">
+                                                ⭐ ${product.ratings?.average?.toFixed(1) || '0.0'} 
+                                                (${product.ratings?.count || 0} đánh giá)
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-bottom: 40px;">
+                        <div class="card-body">
+                            <h2 style="margin-bottom: 24px;">Mô tả sản phẩm</h2>
+                            <div style="margin-bottom: 24px;">
+                                <h3>Công dụng:</h3>
+                                <ul>
+                                    ${ (product.indications && product.indications.length) ? product.indications.map(ind => `<li>${ind}</li>`).join('') : '<li>N/A</li>' }
+                                </ul>
+                            </div>
+                            ${product.dosage ? `
+                                <div style="margin-bottom: 24px;">
+                                    <h3>Liều dùng:</h3>
+                                    <p>${product.dosage}</p>
+                                </div>
+                            ` : ''}
+                            ${product.usage ? `
+                                <div style="margin-bottom: 24px;">
+                                    <h3>Cách dùng:</h3>
+                                    <p>${product.usage}</p>
+                                </div>
+                            ` : ''}
+                            ${product.contraindications?.length > 0 ? `
+                                <div style="margin-bottom: 24px;">
+                                    <h3>Chống chỉ định:</h3>
+                                    <ul>
+                                        ${product.contraindications.map(cont => `<li>${cont}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                            ${product.sideEffects?.length > 0 ? `
+                                <div style="margin-bottom: 24px;">
+                                    <h3>Tác dụng phụ:</h3>
+                                    <ul>
+                                        ${product.sideEffects.map(eff => `<li>${eff}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                            ${product.storage ? `
+                                <div>
+                                    <h3>Bảo quản:</h3>
+                                    <p>${product.storage}</p>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading product:', error);
+                container.innerHTML = '<p class="text-center text-error">Không thể tải thông tin sản phẩm</p>';
+            }
+        }
+
+        function updateQuantity(change) {
+            const input = document.getElementById('quantity');
+            const current = parseInt(input.value) || 1;
+            const max = parseInt(input.max) || 10;
+            const newValue = Math.max(1, Math.min(max, current + change));
+            input.value = newValue;
+        }
+
+        function addToCart() {
+            const quantity = parseInt(document.getElementById('quantity').value) || 1;
+            window.Cart.addToCart(productId, quantity);
+        }
+
+        function buyNow() {
+            const quantity = parseInt(document.getElementById('quantity').value) || 1;
+            window.Cart.addToCart(productId, quantity);
+            window.location.href = '/pages/checkout.html';
+        }
+
+        // Initialize
+        loadProductDetail();
+    </script>
+</body>
+</html>
+

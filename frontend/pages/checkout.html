@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh toán - DH Pharmacy</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <div class="container">
+                <div>📞 Hotline: 0344864576 | 💬 Zalo: 0344864576</div>
+                <div>🚚 Giao hàng nhanh 2-4 giờ | ✅ Đảm bảo chất lượng</div>
+            </div>
+        </div>
+        <div class="header-main">
+            <div class="container">
+                <a href="/pages/index.html" class="logo">
+                    <span>💊</span>
+                    <span>DH Pharmacy</span>
+                </a>
+                <div class="search-bar">
+                    <form>
+                        <div class="input-search">
+                            <input type="text" placeholder="Tìm kiếm thuốc, hoạt chất, triệu chứng...">
+                        </div>
+                        <div class="submit-button">
+                        </div>
+                    </form>
+                </div>
+                <nav class="nav">
+                    <a href="/pages/index.html" class="nav-link">Trang chủ</a>
+                    <a href="/pages/products.html" class="nav-link">Sản phẩm</a>
+                    <a href="/pages/consultation.html" class="nav-link">Tư vấn</a>
+                    <a href="/pages/about.html" class="nav-link">Giới thiệu</a>
+                    <div class="cart-icon">
+                        <a href="/pages/cart.html" class="nav-link">🛒 Giỏ hàng</a>
+                        <span class="cart-badge" style="display: none;">0</span>
+                    </div>
+                    <div class="user-menu">
+                        <a href="/pages/login.html" class="nav-link">Đăng nhập</a>
+                        <a href="/pages/register.html" class="nav-link">Đăng ký</a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main style="padding: 40px 0;">
+        <div class="container">
+            <h1 style="margin-bottom: 30px;">Thanh toán</h1>
+
+            <div id="checkout-content">
+                <div class="text-center">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/cart.js"></script>
+    <script src="/js/main.js"></script>
+    <script>
+        async function loadCheckout() {
+            const container = document.getElementById('checkout-content');
+            const token = window.API.getToken();
+
+            if (!token) {
+                container.innerHTML = `
+                    <div class="alert alert-warning">
+                        <p>Vui lòng <a href="/pages/login.html">đăng nhập</a> để thanh toán</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const cart = window.Cart.getCart();
+            if (cart.items.length === 0) {
+                container.innerHTML = `
+                    <div class="alert alert-warning">
+                        <p>Giỏ hàng trống. <a href="/pages/products.html">Tiếp tục mua sắm</a></p>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                // Load user addresses
+                const addressesResponse = await window.API.users.getAddresses();
+                const addresses = addressesResponse.data || [];
+
+                // Calculate totals
+                let subtotal = 0;
+                const items = [];
+                for (const item of cart.items) {
+                    const product = await window.API.products.getById(item.productId);
+                    const productData = product.data;
+                    const itemTotal = productData.price * item.quantity;
+                    subtotal += itemTotal;
+                    items.push({
+                        productId: item.productId,
+                        quantity: item.quantity,
+                        name: productData.name,
+                        price: productData.price
+                    });
+                }
+
+                const shippingFee = subtotal >= 500000 ? 0 : 30000;
+                const total = subtotal + shippingFee;
+
+                container.innerHTML = `
+                    <form id="checkout-form" onsubmit="submitOrder(event)">
+                        <div class="grid grid-2" style="gap: 24px;">
+                            <div>
+                                <div class="card" style="margin-bottom: 24px;">
+                                    <div class="card-header">
+                                        <h3>Địa chỉ giao hàng</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        ${addresses.length > 0 ? `
+                                            <div class="form-group">
+                                                <label class="form-label">Chọn địa chỉ:</label>
+                                                <select class="form-control" id="address-select" onchange="selectAddress()">
+                                                    <option value="">Chọn địa chỉ</option>
+                                                    ${addresses.map((addr, index) => `
+                                                        <option value="${index}" ${addr.isDefault ? 'selected' : ''}>
+                                                            ${addr.name} - ${addr.address}, ${addr.ward}, ${addr.district}, ${addr.city}
+                                                        </option>
+                                                    `).join('')}
+                                                </select>
+                                            </div>
+                                            <button type="button" class="btn btn-outline" onclick="showNewAddressForm()">Thêm địa chỉ mới</button>
+                                        ` : ''}
+                                        
+                                        <div id="address-form" ${addresses.length > 0 ? 'style="display: none;"' : ''}>
+                                            <div class="form-group">
+                                                <label class="form-label">Họ tên *</label>
+                                                <input type="text" class="form-control" id="name" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Số điện thoại *</label>
+                                                <input type="tel" class="form-control" id="phone" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Địa chỉ *</label>
+                                                <input type="text" class="form-control" id="address" required>
+                                            </div>
+                                            <div class="grid grid-3" style="gap: 16px;">
+                                                <div class="form-group">
+                                                    <label class="form-label">Phường/Xã *</label>
+                                                    <input type="text" class="form-control" id="ward" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="form-label">Quận/Huyện *</label>
+                                                    <input type="text" class="form-control" id="district" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="form-label">Thành phố *</label>
+                                                    <input type="text" class="form-control" id="city" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card" style="margin-bottom: 24px;">
+                                    <div class="card-header">
+                                        <h3>Thời gian giao hàng</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label class="form-label">Ngày giao hàng *</label>
+                                            <input type="date" class="form-control" id="delivery-date" required min="${new Date().toISOString().split('T')[0]}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Khung giờ *</label>
+                                            <select class="form-control" id="delivery-time" required>
+                                                <option value="morning">Sáng (8:00 - 12:00)</option>
+                                                <option value="afternoon">Chiều (13:00 - 17:00)</option>
+                                                <option value="evening">Tối (18:00 - 21:00)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3>Phương thức thanh toán</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label>
+                                                <input type="radio" name="payment-method" value="cod" checked>
+                                                Thanh toán khi nhận hàng (COD)
+                                            </label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>
+                                                <input type="radio" name="payment-method" value="bank_transfer">
+                                                Chuyển khoản ngân hàng
+                                            </label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>
+                                                <input type="radio" name="payment-method" value="vnpay">
+                                                VNPay
+                                            </label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>
+                                                <input type="radio" name="payment-method" value="momo">
+                                                MoMo
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card" style="margin-top: 24px;">
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label class="form-label">Ghi chú (tùy chọn)</label>
+                                            <textarea class="form-control" id="notes" rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="card" style="position: sticky; top: 100px;">
+                                    <div class="card-header">
+                                        <h3>Đơn hàng</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="order-items">
+                                            ${items.map(item => `
+                                                <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                                                    <div>
+                                                        <div>${item.name}</div>
+                                                        <div style="font-size: 14px; color: var(--text-light);">x${item.quantity}</div>
+                                                    </div>
+                                                    <div>${window.utils?.formatCurrency(item.price * item.quantity) || (item.price * item.quantity).toLocaleString('vi-VN') + ' đ'}</div>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                        <hr style="margin: 24px 0;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                            <span>Tạm tính:</span>
+                                            <span>${window.utils?.formatCurrency(subtotal) || subtotal.toLocaleString('vi-VN') + ' đ'}</span>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                            <span>Phí vận chuyển:</span>
+                                            <span>${shippingFee === 0 ? 'Miễn phí' : window.utils?.formatCurrency(shippingFee) || shippingFee.toLocaleString('vi-VN') + ' đ'}</span>
+                                        </div>
+                                        <hr style="margin: 24px 0;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
+                                            <strong style="font-size: 18px;">Tổng cộng:</strong>
+                                            <strong style="font-size: 20px; color: var(--primary-color);">
+                                                ${window.utils?.formatCurrency(total) || total.toLocaleString('vi-VN') + ' đ'}
+                                            </strong>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-block btn-lg">
+                                            Đặt hàng
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                `;
+            } catch (error) {
+                console.error('Error loading checkout:', error);
+                container.innerHTML = '<p class="text-center text-error">Không thể tải trang thanh toán</p>';
+            }
+        }
+
+        function selectAddress() {
+            const select = document.getElementById('address-select');
+            if (select.value === '') {
+                showNewAddressForm();
+            } else {
+                document.getElementById('address-form').style.display = 'none';
+            }
+        }
+
+        function showNewAddressForm() {
+            document.getElementById('address-form').style.display = 'block';
+            document.getElementById('address-select').value = '';
+        }
+
+        async function submitOrder(e) {
+            e.preventDefault();
+            
+            const form = document.getElementById('checkout-form');
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Đang xử lý...';
+
+            try {
+                const cart = window.Cart.getCart();
+                const items = cart.items.map(item => ({
+                    productId: item.productId,
+                    quantity: item.quantity
+                }));
+
+                const addressSelect = document.getElementById('address-select');
+                let deliveryAddress;
+
+                if (addressSelect && addressSelect.value !== '') {
+                    // Use selected address
+                    const addressesResponse = await window.API.users.getAddresses();
+                    const addresses = addressesResponse.data || [];
+                    deliveryAddress = addresses[parseInt(addressSelect.value)];
+                } else {
+                    // Use form data
+                    deliveryAddress = {
+                        name: document.getElementById('name').value,
+                        phone: document.getElementById('phone').value,
+                        address: document.getElementById('address').value,
+                        ward: document.getElementById('ward').value,
+                        district: document.getElementById('district').value,
+                        city: document.getElementById('city').value
+                    };
+                }
+
+                const orderData = {
+                    items,
+                    deliveryAddress,
+                    deliveryTime: {
+                        preferredDate: document.getElementById('delivery-date').value,
+                        preferredTimeSlot: document.getElementById('delivery-time').value
+                    },
+                    paymentMethod: document.querySelector('input[name="payment-method"]:checked').value,
+                    customerNotes: document.getElementById('notes').value
+                };
+
+                const response = await window.API.orders.create(orderData);
+                
+                // Clear cart
+                window.Cart.clearCart();
+                
+                // Redirect to order confirmation
+                window.location.href = `/pages/orders.html?order=${response.data._id}`;
+            } catch (error) {
+                alert('Có lỗi xảy ra: ' + error.message);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Đặt hàng';
+            }
+        }
+
+        // Initialize
+        loadCheckout();
+    </script>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>DH Pharmacy</h3>
+                    <p>Nhà thuốc trực tuyến uy tín, giao hàng nhanh, tư vấn chuyên nghiệp.</p>
+                    <p>Giấy phép: Số 12345/GP-BYT</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Liên hệ</h3>
+                    <p>📞 Hotline: 0344864576</p>
+                    <p>💬 Zalo: 0344864576</p>
+                    <p>📧 Email: dhpharmacy@gmail.com</p>
+                    <p>📍 Địa chỉ: Số 3 Đông Ngàn - Từ Sơn - Bắc Ninh</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Hỗ trợ</h3>
+                    <a href="/pages/about.html">Giới thiệu</a>
+                    <a href="/pages/contact.html">Liên hệ</a>
+                    <a href="#">Chính sách bảo mật</a>
+                    <a href="#">Điều khoản sử dụng</a>
+                    <a href="#">Câu hỏi thường gặp</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 DH Pharmacy. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+

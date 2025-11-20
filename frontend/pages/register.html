@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký - DH Pharmacy</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <div class="container">
+                <div>📞 Hotline: 0344864576 | 💬 Zalo: 0344864576</div>
+                <div>🚚 Giao hàng nhanh 2-4 giờ | ✅ Đảm bảo chất lượng</div>
+            </div>
+        </div>
+        <div class="header-main">
+            <div class="container">
+                <a href="/pages/index.html" class="logo">
+                    <span>💊</span>
+                    <span>DH Pharmacy</span>
+                </a>
+                <div class="search-bar">
+                    <form>
+                        <div class="input-search">
+                            <input type="text" placeholder="Tìm kiếm thuốc, hoạt chất, triệu chứng...">
+                        </div>
+                        <div class="submit-button">
+                            <button type="submit">🔍</button>
+                        </div>
+                    </form>
+                </div>
+                <nav class="nav">
+                    <a href="/pages/index.html" class="nav-link">Trang chủ</a>
+                    <a href="/pages/products.html" class="nav-link">Sản phẩm</a>
+                    <a href="/pages/consultation.html" class="nav-link">Tư vấn</a>
+                    <a href="/pages/about.html" class="nav-link">Giới thiệu</a>
+                    <div class="cart-icon">
+                        <a href="/pages/cart.html" class="nav-link">🛒 Giỏ hàng</a>
+                        <span class="cart-badge" style="display: none;">0</span>
+                    </div>
+                    <div class="user-menu">
+                        <a href="/pages/login.html" class="nav-link">Đăng nhập</a>
+                        <a href="/pages/register.html" class="nav-link">Đăng ký</a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main style="padding: 60px 0; min-height: 70vh;">
+        <div class="container" style="max-width: 500px;">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h2>Đăng ký tài khoản</h2>
+                </div>
+                <div class="card-body">
+                    <form id="register-form" onsubmit="handleRegister(event)">
+                        <div class="form-group">
+                            <label class="form-label">Họ tên *</label>
+                            <input type="text" class="form-control" id="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Số điện thoại</label>
+                            <input type="tel" class="form-control" id="phone">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Mật khẩu *</label>
+                            <input type="password" class="form-control" id="password" required minlength="6">
+                            <div class="form-help">Tối thiểu 6 ký tự</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Xác nhận mật khẩu *</label>
+                            <input type="password" class="form-control" id="confirm-password" required>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" required>
+                                Tôi đồng ý với <a href="#">Điều khoản sử dụng</a> và <a href="#">Chính sách bảo mật</a>
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block btn-lg">Đăng ký</button>
+                    </form>
+                    <div style="text-align: center; margin-top: 24px;">
+                        <p>Đã có tài khoản? <a href="/pages/login.html">Đăng nhập ngay</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>DH Pharmacy</h3>
+                    <p>Nhà thuốc trực tuyến uy tín, giao hàng nhanh, tư vấn chuyên nghiệp.</p>
+                    <p>Giấy phép: Số 12345/GP-BYT</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Liên hệ</h3>
+                    <p>📞 Hotline: 0344864576</p>
+                    <p>💬 Zalo: 0344864576</p>
+                    <p>📧 Email: support@dhpharmacy.com</p>
+                    <p>📍 Địa chỉ: Số 3 Đông Ngàn - Từ Sơn - Bắc Ninh</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Hỗ trợ</h3>
+                    <a href="/pages/about.html">Giới thiệu</a>
+                    <a href="/pages/contact.html">Liên hệ</a>
+                    <a href="#">Chính sách bảo mật</a>
+                    <a href="#">Điều khoản sử dụng</a>
+                    <a href="#">Câu hỏi thường gặp</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 DH Pharmacy. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/main.js"></script>
+    <script>
+        async function handleRegister(e) {
+            e.preventDefault();
+            
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            if (password !== confirmPassword) {
+                alert('Mật khẩu xác nhận không khớp');
+                return;
+            }
+
+            const userData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                password: password
+            };
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Đang đăng ký...';
+
+            try {
+                const response = await window.API.auth.register(userData);
+                window.API.setToken(response.token);
+                window.API.setCurrentUser(response.user);
+                
+                alert('Đăng ký thành công!');
+                window.location.href = '/pages/index.html';
+            } catch (error) {
+                alert('Đăng ký thất bại: ' + error.message);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Đăng ký';
+            }
+        }
+    </script>
+</body>
+</html>
+
