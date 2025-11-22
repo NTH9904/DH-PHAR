@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý sản phẩm</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="products.css">
+    <link rel="stylesheet" href="responsive.css">
+</head>
+<body>
+    <div class="admin-sidebar">
+        <h2 style="margin-bottom: 32px; color: white;">💊 DH Pharmacy</h2>
+        <a href="dashboard.html">📊 Dashboard</a>
+        <a href="products.html">💊 Sản phẩm</a>
+        <a href="orders.html">📦 Đơn hàng</a>
+        <a href="users.html">👥 Khách hàng</a>
+        <a href="prescriptions.html">📋 Đơn thuốc</a>
+        <a href="index.html" style="margin-top: 32px;">🏠 Về trang chủ</a>
+    </div>
+    <div class="product-admin">
+        <h1 class="product-title">Sản phẩm</h1>
+        <div class="product-card">
+            <div class="product-card-header">
+                <h3>Danh sách sản phẩm</h3>
+                <button class="btn btn-primary">+ Thêm sản phẩm</button>
+            </div>
+            <div class="product-card-body">
+                <input class="form-control product-search" placeholder="Tìm kiếm sản phẩm...">
+                <table class="product-table">
+                    <thead>
+                        <tr>
+                            <th>Ảnh</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Giá</th>
+                            <th>Kho</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><img src="https://via.placeholder.com/60" alt="Sản phẩm" class="product-img"></td>
+                            <td>Paracetamol 500mg</td>
+                            <td>25.000đ</td>
+                            <td>120</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline">Sửa</button>
+                                <button class="btn btn-sm btn-danger">Xóa</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><img src="https://via.placeholder.com/60" alt="Sản phẩm" class="product-img"></td>
+                            <td>Vitamin C 1000mg</td>
+                            <td>40.000đ</td>
+                            <td>80</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline">Sửa</button>
+                                <button class="btn btn-sm btn-danger">Xóa</button>
+                            </td>
+                        </tr>
+                        <!-- Thêm sản phẩm khác tại đây -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

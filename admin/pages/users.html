@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Khách hàng - DH Pharmacy</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Các style chung từ dashboard.html và orders.html */
+        :root {
+            /* Giả định biến màu */
+            --primary-color: #007bff;
+            --text-dark: #2C3E50;
+            --text-light: #6c757d;
+            --border-color: #dee2e6;
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+        }
+        .admin-sidebar {
+            width: 250px;
+            background: var(--text-dark);
+            color: white;
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 24px;
+        }
+        .admin-content {
+            margin-left: 250px;
+            padding: 24px;
+        }
+        .admin-sidebar a {
+            display: block;
+            color: rgba(255,255,255,0.8);
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+        .admin-sidebar a:hover, .admin-sidebar a.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Style cho các control và bảng */
+        .controls-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .search-input {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            width: 300px;
+        }
+        
+        /* Đảm bảo style bảng thống nhất với orders.html */
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .users-table th, .users-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .users-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .users-table tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            padding: 4px 8px;
+            margin-right: 4px;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+        .action-btn:hover {
+            background: rgba(0, 123, 255, 0.1);
+        }
+
+        /* Style cho loại khách hàng (membership/status) */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+        .badge-vip { background-color: #9c27b0; color: white; } /* Tím */
+        .badge-new { background-color: var(--warning-color); color: var(--text-dark); } /* Vàng */
+        .badge-regular { background-color: var(--success-color); color: white; } /* Xanh lá */
+    </style>
+</head>
+<body>
+    <div class="admin-sidebar">
+        <h2 style="margin-bottom: 32px; color: white;">💊 DH Pharmacy</h2>
+        <a href="dashboard.html">📊 Dashboard</a>
+        <a href="products.html">💊 Sản phẩm</a>
+        <a href="orders.html">📦 Đơn hàng</a>
+        <a href="users.html" class="active">👥 Khách hàng</a> 
+        <a href="prescriptions.html">📋 Đơn thuốc</a>
+        <a href="index.html" style="margin-top: 32px;">🏠 Về trang chủ</a>
+    </div>
+
+    <div class="admin-content">
+        <h1 style="margin-bottom: 30px;">Quản lý Khách hàng</h1>
+
+        <div class="controls-bar">
+            <input type="text" class="search-input" placeholder="Tìm kiếm theo tên, email, SĐT...">
+            <button class="btn btn-primary">+ Thêm Khách hàng mới</button> 
+            </div>
+
+        <div class="card" style="padding: 0;">
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên Khách hàng</th>
+                        <th>Email</th>
+                        <th>Số điện thoại</th>
+                        <th>Tổng đơn hàng</th>
+                        <th>Phân loại</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody id="users-list">
+                    <tr>
+                        <td>U001</td>
+                        <td>Nguyễn Văn A</td>
+                        <td>nguyenvana@mail.com</td>
+                        <td>0901xxxxxx</td>
+                        <td>12</td>
+                        <td><span class="badge badge-vip">VIP</span></td>
+                        <td>
+                            <button class="action-btn">Chi tiết</button>
+                            <button class="action-btn">Sửa</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>U002</td>
+                        <td>Phạm Thị B</td>
+                        <td>phamthib@mail.com</td>
+                        <td>0912xxxxxx</td>
+                        <td>1</td>
+                        <td><span class="badge badge-new">Mới</span></td>
+                        <td>
+                            <button class="action-btn">Chi tiết</button>
+                            <button class="action-btn">Sửa</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>U003</td>
+                        <td>Trần Minh C</td>
+                        <td>tranminhc@mail.com</td>
+                        <td>0983xxxxxx</td>
+                        <td>5</td>
+                        <td><span class="badge badge-regular">Thường</span></td>
+                        <td>
+                            <button class="action-btn">Chi tiết</button>
+                            <button class="action-btn">Sửa</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        </div>
+
+    <script src="api.js"></script>
+    <script>
+        // Hàm này sẽ được dùng để gọi API và render dữ liệu thực tế
+        async function loadUsers() {
+            try {
+                // Giả định API call
+                // const usersResponse = await window.API.users.getAll();
+                // const users = usersResponse.data || [];
+                
+                // ... logic render data vào users-list ...
+
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
+        }
+
+        // loadUsers();
+    </script>
+</body>
+</html>

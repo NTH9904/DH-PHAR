@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Đơn hàng - DH Pharmacy</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Các style chung từ dashboard.html */
+        :root {
+            /* Giả định biến màu */
+            --primary-color: #007bff; /* Ví dụ: Màu xanh dương */
+            --text-dark: #2C3E50;
+            --text-light: #6c757d;
+            --border-color: #dee2e6;
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
+        .admin-sidebar {
+            width: 250px;
+            background: var(--text-dark);
+            color: white;
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 24px;
+        }
+        .admin-content {
+            margin-left: 250px;
+            padding: 24px;
+        }
+        .admin-sidebar a {
+            display: block;
+            color: rgba(255,255,255,0.8);
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+        .admin-sidebar a:hover, .admin-sidebar a.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Style riêng cho bảng và các control */
+        .controls-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .search-input {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            width: 300px;
+        }
+
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden; /* Để bo góc table */
+            box-shadow: var(--shadow-md);
+        }
+
+        .orders-table th, .orders-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .orders-table th {
+            background-color: #f8f9fa; /* Màu nền cho header */
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .orders-table tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        /* Style cho nút hành động trong bảng */
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            padding: 4px 8px;
+            margin-right: 4px;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+        .action-btn:hover {
+            background: rgba(0, 123, 255, 0.1);
+        }
+
+        /* Style cho trạng thái (badge) */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+        .badge-pending { background-color: var(--warning-color); color: var(--text-dark); }
+        .badge-shipped { background-color: var(--primary-color); color: white; }
+        .badge-delivered { background-color: var(--success-color); color: white; }
+        .badge-cancelled { background-color: var(--danger-color); color: white; }
+    </style>
+</head>
+<body>
+    <div class="admin-sidebar">
+        <h2 style="margin-bottom: 32px; color: white;">💊 DH Pharmacy</h2>
+        <a href="dashboard.html">📊 Dashboard</a>
+        <a href="products.html">💊 Sản phẩm</a>
+        <a href="orders.html" class="active">📦 Đơn hàng</a> <a href="users.html">👥 Khách hàng</a>
+        <a href="prescriptions.html">📋 Đơn thuốc</a>
+        <a href="index.html" style="margin-top: 32px;">🏠 Về trang chủ</a>
+    </div>
+
+    <div class="admin-content">
+        <h1 style="margin-bottom: 30px;">Quản lý Đơn hàng</h1>
+
+        <div class="controls-bar">
+            <input type="text" class="search-input" placeholder="Tìm kiếm theo mã đơn hàng, khách hàng...">
+            <button class="btn btn-primary">+ Tạo đơn hàng mới</button> 
+            </div>
+
+        <div class="card" style="padding: 0;">
+            <table class="orders-table">
+                <thead>
+                    <tr>
+                        <th>Mã Đơn</th>
+                        <th>Khách hàng</th>
+                        <th>Ngày tạo</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody id="orders-list">
+                    <tr>
+                        <td>#DH1001</td>
+                        <td>Nguyễn Văn A</td>
+                        <td>20/11/2025</td>
+                        <td>1,250,000 đ</td>
+                        <td><span class="badge badge-delivered">Đã giao</span></td>
+                        <td>
+                            <button class="action-btn">Chi tiết</button>
+                            <button class="action-btn">Sửa</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#DH1002</td>
+                        <td>Phạm Thị B</td>
+                        <td>22/11/2025</td>
+                        <td>350,000 đ</td>
+                        <td><span class="badge badge-pending">Chờ xử lý</span></td>
+                        <td>
+                            <button class="action-btn">Chi tiết</button>
+                            <button class="action-btn">Sửa</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#DH1003</td>
+                        <td>Trần Minh C</td>
+                        <td>21/11/2025</td>
+                        <td>880,000 đ</td>
+                        <td><span class="badge badge-shipped">Đang giao</span></td>
+                        <td>
+                            <button class="action-btn">Chi tiết</button>
+                            <button class="action-btn">Sửa</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#DH1004</td>
+                        <td>Lê Thu D</td>
+                        <td>20/11/2025</td>
+                        <td>500,000 đ</td>
+                        <td><span class="badge badge-cancelled">Đã hủy</span></td>
+                        <td>
+                            <button class="action-btn">Chi tiết</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        </div>
+
+    <script src="api.js"></script>
+    <script>
+        // Hàm này sẽ được dùng để gọi API và render dữ liệu thực tế
+        async function loadOrders() {
+            try {
+                // Giả định API call
+                // const ordersResponse = await window.API.orders.getAll();
+                // const orders = ordersResponse.data || [];
+                
+                // ... logic render data vào orders-list ...
+
+            } catch (error) {
+                console.error('Error loading orders:', error);
+            }
+        }
+
+        // loadOrders();
+    </script>
+</body>
+</html>
