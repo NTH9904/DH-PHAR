@@ -158,8 +158,28 @@ async function seedDatabase() {
 
     // Seed Users
     console.log('👥 Seeding users...');
-    const users = await User.insertMany(usersData);
-    console.log(`✅ Created ${users.length} users`);
+    const users = [];
+    for (const userData of usersData) {
+      try {
+        // Use create so pre-save hooks (password hashing) run
+        const user = await User.create(userData);
+        users.push(user);
+      } catch (error) {
+        // If duplicate key (email), try updating password or skip
+        if (error.code === 11000 && error.keyPattern?.email) {
+          // Update existing user to ensure password is hashed
+          const existing = await User.findOne({ email: userData.email }).select('+password');
+          if (existing) {
+            existing.password = userData.password;
+            await existing.save();
+            users.push(existing);
+          }
+        } else {
+          throw error;
+        }
+      }
+    }
+    console.log(`✅ Created/updated ${users.length} users`);
 
     // Seed Products
     console.log('💊 Seeding products...');

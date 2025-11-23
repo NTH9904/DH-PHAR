@@ -97,7 +97,30 @@ exports.createOrder = async (req, res, next) => {
     });
 
     // Create order
-    const order = await Order.create({
+    // Ensure orderNumber exists (defensive - in case model hooks didn't run)
+    if (!req.body.orderNumber) {
+      try {
+        const count = await Order.countDocuments();
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        req.body.orderNumber = `DH${year}${month}${day}${String(count + 1).padStart(6, '0')}`;
+      } catch (genErr) {
+        // fallback to timestamp-based id to avoid blocking order creation
+        req.body.orderNumber = `DH${Date.now()}`;
+      }
+    }
+
+    // Temporary debug logging to diagnose missing orderNumber issue
+    try {
+      console.log('Creating order - incoming req.body:', JSON.stringify(req.body));
+    } catch (e) {
+      console.log('Creating order - could not stringify req.body');
+    }
+
+    const createPayload = {
+      orderNumber: req.body.orderNumber,
       user: req.user.id,
       items: orderItems,
       subtotal,
@@ -112,7 +135,15 @@ exports.createOrder = async (req, res, next) => {
       requiresPrescription,
       prescription: prescriptionId,
       customerNotes
-    });
+    };
+
+    try {
+      console.log('Creating order - payload:', JSON.stringify(createPayload));
+    } catch (e) {
+      console.log('Creating order - could not stringify createPayload');
+    }
+
+    const order = await Order.create(createPayload);
 
     // Clear cart
     await Cart.findOneAndDelete({ user: req.user.id });
@@ -262,6 +293,41 @@ exports.cancelOrder = async (req, res, next) => {
       message: 'Hủy đơn hàng thành công',
       data: order
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Mark order as paid (simulate payment callback)
+// @route   PUT /api/orders/:id/pay
+// @access  Private
+exports.payOrder = async (req, res, next) => {
+  try {
+    const { transactionId } = req.body;
+
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+      return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
+    }
+
+    // Check ownership
+    if (order.user.toString() !== req.user.id && req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Không có quyền cập nhật đơn hàng này' });
+    }
+
+    order.paymentStatus = 'paid';
+    order.paymentTransactionId = transactionId || `SIMULATED-${Date.now()}`;
+    order.paymentDate = new Date();
+    order.status = 'confirmed';
+    order.statusHistory.push({
+      status: 'confirmed',
+      timestamp: new Date(),
+      note: 'Thanh toán hoàn tất'
+    });
+
+    await order.save();
+
+    res.json({ success: true, data: order });
   } catch (error) {
     next(error);
   }

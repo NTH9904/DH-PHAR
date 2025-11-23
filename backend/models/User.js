@@ -114,20 +114,43 @@ const UserSchema = new mongoose.Schema({
 // Encrypt password before save
 UserSchema.pre('save', async function(next) {
   if (!this.isModified('password')) {
-    next();
+    return next();
   }
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
+  return next();
 });
 
 // Match password
 UserSchema.methods.matchPassword = async function(enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
+  try {
+    const res = await bcrypt.compare(enteredPassword, this.password);
+    try { console.log('matchPassword result:', res); } catch (e) { /* ignore logging errors */ }
+    return res;
+  } catch (err) {
+    try { console.log('matchPassword error:', err && err.message); } catch (e) {}
+    return false;
+  }
 };
 
 // Generate JWT token
 UserSchema.methods.generateToken = function() {
-  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+  let secret = process.env.JWT_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('JWT secret is not configured. Set JWT_SECRET in environment variables.');
+    }
+    try {
+      const crypto = require('crypto');
+      secret = crypto.randomBytes(32).toString('hex');
+      process.env.JWT_SECRET = secret;
+      console.info('Info: Generated temporary JWT secret for development (User.generateToken).');
+    } catch (e) {
+      secret = 'dev-secret';
+    }
+  }
+
+  return jwt.sign({ id: this._id }, secret, {
     expiresIn: process.env.JWT_EXPIRE || '7d'
   });
 };

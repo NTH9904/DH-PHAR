@@ -127,6 +127,12 @@ const ordersAPI = {
 
   getMyOrders: () => apiRequest('/orders'),
 
+  // Admin: get all orders with optional query params (page, limit, status)
+  getAll: (params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+    return apiRequest(`/orders/admin/all?${queryString}`);
+  },
+
   getById: (id) => apiRequest(`/orders/${id}`),
 
   cancel: (id, reason) => apiRequest(`/orders/${id}/cancel`, {

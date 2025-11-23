@@ -112,45 +112,6 @@
     </div>
 
     <script src="api.js"></script>
-    <script>
-        async function loadDashboard() {
-            try {
-                // Load stats (mock data for now)
-                document.getElementById('total-orders').textContent = '1,234';
-                document.getElementById('today-revenue').textContent = '50,000,000 đ';
-                document.getElementById('total-products').textContent = '60';
-                document.getElementById('total-users').textContent = '567';
-
-                // Load recent orders
-                const ordersResponse = await window.API.orders.getAll();
-                const orders = ordersResponse.data || [];
-                const recentOrders = orders.slice(0, 5);
-                
-                document.getElementById('recent-orders').innerHTML = recentOrders.length > 0
-                    ? recentOrders.map(order => `
-                        <div style="padding: 12px 0; border-bottom: 1px solid var(--border-color);">
-                            <div style="display: flex; justify-content: space-between;">
-                                <div>
-                                    <strong>#${order.orderNumber}</strong>
-                                    <div style="font-size: 14px; color: var(--text-light);">
-                                        ${new Date(order.createdAt).toLocaleDateString('vi-VN')}
-                                    </div>
-                                </div>
-                                <div style="text-align: right;">
-                                    <div>${window.utils?.formatCurrency(order.total) || order.total.toLocaleString('vi-VN') + ' đ'}</div>
-                                    <span class="badge badge-primary">${order.status}</span>
-                                </div>
-                            </div>
-                        </div>
-                    `).join('')
-                    : '<p>Chưa có đơn hàng</p>';
-
-            } catch (error) {
-                console.error('Error loading dashboard:', error);
-            }
-        }
-
-        loadDashboard();
-    </script>
+    <script src="dashboard.js"></script>
 </body>
 </html>

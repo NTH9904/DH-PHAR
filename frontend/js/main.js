@@ -18,14 +18,24 @@ document.addEventListener('DOMContentLoaded', () => {
     loginLinks.forEach(link => link.style.display = 'none');
     registerLinks.forEach(link => link.style.display = 'none');
     
-    // Show user info
+    // Show user info: make the greeting act as a logout action
     const userMenu = document.querySelector('.user-menu');
     if (userMenu) {
       userMenu.innerHTML = `
-        <span>Xin chào, ${user.name}</span>
+        <a href="#" id="user-logout-link" class="nav-link" title="Đăng xuất">Xin chào, ${user.name}</a>
         <a href="/pages/profile.html" class="nav-link">Tài khoản</a>
-        <a href="#" class="nav-link" onclick="logout()">Đăng xuất</a>
       `;
+
+      // attach click handler to show 'Đang xuất...' and logout immediately
+      const greetLink = document.getElementById('user-logout-link');
+      if (greetLink) {
+        greetLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          greetLink.textContent = 'Đang xuất...';
+          // small delay to show feedback, then logout without confirm
+          setTimeout(() => logout(true), 400);
+        });
+      }
     }
   } else {
     // User is not logged in
@@ -56,13 +66,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Logout function
-const logout = () => {
-  if (confirm('Bạn có chắc muốn đăng xuất?')) {
-    window.API?.removeToken();
-    window.API?.removeCurrentUser();
-    window.Cart?.clearCart();
-    window.location.href = '/pages/index.html';
+const logout = (skipConfirm = false) => {
+  if (!skipConfirm) {
+    if (!confirm('Bạn có chắc muốn đăng xuất?')) return;
   }
+
+  window.API?.removeToken();
+  window.API?.removeCurrentUser();
+  window.Cart?.clearCart();
+  window.location.href = '/pages/index.html';
 };
 
 // Format currency

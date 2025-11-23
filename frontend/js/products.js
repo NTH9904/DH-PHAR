@@ -88,14 +88,34 @@ let currentPage = 1;
                     return;
                 }
 
+                // Use same-origin or data: placeholder for images to avoid CSP img-src violations
+                const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(`
+                    <svg xmlns="http://www.w3.org/2000/svg" width="600" height="400">
+                        <rect width="100%" height="100%" fill="#f3f4f6"/>
+                        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-family="Arial, Helvetica, sans-serif" font-size="20">No image</text>
+                    </svg>
+                `);
+
                 container.innerHTML = `
                     <div class="grid grid-4">
-                        ${products.map(product => `
+                        ${products.map(product => {
+                            // determine safe image src
+                            let img = product.images?.[0]?.url || '';
+                            try {
+                                const parsed = img ? new URL(img, window.location.href) : null;
+                                if (!img) img = PLACEHOLDER;
+                                else if (img.startsWith('data:')) img = img;
+                                else if (parsed && parsed.origin === window.location.origin) img = parsed.href;
+                                else img = PLACEHOLDER;
+                            } catch (e) {
+                                img = PLACEHOLDER;
+                            }
+
+                            return `
                             <div class="product-card">
-                                <img src="${product.images?.[0]?.url || '/assets/images/placeholder.jpg'}" 
+                                <img data-role="product-image" src="${img}" 
                                      alt="${product.name}" 
-                                     class="product-card-image"
-                                     onerror="this.src='/assets/images/placeholder.jpg'">
+                                     class="product-card-image">
                                 <div class="product-card-body">
                                     <h3 class="product-card-title">${product.name}</h3>
                                     <p style="font-size: 14px; color: var(--text-light); margin-bottom: 8px;">
@@ -110,28 +130,58 @@ let currentPage = 1;
                                     <a href="/pages/product-detail.html?id=${product._id}" class="btn btn-primary btn-block">Xem chi tiết</a>
                                 </div>
                             </div>
-                        `).join('')}
+                        `}).join('')}
                     </div>
                 `;
 
+                // Attach error handlers for images
+                const imgs = container.querySelectorAll('img[data-role="product-image"]');
+                imgs.forEach(imgEl => {
+                    imgEl.addEventListener('error', () => {
+                        imgEl.src = PLACEHOLDER;
+                    });
+                });
+
                 // Pagination
                 if (pages > 1) {
-                    let paginationHTML = '<div style="display: flex; gap: 8px; justify-content: center; align-items: center;">';
-                    
+                    const paginationContainer = document.getElementById('pagination');
+                    paginationContainer.innerHTML = '';
+                    const wrap = document.createElement('div');
+                    wrap.style.display = 'flex';
+                    wrap.style.gap = '8px';
+                    wrap.style.justifyContent = 'center';
+                    wrap.style.alignItems = 'center';
+
                     if (page > 1) {
-                        paginationHTML += `<button class="btn btn-outline" onclick="loadProducts(${page - 1})">Trước</button>`;
+                        const prev = document.createElement('button');
+                        prev.className = 'btn btn-outline';
+                        prev.dataset.page = page - 1;
+                        prev.textContent = 'Trước';
+                        wrap.appendChild(prev);
                     }
 
                     for (let i = Math.max(1, page - 2); i <= Math.min(pages, page + 2); i++) {
-                        paginationHTML += `<button class="btn ${i === page ? 'btn-primary' : 'btn-outline'}" onclick="loadProducts(${i})">${i}</button>`;
+                        const btn = document.createElement('button');
+                        btn.className = `btn ${i === page ? 'btn-primary' : 'btn-outline'}`;
+                        btn.dataset.page = i;
+                        btn.textContent = i;
+                        wrap.appendChild(btn);
                     }
 
                     if (page < pages) {
-                        paginationHTML += `<button class="btn btn-outline" onclick="loadProducts(${page + 1})">Sau</button>`;
+                        const next = document.createElement('button');
+                        next.className = 'btn btn-outline';
+                        next.dataset.page = page + 1;
+                        next.textContent = 'Sau';
+                        wrap.appendChild(next);
                     }
 
-                    paginationHTML += '</div>';
-                    document.getElementById('pagination').innerHTML = paginationHTML;
+                    paginationContainer.appendChild(wrap);
+
+                    // attach listeners
+                    paginationContainer.querySelectorAll('button[data-page]').forEach(b => {
+                        b.addEventListener('click', () => loadProducts(Number(b.dataset.page)));
+                    });
                 } else {
                     document.getElementById('pagination').innerHTML = '';
                 }
@@ -139,19 +189,26 @@ let currentPage = 1;
                 currentPage = page;
             } catch (error) {
                 console.error('Error loading products:', error);
-                container.innerHTML = `
-                    <div class="alert alert-error">
-                        <p><strong>Lỗi khi tải sản phẩm:</strong> ${error.message || 'Không thể kết nối đến server'}</p>
-                        <p style="margin-top: 16px;"><strong>Vui lòng kiểm tra:</strong></p>
-                        <ul style="text-align: left; margin-top: 8px;">
-                            <li>Server đã được khởi động? Chạy: <code>npm run dev</code></li>
-                            <li>Database đã được seed? Chạy: <code>node scripts/seed.js</code></li>
-                            <li>MongoDB đang chạy?</li>
-                            <li>Mở Console (F12) để xem lỗi chi tiết</li>
-                        </ul>
-                        <button class="btn btn-primary" onclick="loadProducts(1)" style="margin-top: 16px;">Thử lại</button>
-                    </div>
+                const errHtml = document.createElement('div');
+                errHtml.className = 'alert alert-error';
+                errHtml.innerHTML = `
+                    <p><strong>Lỗi khi tải sản phẩm:</strong> ${error.message || 'Không thể kết nối đến server'}</p>
+                    <p style="margin-top: 16px;"><strong>Vui lòng kiểm tra:</strong></p>
+                    <ul style="text-align: left; margin-top: 8px;">
+                        <li>Server đã được khởi động? Chạy: <code>npm run dev</code></li>
+                        <li>Database đã được seed? Chạy: <code>node scripts/seed.js</code></li>
+                        <li>MongoDB đang chạy?</li>
+                        <li>Mở Console (F12) để xem lỗi chi tiết</li>
+                    </ul>
                 `;
+                const retryBtn = document.createElement('button');
+                retryBtn.className = 'btn btn-primary';
+                retryBtn.style.marginTop = '16px';
+                retryBtn.textContent = 'Thử lại';
+                retryBtn.addEventListener('click', () => loadProducts(1));
+                errHtml.appendChild(retryBtn);
+                container.innerHTML = '';
+                container.appendChild(errHtml);
             }
         }
 

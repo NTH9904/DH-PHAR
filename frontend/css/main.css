@@ -167,9 +167,11 @@ img {
 .search-bar {
   display: flex;
   align-items: center;
-  flex: 1 1 450px;
-  max-width: 600px;
-  min-width: 200px;
+  /* more constrained so search doesn't push other header items off-screen */
+  flex: 0 1 420px;
+  max-width: 480px;
+  min-width: 180px;
+  margin: 0 auto;
 }
 
 .search-bar form {
@@ -219,8 +221,20 @@ img {
 .nav {
   display: flex;
   align-items: center;
-  gap: var(--spacing-lg);
+  gap: calc(var(--spacing-md));
   flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: var(--primary-color);
+  color: #fff;
+  border-radius: var(--radius-full);
+  padding: 2px 6px;
+  font-size: 12px;
 }
 
 .cart-icon { position: relative; }

@@ -125,6 +125,11 @@ const ordersAPI = {
     body: JSON.stringify(orderData)
   }),
 
+  pay: (orderId, data = {}) => apiRequest(`/orders/${orderId}/pay`, {
+    method: 'PUT',
+    body: JSON.stringify(data)
+  }),
+
   getMyOrders: () => apiRequest('/orders'),
 
   getById: (id) => apiRequest(`/orders/${id}`),

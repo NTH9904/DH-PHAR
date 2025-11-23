@@ -12,9 +12,15 @@ async function handleLogin(e) {
         window.API.setToken(response.token);
         window.API.setCurrentUser(response.user);
 
-        // Redirect
-        const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || '/pages/index.html';
-        window.location.href = redirectUrl;
+                // Redirect: prefer explicit `redirect` query param, otherwise send admins to admin dashboard
+                const redirectParam = new URLSearchParams(window.location.search).get('redirect');
+                if (redirectParam) {
+                    window.location.href = redirectParam;
+                } else if (response.user && response.user.role === 'admin') {
+                    window.location.href = '/admin/pages/dashboard.html';
+                } else {
+                    window.location.href = '/pages/index.html';
+                }
     } catch (error) {
         alert('Đăng nhập thất bại: ' + error.message);
         submitBtn.disabled = false;

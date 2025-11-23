@@ -33,13 +33,37 @@ async function loadProductDetail() {
             return;
         }
 
+        // Determine a safe image src: only allow same-origin or data: URIs, otherwise use inline SVG placeholder
+        const PLACEHOLDER_DATA_URI = 'data:image/svg+xml;utf8,' + encodeURIComponent(`
+            <svg xmlns="http://www.w3.org/2000/svg" width="600" height="400">
+                <rect width="100%" height="100%" fill="#f3f4f6"/>
+                <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#9ca3af" font-family="Arial, Helvetica, sans-serif" font-size="20">No image</text>
+            </svg>
+        `);
+        let imageUrl = product.images?.[0]?.url;
+        let imageSrc = PLACEHOLDER_DATA_URI;
+        if (imageUrl) {
+            try {
+                const parsed = new URL(imageUrl, window.location.href);
+                if (parsed.origin === window.location.origin || imageUrl.startsWith('/')) {
+                    imageSrc = imageUrl;
+                } else if (imageUrl.startsWith('data:')) {
+                    imageSrc = imageUrl;
+                } else {
+                    // external host not allowed by CSP - fall back to placeholder
+                    imageSrc = '/assets/images/placeholder.jpg';
+                }
+            } catch (e) {
+                imageSrc = '/assets/images/placeholder.jpg';
+            }
+        }
+
         container.innerHTML = `
                     <div class="grid grid-2" style="gap: 40px; margin-bottom: 40px;">
                         <div>
-                            <img src="${product.images?.[0]?.url || '/assets/images/placeholder.jpg'}" 
+                            <img data-role="product-image" src="${imageSrc}" 
                                  alt="${product.name}" 
-                                 style="width: 100%; border-radius: 12px; box-shadow: var(--shadow-lg);"
-                                 onerror="this.src='/assets/images/placeholder.jpg'">
+                                 style="width: 100%; border-radius: 12px; box-shadow: var(--shadow-lg);">
                         </div>
                         <div>
                             <h1 style="margin-bottom: 16px;">${product.name}</h1>
@@ -64,11 +88,11 @@ async function loadProductDetail() {
 
                             <div style="margin-bottom: 24px;">
                                 <label class="form-label">Số lượng:</label>
-                                <div style="display: flex; gap: 16px; align-items: center;">
-                                    <button class="btn btn-outline" onclick="updateQuantity(-1)">-</button>
+                                    <div style="display: flex; gap: 16px; align-items: center;">
+                                    <button class="btn btn-outline" data-action="qty-decrease">-</button>
                                     <input type="number" id="quantity" value="1" min="1" max="${product.maxOrderQuantity || 10}" 
                                            style="width: 80px; text-align: center;" class="form-control">
-                                    <button class="btn btn-outline" onclick="updateQuantity(1)">+</button>
+                                    <button class="btn btn-outline" data-action="qty-increase">+</button>
                                     <span style="color: var(--text-light);">
                                         (Còn ${product.stock} sản phẩm)
                                     </span>
@@ -76,10 +100,10 @@ async function loadProductDetail() {
                             </div>
 
                             <div style="display: flex; gap: 16px; margin-bottom: 24px;">
-                                <button class="btn btn-primary btn-lg" onclick="addToCart()" style="flex: 1;">
+                                <button class="btn btn-primary btn-lg" data-action="add-to-cart" style="flex: 1;">
                                     🛒 Thêm vào giỏ hàng
                                 </button>
-                                <button class="btn btn-secondary btn-lg" onclick="buyNow()" style="flex: 1;">
+                                <button class="btn btn-secondary btn-lg" data-action="buy-now" style="flex: 1;">
                                     Mua ngay
                                 </button>
                             </div>
@@ -159,6 +183,25 @@ async function loadProductDetail() {
                         </div>
                     </div>
                 `;
+        // Attach event listeners for image error and controls (avoid inline handlers to satisfy CSP)
+        const imgEl = container.querySelector('img[data-role="product-image"]');
+        if (imgEl) {
+            imgEl.addEventListener('error', () => {
+                imgEl.src = PLACEHOLDER_DATA_URI;
+            });
+        }
+
+        // quantity buttons
+        const decBtn = container.querySelector('button[data-action="qty-decrease"]');
+        const incBtn = container.querySelector('button[data-action="qty-increase"]');
+        if (decBtn) decBtn.addEventListener('click', () => updateQuantity(-1));
+        if (incBtn) incBtn.addEventListener('click', () => updateQuantity(1));
+
+        // add to cart / buy now
+        const addBtn = container.querySelector('button[data-action="add-to-cart"]');
+        const buyBtn = container.querySelector('button[data-action="buy-now"]');
+        if (addBtn) addBtn.addEventListener('click', addToCartProductDetail);
+        if (buyBtn) buyBtn.addEventListener('click', buyNow);
     } catch (error) {
         console.error('Error loading product:', error);
         container.innerHTML = '<p class="text-center text-error">Không thể tải thông tin sản phẩm</p>';
@@ -187,9 +230,13 @@ function addToCartProductDetail() {
 
 function buyNow() {
     const quantity = parseInt(document.getElementById('quantity').value) || 1;
-    window.Cart.addToCart(productIdP, quantity);
+    window.Cart.addToCart(productIdParam, quantity);
     window.location.href = '/pages/checkout.html';
 }
+
+// expose for inline handlers (if any)
+window.addToCartProductDetail = addToCartProductDetail;
+window.buyNow = buyNow;
 
 // khởi tạo
 loadProductDetail();

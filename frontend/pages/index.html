@@ -42,7 +42,7 @@
                     <a href="/pages/about.html" class="nav-link">Giới thiệu</a>
                     <div class="cart-icon">
                         <a href="/pages/cart.html" class="nav-link">🛒 Giỏ hàng</a>
-                        <span class="cart-badge" style="display: none;">0</span>
+                        <span class="cart-badge">0</span>
                     </div>
                     <div class="user-menu">
                         <a href="/pages/login.html" class="nav-link">Đăng nhập</a>
@@ -169,90 +169,7 @@
     <script src="/js/api.js"></script>
     <script src="/js/cart.js"></script>
     <script src="/js/main.js"></script>
-    <script>
-        // Load featured products (with fallback to latest/top products)
-        async function loadFeaturedProducts() {
-            try {
-                const container = document.getElementById('featured-products');
-
-                // Try featured endpoint first
-                const response = await window.API.products.getFeatured();
-                let products = response.data || [];
-
-                // Fallback: if no featured products, load latest products
-                if (!products || products.length === 0) {
-                    try {
-                        const resp2 = await window.API.products.getAll({ page: 1, limit: 8 });
-                        products = resp2.data || [];
-                    } catch (err) {
-                        console.warn('Fallback to getAll failed:', err);
-                        products = [];
-                    }
-                }
-
-                if (products.length === 0) {
-                    container.innerHTML = '<p class="text-center">Chưa có sản phẩm nổi bật</p>';
-                    return;
-                }
-
-                container.innerHTML = products.map(product => `
-                    <div class="product-card">
-                        <img src="${product.images?.[0]?.url || '/assets/images/placeholder.jpg'}" 
-                             alt="${product.name}" 
-                             class="product-card-image"
-                             onerror="this.src='/assets/images/placeholder.jpg'">
-                        <div class="product-card-body">
-                            <h3 class="product-card-title">${product.name}</h3>
-                            <div class="product-card-price">
-                                ${window.utils?.formatCurrency(product.price) || (product.price ? product.price.toLocaleString('vi-VN') + ' đ' : '')}
-                            </div>
-                        </div>
-                        <div class="product-card-footer">
-                            <a href="/pages/product-detail.html?id=${product._id}" class="btn btn-primary btn-block">Xem chi tiết</a>
-                        </div>
-                    </div>
-                `).join('');
-            } catch (error) {
-                console.error('Error loading featured products:', error);
-                document.getElementById('featured-products').innerHTML = 
-                    '<p class="text-center text-error">Không thể tải sản phẩm</p>';
-            }
-        }
-
-        // Load categories
-        async function loadCategories() {
-            try {
-                const response = await window.API.products.getCategories();
-                const categories = response.data || [];
-                const container = document.getElementById('categories');
-                
-                const categoryIcons = {
-                    'Thuốc kê đơn': '💊',
-                    'Thuốc không kê đơn': '💉',
-                    'Thực phẩm chức năng': '🥗',
-                    'Chăm sóc sức khỏe': '❤️',
-                    'Dụng cụ y tế': '🩺'
-                };
-
-                container.innerHTML = categories.map(category => `
-                    <div class="card text-center" style="cursor: pointer;" onclick="window.location.href='/pages/products.html?category=${encodeURIComponent(category)}'">
-                        <div class="card-body">
-                            <div style="font-size: 48px; margin-bottom: 16px;">
-                                ${categoryIcons[category] || '💊'}
-                            </div>
-                            <h3>${category}</h3>
-                        </div>
-                    </div>
-                `).join('');
-            } catch (error) {
-                console.error('Error loading categories:', error);
-            }
-        }
-
-        // Initialize
-        loadFeaturedProducts();
-        loadCategories();
-    </script>
+    <script src="/js/index.js"></script>
 </body>
 </html>
 

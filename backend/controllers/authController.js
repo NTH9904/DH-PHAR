@@ -6,7 +6,11 @@ const { generateToken } = require('../utils/generateToken');
 // @access  Public
 exports.register = async (req, res, next) => {
   try {
-    const { name, email, password, phone } = req.body;
+    // Log incoming register attempt (do not log raw password)
+    try { console.log('Register request body keys:', Object.keys(req.body)); } catch (e) {}
+    let { name, email, password, phone } = req.body;
+    email = (email || '').toString().trim().toLowerCase();
+    try { console.log('Register attempt for email:', email); } catch (e) {}
 
     // Check if user exists
     const userExists = await User.findOne({ email });
@@ -21,6 +25,47 @@ exports.register = async (req, res, next) => {
       password,
       phone
     });
+
+    // Reload the saved user including the password field to verify hashing ran
+    try {
+      const savedUser = await User.findById(user._id).select('+password');
+      console.log(`User registered: ${user._id} - ${user.email}`);
+      console.log('Password stored (hashed) present:', !!(savedUser && savedUser.password));
+      if (savedUser && savedUser.password) {
+        console.log('Hashed password length:', savedUser.password.length);
+      }
+    } catch (e) {
+      console.log('Register verification log failed', e && e.message);
+    }
+
+    // Extra check: ensure bcrypt.compare works on the saved hash
+    try {
+      const bcrypt = require('bcryptjs');
+      const savedUser2 = await User.findById(user._id).select('+password');
+      if (savedUser2 && savedUser2.password) {
+        const cmp = await bcrypt.compare(password, savedUser2.password);
+        console.log('Bcrypt compare (register) result:', cmp);
+      } else {
+        console.log('Bcrypt compare (register): no saved hash to compare');
+      }
+    } catch (e) {
+      console.log('Bcrypt compare (register) failed:', e && e.message);
+    }
+
+    // Defensive fallback: if password hash is missing for some reason, hash now and save
+    try {
+      const reloaded = await User.findById(user._id).select('+password');
+      if (!reloaded || !reloaded.password) {
+        const bcrypt = require('bcryptjs');
+        const salt = await bcrypt.genSalt(10);
+        const hashed = await bcrypt.hash(password, salt);
+        user.password = hashed;
+        await user.save();
+        console.log('Fallback: hashed and saved password for user', user._id);
+      }
+    } catch (e) {
+      console.log('Fallback hashing failed:', e && e.message);
+    }
 
     // Generate token
     const token = user.generateToken();
@@ -45,7 +90,8 @@ exports.register = async (req, res, next) => {
 // @access  Public
 exports.login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    let { email, password } = req.body;
+    email = (email || '').toString().trim().toLowerCase();
 
     // Validate email & password
     if (!email || !password) {
@@ -55,7 +101,23 @@ exports.login = async (req, res, next) => {
     // Check for user
     const user = await User.findOne({ email }).select('+password');
 
-    if (!user || !(await user.matchPassword(password))) {
+    try {
+      console.log('Login attempt for:', email);
+      console.log('User found:', !!user, user ? String(user._id) : 'no-user');
+      console.log('Password field present on user doc:', !!(user && user.password));
+    } catch (e) {
+      console.log('Login debug log failed');
+    }
+
+    const passwordMatches = user && user.password ? await user.matchPassword(password) : false;
+
+    try {
+      console.log('Password match result:', passwordMatches);
+    } catch (e) {
+      /* ignore */
+    }
+
+    if (!user || !passwordMatches) {
       return res.status(401).json({ message: 'Email hoặc mật khẩu không đúng' });
     }
 

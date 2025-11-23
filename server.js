@@ -7,6 +7,27 @@ const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
+// Ensure JWT secret is present in production, provide a dev fallback otherwise
+if (!process.env.JWT_SECRET) {
+  if (process.env.NODE_ENV === 'production') {
+    console.error('FATAL: JWT_SECRET is not set. Set JWT_SECRET in environment variables.');
+    process.exit(1);
+  } else {
+    // Generate a secure temporary secret for development so we don't use a weak hardcoded value
+    try {
+      const crypto = require('crypto');
+      const tmpSecret = crypto.randomBytes(32).toString('hex');
+      process.env.JWT_SECRET = tmpSecret;
+      console.info('Info: JWT_SECRET was not set. A secure temporary secret has been generated for this development run.');
+      console.info('Tip: To persist the secret, set JWT_SECRET in your environment or in a .env file.');
+    } catch (e) {
+      // Fallback to a predictable development secret if crypto is not available
+      process.env.JWT_SECRET = 'dev-secret';
+      console.info('Info: JWT_SECRET not set and crypto unavailable — using fallback dev secret.');
+    }
+  }
+}
+
 const app = express();
 
 // Security middleware
