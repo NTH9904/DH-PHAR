@@ -167,10 +167,10 @@ img {
 .search-bar {
   display: flex;
   align-items: center;
-  /* more constrained so search doesn't push other header items off-screen */
-  flex: 0 1 420px;
-  max-width: 480px;
-  min-width: 180px;
+  /* Giữ nguyên các thuộc tính linh hoạt */
+  flex: 1 1 auto;
+  max-width: 600px;
+  min-width: 250px; /* Tăng min-width một chút để trông đẹp hơn trên màn hình lớn */
   margin: 0 auto;
 }
 
@@ -178,25 +178,31 @@ img {
   display: flex;
   align-items: center;
   width: 100%;
-  gap: var(--spacing-sm);
-  border-radius: var(--radius-md);
-  border: 2px solid var(--border-color);
-  padding: 5px;
+  
+  border-radius: var(--radius-md); 
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-white);
+  transition: var(--transition);
 }
 
 .search-bar form:focus-within {
   border-color: var(--primary-color);
+  box-shadow: var(--shadow-sm); 
 }
 
 .input-search {
-  flex: 1
+  flex: 1;
+  
 }
 
 .search-bar input {
-  padding: 15px 5px;
+  /* Điều chỉnh input để trông đẹp hơn */
+  flex: 1; /* Rất quan trọng, đảm bảo input lấp đầy khoảng trống */
+  padding: 10px 15px; /* Tăng padding để trông lớn hơn và dễ nhập liệu hơn */
   border: none;
+  background: transparent; /* Quan trọng: Đảm bảo nền input trong suốt */
   font-size: var(--font-size-base);
-  transition: var(--transition);
+  color: var(--text-dark);
 }
 
 .search-bar input:focus {
@@ -204,18 +210,26 @@ img {
 }
 
 .search-bar button {
-  right: var(--spacing-sm);
+  /* Điều chỉnh button */
+  position: static; /* Loại bỏ position: absolute/right nếu có */
+  background: var(--primary-color);
   color: white;
   border: none;
-  padding: 10px;
-  border-radius: var(--radius-md);
+  padding: 10px 15px; /* Điều chỉnh padding */
+  border-radius: 0 var(--radius-md) var(--radius-md) 0; /* Bo tròn chỉ cạnh phải */
   cursor: pointer;
   transition: var(--transition);
+  height: 100%; /* Đảm bảo chiều cao phù hợp */
+  margin-left: -1px; /* Để khớp border */
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .search-bar button:hover {
   background: var(--accent-color);
-}
+} 
 
 /* Navigation */
 .nav {
@@ -650,4 +664,7 @@ textarea.form-control {
 .cart-icon {
   position: relative;
 }
+
+
+
 

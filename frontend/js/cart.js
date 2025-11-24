@@ -134,4 +134,3 @@ window.Cart = {
   getCartTotal,
   updateCartUI
 };
-

@@ -8,6 +8,59 @@
     <link rel="stylesheet" href="/css/responsive.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
+<!--chỉnh riêng cho tư vấn-->
+<style>
+body {
+  font-family: var(--font-primary);
+  color: var(--text-dark);
+  line-height: 1.6;
+  background: url('/images/tuvan.jpg') no-repeat center center fixed;
+  background-size: cover;
+  position: relative;
+}
+
+/* Optional: add a soft overlay for readability */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0); /* adjust opacity */
+  backdrop-filter: none;
+  z-index: -1;
+}
+/* Make all common blocks fully transparent */
+ .header-top, .header-main,
+ .footer-content, .footer-section,
+.section, .hero, .features, .why-choose,
+.card, .product-card, .product-card-body,
+.grid, .grid-2, .grid-3, .grid-4 {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Increase text brightness for readability on transparent background */
+body, h1 {
+  color: #ffffff !important;
+  text-shadow: 0 0 4px rgba(0,0,0,0.8);
+}
+
+/* Wrap all text inside small white boxes for readability */
+  h4, h5, h6,
+.nav-link, .header *, .card *, .product-card * {
+  background: rgba(255, 255, 255, 0.85) !important;
+  color: #000 !important;
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: inline-block;
+  text-shadow: none !important;
+}
+</style>
+
 <body>
     <!-- Header -->
     <header class="header">
@@ -52,9 +105,8 @@
 
     <main style="padding: 60px 0;">
         <div class="container">
-            <div class="text-center" style="margin-bottom: 60px;">
-                <h1>Tư vấn dược 24/7</h1>
-                <p style="font-size: 18px; color: var(--text-light);">Đội ngũ dược sĩ chuyên nghiệp sẵn sàng tư vấn cho bạn</p>
+            <div class="text-center" style="margin-bottom: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <h1 style="text-align: center; max-width: 900px;" style="font-weight: 900;">Tư vấn dược 24/7</h1>
             </div>
 
             <div class="grid grid-3" style="gap: 24px; margin-bottom: 60px;">
@@ -128,9 +180,6 @@
                     <h3>Hỗ trợ</h3>
                     <a href="/pages/about.html">Giới thiệu</a>
                     <a href="/pages/contact.html">Liên hệ</a>
-                    <a href="#">Chính sách bảo mật</a>
-                    <a href="#">Điều khoản sử dụng</a>
-                    <a href="#">Câu hỏi thường gặp</a>
                 </div>
             </div>
             <div class="footer-bottom">
@@ -143,4 +192,3 @@
     <script src="/js/main.js"></script>
 </body>
 </html>
-

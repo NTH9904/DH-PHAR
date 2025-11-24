@@ -75,6 +75,16 @@ app.use('/api/orders', require('./backend/routes/orders'));
 app.use('/api/users', require('./backend/routes/users'));
 app.use('/api/prescriptions', require('./backend/routes/prescriptions'));
 
+// Dev-only debug routes
+if (process.env.NODE_ENV !== 'production') {
+  try {
+    app.use('/api/debug', require('./backend/routes/debug'));
+    console.info('Dev debug routes mounted at /api/debug');
+  } catch (e) {
+    console.warn('Could not mount debug routes:', e && e.message);
+  }
+}
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });

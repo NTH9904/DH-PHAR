@@ -90,6 +90,7 @@ exports.register = async (req, res, next) => {
 // @access  Public
 exports.login = async (req, res, next) => {
   try {
+    const mongoose = require('mongoose');
     let { email, password } = req.body;
     email = (email || '').toString().trim().toLowerCase();
 
@@ -98,15 +99,36 @@ exports.login = async (req, res, next) => {
       return res.status(400).json({ message: 'Vui lòng nhập email và mật khẩu' });
     }
 
+    // Log incoming attempt for debugging (avoid logging the password)
+    try { console.log('Login request body keys:', Object.keys(req.body)); } catch (e) {}
+    try { console.log('Login attempt for:', email); } catch (e) {}
+
+    // Check DB connection state to help diagnose connectivity issues
+    try {
+      console.log('Mongoose readyState:', mongoose.connection.readyState);
+      console.log('MONGODB_URI:', process.env.MONGODB_URI || 'default localhost');
+    } catch (e) {}
+
     // Check for user
     const user = await User.findOne({ email }).select('+password');
 
     try {
-      console.log('Login attempt for:', email);
       console.log('User found:', !!user, user ? String(user._id) : 'no-user');
       console.log('Password field present on user doc:', !!(user && user.password));
     } catch (e) {
       console.log('Login debug log failed');
+    }
+
+    // If not found, try a case-insensitive search as a fallback
+    if (!user) {
+      try {
+        const alt = await User.findOne({ email: { $regex: `^${email}$`, $options: 'i' } }).select('+password');
+        if (alt) {
+          console.warn('User found with case-insensitive search (using alt):', String(alt._id));
+        }
+      } catch (e) {
+        console.warn('Case-insensitive user search failed:', e && e.message);
+      }
     }
 
     const passwordMatches = user && user.password ? await user.matchPassword(password) : false;
@@ -118,6 +140,14 @@ exports.login = async (req, res, next) => {
     }
 
     if (!user || !passwordMatches) {
+      // If user not found, surface helpful debug info in server logs
+      try {
+        const totalUsers = await User.countDocuments();
+        console.log('Total users in DB at login attempt:', totalUsers);
+      } catch (e) {
+        console.log('Counting users failed:', e && e.message);
+      }
+
       return res.status(401).json({ message: 'Email hoặc mật khẩu không đúng' });
     }
 
