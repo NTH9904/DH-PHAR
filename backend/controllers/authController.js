@@ -1,86 +1,137 @@
 const User = require('../models/User');
-const { generateToken } = require('../utils/generateToken');
 
 // @desc    Register user
 // @route   POST /api/auth/register
 // @access  Public
 exports.register = async (req, res, next) => {
   try {
-    // Log incoming register attempt (do not log raw password)
-    try { console.log('Register request body keys:', Object.keys(req.body)); } catch (e) {}
-    let { name, email, password, phone } = req.body;
-    email = (email || '').toString().trim().toLowerCase();
-    try { console.log('Register attempt for email:', email); } catch (e) {}
-
-    // Check if user exists
-    const userExists = await User.findOne({ email });
-    if (userExists) {
-      return res.status(400).json({ message: 'Email đã được sử dụng' });
+    console.log('=== REGISTER REQUEST START ===');
+    console.log('Request body:', JSON.stringify(req.body, null, 2));
+    
+    const { name, email, password, phone } = req.body;
+    
+    // Validate required fields
+    if (!name || !email || !password) {
+      console.log('❌ Validation failed: Missing required fields');
+      return res.status(400).json({ 
+        success: false,
+        message: 'Vui lòng nhập đầy đủ: tên, email và mật khẩu' 
+      });
     }
 
-    // Create user
-    const user = await User.create({
-      name,
-      email,
-      password,
-      phone
+    // Validate email format
+    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (!emailRegex.test(email)) {
+      console.log('❌ Validation failed: Invalid email format');
+      return res.status(400).json({ 
+        success: false,
+        message: 'Email không hợp lệ' 
+      });
+    }
+
+    // Validate password length
+    if (password.length < 6) {
+      console.log('❌ Validation failed: Password too short');
+      return res.status(400).json({ 
+        success: false,
+        message: 'Mật khẩu phải có ít nhất 6 ký tự' 
+      });
+    }
+
+    // Normalize email
+    const normalizedEmail = email.toString().trim().toLowerCase();
+    console.log('📧 Normalized email:', normalizedEmail);
+
+    // Check if user already exists
+    console.log('🔍 Checking if user exists...');
+    const existingUser = await User.findOne({ email: normalizedEmail });
+    
+    if (existingUser) {
+      console.log('❌ User already exists:', existingUser._id);
+      return res.status(400).json({ 
+        success: false,
+        message: 'Email đã được sử dụng' 
+      });
+    }
+    console.log('✅ Email available');
+
+    // Create user data
+    const userData = {
+      name: name.trim(),
+      email: normalizedEmail,
+      password: password,
+      phone: phone ? phone.trim() : undefined
+    };
+
+    console.log('💾 Creating user in database...');
+    console.log('User data (without password):', {
+      name: userData.name,
+      email: userData.email,
+      phone: userData.phone
     });
 
-    // Reload the saved user including the password field to verify hashing ran
-    try {
-      const savedUser = await User.findById(user._id).select('+password');
-      console.log(`User registered: ${user._id} - ${user.email}`);
-      console.log('Password stored (hashed) present:', !!(savedUser && savedUser.password));
-      if (savedUser && savedUser.password) {
-        console.log('Hashed password length:', savedUser.password.length);
-      }
-    } catch (e) {
-      console.log('Register verification log failed', e && e.message);
-    }
+    // Create user - Mongoose will hash password via pre-save hook
+    const user = await User.create(userData);
+    
+    console.log('✅ User created successfully!');
+    console.log('User ID:', user._id);
+    console.log('User email:', user.email);
+    console.log('User role:', user.role);
 
-    // Extra check: ensure bcrypt.compare works on the saved hash
-    try {
-      const bcrypt = require('bcryptjs');
-      const savedUser2 = await User.findById(user._id).select('+password');
-      if (savedUser2 && savedUser2.password) {
-        const cmp = await bcrypt.compare(password, savedUser2.password);
-        console.log('Bcrypt compare (register) result:', cmp);
-      } else {
-        console.log('Bcrypt compare (register): no saved hash to compare');
-      }
-    } catch (e) {
-      console.log('Bcrypt compare (register) failed:', e && e.message);
-    }
+    // Verify user was saved
+    const savedUser = await User.findById(user._id).select('+password');
+    console.log('🔐 Password hashed:', savedUser.password ? 'Yes' : 'No');
+    console.log('🔐 Password length:', savedUser.password ? savedUser.password.length : 0);
 
-    // Defensive fallback: if password hash is missing for some reason, hash now and save
-    try {
-      const reloaded = await User.findById(user._id).select('+password');
-      if (!reloaded || !reloaded.password) {
-        const bcrypt = require('bcryptjs');
-        const salt = await bcrypt.genSalt(10);
-        const hashed = await bcrypt.hash(password, salt);
-        user.password = hashed;
-        await user.save();
-        console.log('Fallback: hashed and saved password for user', user._id);
-      }
-    } catch (e) {
-      console.log('Fallback hashing failed:', e && e.message);
-    }
-
-    // Generate token
+    // Generate JWT token
+    console.log('🎫 Generating JWT token...');
     const token = user.generateToken();
+    console.log('✅ Token generated');
 
-    res.status(201).json({
+    // Prepare response
+    const response = {
       success: true,
-      token,
+      token: token,
       user: {
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role
+        role: user.role,
+        phone: user.phone
       }
+    };
+
+    console.log('📤 Sending response:', {
+      success: response.success,
+      hasToken: !!response.token,
+      user: response.user
     });
+    console.log('=== REGISTER REQUEST END ===\n');
+
+    res.status(201).json(response);
+
   } catch (error) {
+    console.error('❌ REGISTER ERROR:', error);
+    console.error('Error name:', error.name);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    
+    // Handle specific MongoDB errors
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email đã được sử dụng'
+      });
+    }
+    
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({
+        success: false,
+        message: messages.join(', ')
+      });
+    }
+
     next(error);
   }
 };
@@ -90,89 +141,87 @@ exports.register = async (req, res, next) => {
 // @access  Public
 exports.login = async (req, res, next) => {
   try {
-    const mongoose = require('mongoose');
-    let { email, password } = req.body;
-    email = (email || '').toString().trim().toLowerCase();
+    console.log('=== LOGIN REQUEST START ===');
+    
+    const { email, password } = req.body;
 
-    // Validate email & password
+    // Validate input
     if (!email || !password) {
-      return res.status(400).json({ message: 'Vui lòng nhập email và mật khẩu' });
+      console.log('❌ Missing email or password');
+      return res.status(400).json({ 
+        success: false,
+        message: 'Vui lòng nhập email và mật khẩu' 
+      });
     }
 
-    // Log incoming attempt for debugging (avoid logging the password)
-    try { console.log('Login request body keys:', Object.keys(req.body)); } catch (e) {}
-    try { console.log('Login attempt for:', email); } catch (e) {}
+    const normalizedEmail = email.toString().trim().toLowerCase();
+    console.log('📧 Login attempt for:', normalizedEmail);
 
-    // Check DB connection state to help diagnose connectivity issues
-    try {
-      console.log('Mongoose readyState:', mongoose.connection.readyState);
-      console.log('MONGODB_URI:', process.env.MONGODB_URI || 'default localhost');
-    } catch (e) {}
+    // Find user with password field
+    console.log('🔍 Finding user...');
+    const user = await User.findOne({ email: normalizedEmail }).select('+password');
 
-    // Check for user
-    const user = await User.findOne({ email }).select('+password');
-
-    try {
-      console.log('User found:', !!user, user ? String(user._id) : 'no-user');
-      console.log('Password field present on user doc:', !!(user && user.password));
-    } catch (e) {
-      console.log('Login debug log failed');
-    }
-
-    // If not found, try a case-insensitive search as a fallback
     if (!user) {
-      try {
-        const alt = await User.findOne({ email: { $regex: `^${email}$`, $options: 'i' } }).select('+password');
-        if (alt) {
-          console.warn('User found with case-insensitive search (using alt):', String(alt._id));
-        }
-      } catch (e) {
-        console.warn('Case-insensitive user search failed:', e && e.message);
-      }
+      console.log('❌ User not found');
+      return res.status(401).json({ 
+        success: false,
+        message: 'Email hoặc mật khẩu không đúng' 
+      });
     }
 
-    const passwordMatches = user && user.password ? await user.matchPassword(password) : false;
+    console.log('✅ User found:', user._id);
+    console.log('🔐 Has password:', !!user.password);
 
-    try {
-      console.log('Password match result:', passwordMatches);
-    } catch (e) {
-      /* ignore */
+    // Check password
+    console.log('🔍 Verifying password...');
+    const isPasswordMatch = await user.matchPassword(password);
+    console.log('🔐 Password match:', isPasswordMatch);
+
+    if (!isPasswordMatch) {
+      console.log('❌ Password incorrect');
+      return res.status(401).json({ 
+        success: false,
+        message: 'Email hoặc mật khẩu không đúng' 
+      });
     }
 
-    if (!user || !passwordMatches) {
-      // If user not found, surface helpful debug info in server logs
-      try {
-        const totalUsers = await User.countDocuments();
-        console.log('Total users in DB at login attempt:', totalUsers);
-      } catch (e) {
-        console.log('Counting users failed:', e && e.message);
-      }
-
-      return res.status(401).json({ message: 'Email hoặc mật khẩu không đúng' });
-    }
-
+    // Check if account is active
     if (!user.isActive) {
-      return res.status(403).json({ message: 'Tài khoản đã bị khóa' });
+      console.log('❌ Account is inactive');
+      return res.status(403).json({ 
+        success: false,
+        message: 'Tài khoản đã bị khóa' 
+      });
     }
 
     // Update last login
     user.lastLogin = new Date();
     await user.save();
+    console.log('✅ Last login updated');
 
     // Generate token
     const token = user.generateToken();
+    console.log('✅ Token generated');
 
-    res.json({
+    const response = {
       success: true,
-      token,
+      token: token,
       user: {
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role
+        role: user.role,
+        phone: user.phone
       }
-    });
+    };
+
+    console.log('📤 Login successful for:', user.email);
+    console.log('=== LOGIN REQUEST END ===\n');
+
+    res.json(response);
+
   } catch (error) {
+    console.error('❌ LOGIN ERROR:', error);
     next(error);
   }
 };
@@ -234,7 +283,10 @@ exports.changePassword = async (req, res, next) => {
 
     // Check current password
     if (!(await user.matchPassword(currentPassword))) {
-      return res.status(401).json({ message: 'Mật khẩu hiện tại không đúng' });
+      return res.status(401).json({ 
+        success: false,
+        message: 'Mật khẩu hiện tại không đúng' 
+      });
     }
 
     user.password = newPassword;
@@ -265,11 +317,9 @@ exports.oauthCallback = async (req, res, next) => {
     });
 
     if (user) {
-      // Update last login
       user.lastLogin = new Date();
       await user.save();
     } else {
-      // Create new user
       user = await User.create({
         name,
         email,
@@ -295,4 +345,3 @@ exports.oauthCallback = async (req, res, next) => {
     next(error);
   }
 };
-

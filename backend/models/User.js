@@ -13,6 +13,7 @@ const UserSchema = new mongoose.Schema({
     required: [true, 'Vui lòng nhập email'],
     unique: true,
     lowercase: true,
+    trim: true,
     match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Email không hợp lệ']
   },
   password: {
@@ -21,10 +22,11 @@ const UserSchema = new mongoose.Schema({
       return !this.oauthId; // Password not required for OAuth users
     },
     minlength: [6, 'Mật khẩu phải có ít nhất 6 ký tự'],
-    select: false
+    select: false // Don't return password by default
   },
   phone: {
     type: String,
+    trim: true,
     match: [/^[0-9]{10,11}$/, 'Số điện thoại không hợp lệ']
   },
   role: {
@@ -111,48 +113,90 @@ const UserSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Encrypt password before save
+// Hash password before saving
 UserSchema.pre('save', async function(next) {
+  // Only hash if password is modified
   if (!this.isModified('password')) {
+    console.log('⏭️  Password not modified, skipping hash');
     return next();
   }
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  return next();
+
+  try {
+    console.log('🔐 Hashing password...');
+    
+    // Generate salt
+    const salt = await bcrypt.genSalt(10);
+    console.log('✅ Salt generated');
+    
+    // Hash password
+    this.password = await bcrypt.hash(this.password, salt);
+    console.log('✅ Password hashed successfully');
+    console.log('🔐 Hashed password length:', this.password.length);
+    
+    next();
+  } catch (error) {
+    console.error('❌ Error hashing password:', error);
+    next(error);
+  }
 });
 
-// Match password
+// Method to compare password
 UserSchema.methods.matchPassword = async function(enteredPassword) {
   try {
-    const res = await bcrypt.compare(enteredPassword, this.password);
-    try { console.log('matchPassword result:', res); } catch (e) { /* ignore logging errors */ }
-    return res;
-  } catch (err) {
-    try { console.log('matchPassword error:', err && err.message); } catch (e) {}
+    console.log('🔍 Comparing passwords...');
+    console.log('🔐 Stored password exists:', !!this.password);
+    console.log('🔐 Stored password length:', this.password ? this.password.length : 0);
+    console.log('🔐 Entered password length:', enteredPassword ? enteredPassword.length : 0);
+    
+    if (!this.password) {
+      console.log('❌ No stored password to compare');
+      return false;
+    }
+    
+    const isMatch = await bcrypt.compare(enteredPassword, this.password);
+    console.log('🔐 Password match result:', isMatch);
+    
+    return isMatch;
+  } catch (error) {
+    console.error('❌ Error comparing passwords:', error);
     return false;
   }
 };
 
-// Generate JWT token
+// Method to generate JWT token
 UserSchema.methods.generateToken = function() {
-  let secret = process.env.JWT_SECRET;
-  if (!secret) {
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error('JWT secret is not configured. Set JWT_SECRET in environment variables.');
+  try {
+    console.log('🎫 Generating JWT token for user:', this._id);
+    
+    // Get JWT secret
+    let secret = process.env.JWT_SECRET;
+    
+    if (!secret) {
+      console.warn('⚠️  JWT_SECRET not found in environment');
+      
+      if (process.env.NODE_ENV === 'production') {
+        throw new Error('JWT_SECRET must be set in production');
+      }
+      
+      // Use fallback for development
+      secret = 'dev-secret-key-change-in-production';
+      console.warn('⚠️  Using fallback JWT secret for development');
     }
-    try {
-      const crypto = require('crypto');
-      secret = crypto.randomBytes(32).toString('hex');
-      process.env.JWT_SECRET = secret;
-      console.info('Info: Generated temporary JWT secret for development (User.generateToken).');
-    } catch (e) {
-      secret = 'dev-secret';
-    }
+    
+    // Generate token
+    const token = jwt.sign(
+      { id: this._id },
+      secret,
+      { expiresIn: process.env.JWT_EXPIRE || '7d' }
+    );
+    
+    console.log('✅ JWT token generated');
+    
+    return token;
+  } catch (error) {
+    console.error('❌ Error generating token:', error);
+    throw error;
   }
-
-  return jwt.sign({ id: this._id }, secret, {
-    expiresIn: process.env.JWT_EXPIRE || '7d'
-  });
 };
 
 // Ensure only one default address
@@ -169,5 +213,9 @@ UserSchema.pre('save', function(next) {
   next();
 });
 
-module.exports = mongoose.model('User', UserSchema);
+// Create indexes
+UserSchema.index({ email: 1 });
+UserSchema.index({ role: 1 });
+UserSchema.index({ isActive: 1 });
 
+module.exports = mongoose.model('User', UserSchema);

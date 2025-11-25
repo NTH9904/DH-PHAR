@@ -198,6 +198,8 @@ window.API = {
 // Dựa trên các ví dụ về hiệu ứng đánh máy cho placeholder
 document.addEventListener('DOMContentLoaded', function() {
     const inputElement = document.getElementById('search-input');
+    // If this page doesn't have the search input, skip the typing placeholder effect
+    if (!inputElement) return;
     // Danh sách các từ khóa gợi ý sẽ được 'đánh máy'
     const words = [
         "Tìm kiếm thuốc ho,cảm cúm.....",

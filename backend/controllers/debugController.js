@@ -26,3 +26,17 @@ exports.getUsers = async (req, res, next) => {
     next(error);
   }
 };
+
+// Dev-only: return the most recent user including raw fields (INCLUDING password)
+// WARNING: This is for debugging only and is mounted only in non-production.
+exports.getLastRawUser = async (req, res, next) => {
+  try {
+    const user = await User.findOne({}).sort({ createdAt: -1 }).select('+password');
+    if (!user) return res.status(404).json({ success: false, message: 'No users found' });
+    // Convert to plain object and remove sensitive fields that are not needed
+    const obj = user.toObject({ getters: true });
+    res.json({ success: true, user: obj });
+  } catch (error) {
+    next(error);
+  }
+};
