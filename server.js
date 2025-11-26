@@ -30,8 +30,10 @@ if (!process.env.JWT_SECRET) {
 
 const app = express();
 
-// Security middleware
-app.use(helmet());
+// Security middleware - Disable CSP for development
+app.use(helmet({
+  contentSecurityPolicy: false
+}));
 app.use(cors({
   origin: [
     'http://localhost:3000',
@@ -63,6 +65,7 @@ if (process.env.NODE_ENV === 'development') {
 // Static files
 app.use(express.static('frontend'));
 app.use('/admin', express.static('admin'));
+app.use('/uploads', express.static('uploads'));
 
 // Database connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/dh-pharmacy', {
@@ -78,6 +81,7 @@ app.use('/api/products', require('./backend/routes/products'));
 app.use('/api/orders', require('./backend/routes/orders'));
 app.use('/api/users', require('./backend/routes/users'));
 app.use('/api/prescriptions', require('./backend/routes/prescriptions'));
+app.use('/api/upload', require('./backend/routes/upload'));
 
 // Dev-only debug routes
 if (process.env.NODE_ENV !== 'production') {

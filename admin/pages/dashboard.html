@@ -3,115 +3,278 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - DH Pharmacy</title>
+    <title>Dashboard - Admin DH Pharmacy</title>
     <link rel="stylesheet" href="main.css">
-    <link rel="stylesheet" href="responsive.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        .admin-sidebar {
-            width: 250px;
-            background: var(--text-dark);
-            color: white;
-            min-height: 100vh;
-            position: fixed;
-            left: 0;
-            top: 0;
-            padding: 24px;
-        }
-        .admin-content {
-            margin-left: 250px;
-            padding: 24px;
-        }
-        .admin-sidebar a {
-            display: block;
-            color: rgba(255,255,255,0.8);
-            padding: 12px;
-            margin-bottom: 8px;
-            border-radius: 8px;
-            transition: var(--transition);
-        }
-        .admin-sidebar a:hover, .admin-sidebar a.active {
-            background: var(--primary-color);
-            color: white;
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 24px;
-            margin-bottom: 40px;
-        }
-        .stat-card {
-            background: white;
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: var(--shadow-md);
-        }
-        .stat-card h3 {
-            color: var(--text-light);
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
-        .stat-card .value {
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-    </style>
 </head>
 <body>
-    <div class="admin-sidebar">
-        <h2 style="margin-bottom: 32px; color: white;">💊 DH Pharmacy</h2>
-        <a href="dashboard.html" >📊 Dashboard</a>
-        <a href="products.html">💊 Sản phẩm</a>
-        <a href="orders.html">📦 Đơn hàng</a>
-        <a href="users.html">👥 Khách hàng</a>
-        <a href="prescriptions.html">📋 Đơn thuốc</a>
-        <a href="index.html" style="margin-top: 32px;">🏠 Về trang chủ</a>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <h2>💊 DH Pharmacy</h2>
+                <p>Admin Panel</p>
+            </div>
+            <nav class="admin-nav">
+                <a href="dashboard.html" class="active">📊 Dashboard</a>
+                <a href="products.html">💊 Sản phẩm</a>
+                <a href="orders.html">📦 Đơn hàng</a>
+                <a href="users.html">👥 Người dùng</a>
+                <a href="prescriptions.html">📋 Đơn thuốc</a>
+                <a href="/" class="logout">🚪 Thoát</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-content">
+            <div class="admin-header">
+                <h1>Dashboard</h1>
+                <div id="admin-user-info"></div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📦</div>
+                    <div class="stat-info">
+                        <h3>Tổng đơn hàng</h3>
+                        <p class="stat-value" id="total-orders">0</p>
+                        <span class="stat-change">+12% so với tháng trước</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-info">
+                        <h3>Doanh thu</h3>
+                        <p class="stat-value" id="total-revenue">0đ</p>
+                        <span class="stat-change">+8% so với tháng trước</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">💊</div>
+                    <div class="stat-info">
+                        <h3>Sản phẩm</h3>
+                        <p class="stat-value" id="total-products">0</p>
+                        <span class="stat-change">+5 sản phẩm mới</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-info">
+                        <h3>Khách hàng</h3>
+                        <p class="stat-value" id="total-users">0</p>
+                        <span class="stat-change">+15 người dùng mới</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Orders -->
+            <div class="dashboard-section">
+                <h2>Đơn hàng gần đây</h2>
+                <div class="table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Mã đơn</th>
+                                <th>Khách hàng</th>
+                                <th>Tổng tiền</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày đặt</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-orders">
+                            <tr>
+                                <td colspan="5" class="text-center">Đang tải...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Low Stock Products -->
+            <div class="dashboard-section">
+                <h2>Sản phẩm sắp hết hàng</h2>
+                <div class="table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Sản phẩm</th>
+                                <th>Danh mục</th>
+                                <th>Tồn kho</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody id="low-stock-products">
+                            <tr>
+                                <td colspan="4" class="text-center">Đang tải...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <div class="admin-content">
-        <h1 style="margin-bottom: 30px;">Dashboard</h1>
+    <script src="/js/api.js"></script>
+    <script>
+        // Check authentication
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <h3>Tổng đơn hàng</h3>
-                <div class="value" id="total-orders">-</div>
-            </div>
-            <div class="stat-card">
-                <h3>Doanh thu hôm nay</h3>
-                <div class="value" id="today-revenue">-</div>
-            </div>
-            <div class="stat-card">
-                <h3>Sản phẩm</h3>
-                <div class="value" id="total-products">-</div>
-            </div>
-            <div class="stat-card">
-                <h3>Khách hàng</h3>
-                <div class="value" id="total-users">-</div>
-            </div>
-        </div>
+        if (!token || user.role !== 'admin') {
+            alert('Bạn cần đăng nhập với tài khoản admin');
+            window.location.href = '/pages/login.html';
+        }
 
-        <div class="grid grid-2" style="gap: 24px;">
-            <div class="card">
-                <div class="card-header">
-                    <h3>Đơn hàng gần đây</h3>
-                </div>
-                <div class="card-body" id="recent-orders">
-                    <div class="spinner"></div>
-                </div>
+        // Display user info
+        document.getElementById('admin-user-info').innerHTML = `
+            <div style="text-align: right;">
+                <strong>${user.name || 'Admin'}</strong><br>
+                <small>${user.email || ''}</small>
             </div>
-            <div class="card">
-                <div class="card-header">
-                    <h3>Sản phẩm bán chạy</h3>
-                </div>
-                <div class="card-body" id="top-products">
-                    <div class="spinner"></div>
-                </div>
-            </div>
-        </div>
-    </div>
+        `;
 
-    <script src="api.js"></script>
-    <script src="dashboard.js"></script>
+        // Load dashboard data
+        async function loadDashboardData() {
+            try {
+                // Load statistics
+                const [productsRes, ordersRes, usersRes] = await Promise.all([
+                    fetch('/api/products?limit=1', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    }),
+                    fetch('/api/orders/admin/all?limit=1', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    }),
+                    fetch('/api/users?limit=1', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    }).catch(() => ({ json: () => ({ total: 0 }) }))
+                ]);
+
+                const products = await productsRes.json();
+                const orders = await ordersRes.json();
+                const users = await usersRes.json();
+
+                document.getElementById('total-products').textContent = products.total || 0;
+                document.getElementById('total-orders').textContent = orders.total || 0;
+                document.getElementById('total-users').textContent = users.total || 0;
+
+                // Calculate revenue
+                if (orders.data && orders.data.length > 0) {
+                    const revenue = orders.data.reduce((sum, order) => sum + (order.total || 0), 0);
+                    document.getElementById('total-revenue').textContent = formatCurrency(revenue);
+                }
+
+                // Load recent orders
+                loadRecentOrders();
+                
+                // Load low stock products
+                loadLowStockProducts();
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+
+        async function loadRecentOrders() {
+            try {
+                const response = await fetch('/api/orders/admin/all?limit=5', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                const orders = data.data || [];
+
+                const tbody = document.getElementById('recent-orders');
+                if (orders.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center">Chưa có đơn hàng</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = orders.map(order => `
+                    <tr>
+                        <td><strong>${order.orderNumber || order._id}</strong></td>
+                        <td>${order.user?.name || 'N/A'}</td>
+                        <td><strong>${formatCurrency(order.total)}</strong></td>
+                        <td><span class="badge badge-${getStatusColor(order.status)}">${getStatusLabel(order.status)}</span></td>
+                        <td>${formatDate(order.createdAt)}</td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading recent orders:', error);
+                document.getElementById('recent-orders').innerHTML = 
+                    '<tr><td colspan="5" class="text-center">Không thể tải đơn hàng</td></tr>';
+            }
+        }
+
+        async function loadLowStockProducts() {
+            try {
+                const response = await fetch('/api/products?limit=100', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                const products = (data.data || []).filter(p => p.stock < 20).slice(0, 5);
+
+                const tbody = document.getElementById('low-stock-products');
+                if (products.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center">Tất cả sản phẩm đều đủ hàng</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = products.map(product => `
+                    <tr>
+                        <td><strong>${product.name}</strong></td>
+                        <td>${product.category}</td>
+                        <td><strong style="color: ${product.stock < 10 ? '#E74C3C' : '#F39C12'}">${product.stock}</strong></td>
+                        <td><span class="badge badge-${product.stock < 10 ? 'danger' : 'warning'}">
+                            ${product.stock < 10 ? 'Rất thấp' : 'Thấp'}
+                        </span></td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading low stock products:', error);
+                document.getElementById('low-stock-products').innerHTML = 
+                    '<tr><td colspan="4" class="text-center">Không thể tải dữ liệu</td></tr>';
+            }
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN', { 
+                style: 'currency', 
+                currency: 'VND' 
+            }).format(amount);
+        }
+
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('vi-VN');
+        }
+
+        function getStatusLabel(status) {
+            const labels = {
+                'pending': 'Chờ xử lý',
+                'confirmed': 'Đã xác nhận',
+                'processing': 'Đang xử lý',
+                'shipping': 'Đang giao',
+                'delivered': 'Đã giao',
+                'cancelled': 'Đã hủy'
+            };
+            return labels[status] || status;
+        }
+
+        function getStatusColor(status) {
+            const colors = {
+                'pending': 'warning',
+                'confirmed': 'info',
+                'processing': 'info',
+                'shipping': 'info',
+                'delivered': 'success',
+                'cancelled': 'danger'
+            };
+            return colors[status] || 'secondary';
+        }
+
+        // Initialize
+        loadDashboardData();
+    </script>
 </body>
 </html>

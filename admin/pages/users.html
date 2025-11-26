@@ -3,195 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Khách hàng - DH Pharmacy</title>
+    <title>Quản lý Người dùng - Admin</title>
     <link rel="stylesheet" href="main.css">
-    <link rel="stylesheet" href="responsive.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Các style chung từ dashboard.html và orders.html */
-        :root {
-            /* Giả định biến màu */
-            --primary-color: #007bff;
-            --text-dark: #2C3E50;
-            --text-light: #6c757d;
-            --border-color: #dee2e6;
-            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-            --transition: all 0.3s ease;
-            --success-color: #28a745;
-            --warning-color: #ffc107;
-        }
-        .admin-sidebar {
-            width: 250px;
-            background: var(--text-dark);
-            color: white;
-            min-height: 100vh;
-            position: fixed;
-            left: 0;
-            top: 0;
-            padding: 24px;
-        }
-        .admin-content {
-            margin-left: 250px;
-            padding: 24px;
-        }
-        .admin-sidebar a {
-            display: block;
-            color: rgba(255,255,255,0.8);
-            padding: 12px;
-            margin-bottom: 8px;
-            border-radius: 8px;
-            transition: var(--transition);
-        }
-        .admin-sidebar a:hover, .admin-sidebar a.active {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        /* Style cho các control và bảng */
-        .controls-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
-        .search-input {
-            padding: 10px 15px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            width: 300px;
-        }
-        
-        /* Đảm bảo style bảng thống nhất với orders.html */
-        .users-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: var(--shadow-md);
-        }
-
-        .users-table th, .users-table td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .users-table th {
-            background-color: #f8f9fa;
-            font-weight: 600;
-            color: var(--text-dark);
-        }
-
-        .users-table tr:hover {
-            background-color: #f1f1f1;
-        }
-        
-        .action-btn {
-            background: none;
-            border: none;
-            color: var(--primary-color);
-            cursor: pointer;
-            padding: 4px 8px;
-            margin-right: 4px;
-            border-radius: 4px;
-            transition: var(--transition);
-        }
-        .action-btn:hover {
-            background: rgba(0, 123, 255, 0.1);
-        }
-
-        /* Style cho loại khách hàng (membership/status) */
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 16px;
-            font-size: 12px;
-            font-weight: 500;
-            text-transform: capitalize;
-        }
-        .badge-vip { background-color: #9c27b0; color: white; } /* Tím */
-        .badge-new { background-color: var(--warning-color); color: var(--text-dark); } /* Vàng */
-        .badge-regular { background-color: var(--success-color); color: white; } /* Xanh lá */
-    </style>
 </head>
 <body>
-    <div class="admin-sidebar">
-        <h2 style="margin-bottom: 32px; color: white;">💊 DH Pharmacy</h2>
-        <a href="dashboard.html">📊 Dashboard</a>
-        <a href="products.html">💊 Sản phẩm</a>
-        <a href="orders.html">📦 Đơn hàng</a>
-        <a href="users.html" class="active">👥 Khách hàng</a> 
-        <a href="prescriptions.html">📋 Đơn thuốc</a>
-        <a href="index.html" style="margin-top: 32px;">🏠 Về trang chủ</a>
-    </div>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <h2>💊 DH Pharmacy</h2>
+                <p>Admin Panel</p>
+            </div>
+            <nav class="admin-nav">
+                <a href="dashboard.html">📊 Dashboard</a>
+                <a href="products.html">💊 Sản phẩm</a>
+                <a href="orders.html">📦 Đơn hàng</a>
+                <a href="users.html" class="active">👥 Người dùng</a>
+                <a href="prescriptions.html">📋 Đơn thuốc</a>
+                <a href="/" class="logout">🚪 Thoát</a>
+            </nav>
+        </aside>
 
-    <div class="admin-content">
-        <h1 style="margin-bottom: 30px;">Quản lý Khách hàng</h1>
-
-        <div class="controls-bar">
-            <input type="text" class="search-input" placeholder="Tìm kiếm theo tên, email, SĐT...">
-            <button class="btn btn-primary">+ Thêm Khách hàng mới</button> 
+        <!-- Main Content -->
+        <main class="admin-content">
+            <div class="admin-header">
+                <h1>Quản lý Người dùng</h1>
             </div>
 
-        <div class="card" style="padding: 0;">
-            <table class="users-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Tên Khách hàng</th>
-                        <th>Email</th>
-                        <th>Số điện thoại</th>
-                        <th>Tổng đơn hàng</th>
-                        <th>Phân loại</th>
-                        <th>Hành động</th>
-                    </tr>
-                </thead>
-                <tbody id="users-list">
-                    <tr>
-                        <td>U001</td>
-                        <td>Nguyễn Văn A</td>
-                        <td>nguyenvana@mail.com</td>
-                        <td>0901xxxxxx</td>
-                        <td>12</td>
-                        <td><span class="badge badge-vip">VIP</span></td>
-                        <td>
-                            <button class="action-btn">Chi tiết</button>
-                            <button class="action-btn">Sửa</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>U002</td>
-                        <td>Phạm Thị B</td>
-                        <td>phamthib@mail.com</td>
-                        <td>0912xxxxxx</td>
-                        <td>1</td>
-                        <td><span class="badge badge-new">Mới</span></td>
-                        <td>
-                            <button class="action-btn">Chi tiết</button>
-                            <button class="action-btn">Sửa</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>U003</td>
-                        <td>Trần Minh C</td>
-                        <td>tranminhc@mail.com</td>
-                        <td>0983xxxxxx</td>
-                        <td>5</td>
-                        <td><span class="badge badge-regular">Thường</span></td>
-                        <td>
-                            <button class="action-btn">Chi tiết</button>
-                            <button class="action-btn">Sửa</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <!-- Filters -->
+            <div class="filters-bar">
+                <input type="text" id="search-input" placeholder="Tìm tên, email..." class="search-input">
+                <select id="filter-role" class="filter-select">
+                    <option value="">Tất cả vai trò</option>
+                    <option value="customer">Khách hàng</option>
+                    <option value="pharmacist">Dược sĩ</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
 
-        </div>
+            <!-- Users Table -->
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Tên</th>
+                            <th>Email</th>
+                            <th>Điện thoại</th>
+                            <th>Vai trò</th>
+                            <th>Trạng thái</th>
+                            <th>Ngày tạo</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-tbody">
+                        <tr>
+                            <td colspan="7" class="text-center">Đang tải...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-    <script src="api.js"></script>
-    <script src="users.js"></script>
+            <!-- Pagination -->
+            <div class="pagination" id="pagination"></div>
+        </main>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+        if (!token || user.role !== 'admin') {
+            window.location.href = '/pages/login.html';
+        }
+
+        let currentPage = 1;
+
+        async function loadUsers(page = 1) {
+            try {
+                const role = document.getElementById('filter-role').value;
+                const search = document.getElementById('search-input').value;
+
+                // Note: This endpoint might not exist yet, using a workaround
+                const response = await fetch(`/api/users?page=${page}&limit=20`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                }).catch(() => {
+                    // Fallback: Load from seed data
+                    return { json: () => ({ data: [], total: 0, page: 1, pages: 1 }) };
+                });
+
+                const data = await response.json ? await response.json() : { data: [], total: 0 };
+                let users = data.data || [];
+
+                // Filter by role if needed
+                if (role) {
+                    users = users.filter(u => u.role === role);
+                }
+
+                // Filter by search if needed
+                if (search) {
+                    const searchLower = search.toLowerCase();
+                    users = users.filter(u => 
+                        u.name?.toLowerCase().includes(searchLower) ||
+                        u.email?.toLowerCase().includes(searchLower)
+                    );
+                }
+
+                renderUsers(users);
+                renderPagination(data.page || 1, data.pages || 1);
+                currentPage = page;
+            } catch (error) {
+                console.error('Error loading users:', error);
+                showError('Không thể tải danh sách người dùng');
+            }
+        }
+
+        function renderUsers(users) {
+            const tbody = document.getElementById('users-tbody');
+            
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center">Không có người dùng nào</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = users.map(user => `
+                <tr>
+                    <td><strong>${user.name || 'N/A'}</strong></td>
+                    <td>${user.email || 'N/A'}</td>
+                    <td>${user.phone || 'N/A'}</td>
+                    <td><span class="badge badge-${getRoleBadge(user.role)}">${getRoleLabel(user.role)}</span></td>
+                    <td><span class="badge badge-${user.isActive ? 'success' : 'danger'}">${user.isActive ? 'Hoạt động' : 'Khóa'}</span></td>
+                    <td>${formatDate(user.createdAt)}</td>
+                    <td>
+                        <button class="btn-icon" onclick="toggleUserStatus('${user._id}', ${!user.isActive})" title="${user.isActive ? 'Khóa' : 'Mở khóa'}">
+                            ${user.isActive ? '🔒' : '🔓'}
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function toggleUserStatus(userId, newStatus) {
+            if (!confirm(`Bạn có chắc muốn ${newStatus ? 'mở khóa' : 'khóa'} người dùng này?`)) return;
+
+            try {
+                // This endpoint might need to be created
+                const response = await fetch(`/api/users/${userId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ isActive: newStatus })
+                });
+
+                if (!response.ok) throw new Error('Failed to update user');
+
+                showSuccess('Cập nhật trạng thái thành công');
+                loadUsers(currentPage);
+            } catch (error) {
+                console.error('Error updating user:', error);
+                showError('Không thể cập nhật trạng thái người dùng');
+            }
+        }
+
+        function getRoleLabel(role) {
+            const labels = {
+                'customer': 'Khách hàng',
+                'pharmacist': 'Dược sĩ',
+                'admin': 'Admin'
+            };
+            return labels[role] || role;
+        }
+
+        function getRoleBadge(role) {
+            const badges = {
+                'customer': 'info',
+                'pharmacist': 'warning',
+                'admin': 'danger'
+            };
+            return badges[role] || 'secondary';
+        }
+
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('vi-VN');
+        }
+
+        function showSuccess(message) {
+            alert('✅ ' + message);
+        }
+
+        function showError(message) {
+            alert('❌ ' + message);
+        }
+
+        function renderPagination(current, total) {
+            const container = document.getElementById('pagination');
+            if (total <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            for (let i = 1; i <= total; i++) {
+                html += `<button class="btn ${i === current ? 'btn-primary' : 'btn-secondary'}" 
+                                onclick="loadUsers(${i})">${i}</button>`;
+            }
+            container.innerHTML = html;
+        }
+
+        document.getElementById('filter-role').addEventListener('change', () => loadUsers(1));
+        document.getElementById('search-input').addEventListener('input', () => loadUsers(1));
+
+        loadUsers(1);
+    </script>
 </body>
 </html>

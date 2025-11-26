@@ -115,7 +115,22 @@ const productsAPI = {
 
   getCategories: () => apiRequest('/products/categories'),
 
-  search: (query) => apiRequest(`/products?search=${encodeURIComponent(query)}`)
+  search: (query) => apiRequest(`/products?search=${encodeURIComponent(query)}`),
+
+  // Admin functions
+  create: (productData) => apiRequest('/products', {
+    method: 'POST',
+    body: JSON.stringify(productData)
+  }),
+
+  update: (id, productData) => apiRequest(`/products/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(productData)
+  }),
+
+  delete: (id) => apiRequest(`/products/${id}`, {
+    method: 'DELETE'
+  })
 };
 
 // Orders API
@@ -138,6 +153,16 @@ const ordersAPI = {
   cancel: (id, reason) => apiRequest(`/orders/${id}/cancel`, {
     method: 'PUT',
     body: JSON.stringify({ reason })
+  }),
+
+  // Admin functions
+  updateStatus: (id, status) => apiRequest(`/orders/${id}/status`, {
+    method: 'PUT',
+    body: JSON.stringify({ status })
+  }),
+
+  delete: (id) => apiRequest(`/orders/${id}`, {
+    method: 'DELETE'
   })
 };
 
@@ -162,6 +187,23 @@ const usersAPI = {
   updateHealthProfile: (profile) => apiRequest('/users/health-profile', {
     method: 'PUT',
     body: JSON.stringify(profile)
+  }),
+
+  // Admin functions
+  getAll: (params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+    return apiRequest(`/users/admin/all?${queryString}`);
+  },
+
+  getById: (id) => apiRequest(`/users/admin/${id}`),
+
+  update: (id, userData) => apiRequest(`/users/admin/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(userData)
+  }),
+
+  delete: (id) => apiRequest(`/users/admin/${id}`, {
+    method: 'DELETE'
   })
 };
 
@@ -181,6 +223,50 @@ const prescriptionsAPI = {
   getAll: () => apiRequest('/prescriptions')
 };
 
+// Upload API
+const uploadAPI = {
+  uploadProductImage: (file) => {
+    const token = getToken();
+    const formData = new FormData();
+    formData.append('image', file);
+    
+    return fetch(`${API_BASE_URL}/upload/product`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      body: formData
+    }).then(res => res.json());
+  },
+
+  uploadProductImages: (files) => {
+    const token = getToken();
+    const formData = new FormData();
+    
+    for (let i = 0; i < files.length; i++) {
+      formData.append('images', files[i]);
+    }
+    
+    return fetch(`${API_BASE_URL}/upload/products`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      body: formData
+    }).then(res => res.json());
+  },
+
+  deleteProductImage: (filename) => {
+    const token = getToken();
+    return fetch(`${API_BASE_URL}/upload/product/${filename}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    }).then(res => res.json());
+  }
+};
+
 // Export
 window.API = {
   auth: authAPI,
@@ -188,6 +274,7 @@ window.API = {
   orders: ordersAPI,
   users: usersAPI,
   prescriptions: prescriptionsAPI,
+  upload: uploadAPI,
   getToken,
   setToken,
   removeToken,

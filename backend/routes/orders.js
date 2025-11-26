@@ -18,5 +18,28 @@ router.put('/:id/status', protect, admin, updateOrderStatus);
 router.put('/:id/cancel', protect, cancelOrder);
 router.put('/:id/pay', protect, require('../controllers/orderController').payOrder);
 
+// @desc    Delete order (Admin)
+// @route   DELETE /api/orders/:id
+// @access  Private/Admin
+router.delete('/:id', protect, admin, async (req, res, next) => {
+  try {
+    const Order = require('../models/Order');
+    const order = await Order.findById(req.params.id);
+    
+    if (!order) {
+      return res.status(404).json({ message: 'Không tìm thấy đơn hàng' });
+    }
+
+    await order.deleteOne();
+
+    res.json({
+      success: true,
+      message: 'Xóa đơn hàng thành công'
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;
 

@@ -2,66 +2,212 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý sản phẩm</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Sản phẩm - Admin</title>
     <link rel="stylesheet" href="main.css">
     <link rel="stylesheet" href="products.css">
-    <link rel="stylesheet" href="responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="admin-sidebar">
-        <h2 style="margin-bottom: 32px; color: white;">💊 DH Pharmacy</h2>
-        <a href="dashboard.html">📊 Dashboard</a>
-        <a href="products.html">💊 Sản phẩm</a>
-        <a href="orders.html">📦 Đơn hàng</a>
-        <a href="users.html">👥 Khách hàng</a>
-        <a href="prescriptions.html">📋 Đơn thuốc</a>
-        <a href="index.html" style="margin-top: 32px;">🏠 Về trang chủ</a>
-    </div>
-    <div class="product-admin">
-        <h1 class="product-title">Sản phẩm</h1>
-        <div class="product-card">
-            <div class="product-card-header">
-                <h3>Danh sách sản phẩm</h3>
-                <button class="btn btn-primary">+ Thêm sản phẩm</button>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <h2>💊 DH Pharmacy</h2>
+                <p>Admin Panel</p>
             </div>
-            <div class="product-card-body">
-                <input class="form-control product-search" placeholder="Tìm kiếm sản phẩm...">
-                <table class="product-table">
+            <nav class="admin-nav">
+                <a href="dashboard.html">📊 Dashboard</a>
+                <a href="products.html" class="active">💊 Sản phẩm</a>
+                <a href="orders.html">📦 Đơn hàng</a>
+                <a href="users.html">👥 Người dùng</a>
+                <a href="prescriptions.html">📋 Đơn thuốc</a>
+                <a href="/" class="logout">🚪 Thoát</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-content">
+            <div class="admin-header">
+                <h1>Quản lý Sản phẩm</h1>
+                <button class="btn btn-primary" id="btn-add-product">
+                    ➕ Thêm sản phẩm mới
+                </button>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters-bar">
+                <input type="text" id="search-input" placeholder="Tìm kiếm sản phẩm..." class="search-input">
+                <select id="filter-category" class="filter-select">
+                    <option value="">Tất cả danh mục</option>
+                </select>
+                <select id="filter-type" class="filter-select">
+                    <option value="">Tất cả loại</option>
+                    <option value="otc">OTC</option>
+                    <option value="prescription">Kê đơn</option>
+                    <option value="supplement">TPCN</option>
+                </select>
+            </div>
+
+            <!-- Products Table -->
+            <div class="table-container">
+                <table class="admin-table" id="products-table">
                     <thead>
                         <tr>
-                            <th>Ảnh</th>
+                            <th>Hình ảnh</th>
                             <th>Tên sản phẩm</th>
+                            <th>Danh mục</th>
                             <th>Giá</th>
-                            <th>Kho</th>
+                            <th>Tồn kho</th>
+                            <th>Loại</th>
+                            <th>Trạng thái</th>
                             <th>Thao tác</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="products-tbody">
                         <tr>
-                            <td><img src="https://via.placeholder.com/60" alt="Sản phẩm" class="product-img"></td>
-                            <td>Paracetamol 500mg</td>
-                            <td>25.000đ</td>
-                            <td>120</td>
-                            <td>
-                                <button class="btn btn-sm btn-outline">Sửa</button>
-                                <button class="btn btn-sm btn-danger">Xóa</button>
+                            <td colspan="8" class="text-center">
+                                <div class="spinner"></div>
+                                <p>Đang tải dữ liệu...</p>
                             </td>
                         </tr>
-                        <tr>
-                            <td><img src="https://via.placeholder.com/60" alt="Sản phẩm" class="product-img"></td>
-                            <td>Vitamin C 1000mg</td>
-                            <td>40.000đ</td>
-                            <td>80</td>
-                            <td>
-                                <button class="btn btn-sm btn-outline">Sửa</button>
-                                <button class="btn btn-sm btn-danger">Xóa</button>
-                            </td>
-                        </tr>
-                        <!-- Thêm sản phẩm khác tại đây -->
                     </tbody>
                 </table>
             </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination"></div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Product Modal -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Thêm sản phẩm mới</h2>
+                <button class="modal-close" id="btn-close-modal">&times;</button>
+            </div>
+            <form id="product-form" class="modal-body">
+                <input type="hidden" id="product-id">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tên sản phẩm *</label>
+                        <input type="text" id="product-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tên tiếng Anh</label>
+                        <input type="text" id="product-name-en">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Hoạt chất *</label>
+                        <input type="text" id="product-generic" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Thương hiệu</label>
+                        <input type="text" id="product-brand">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nhà sản xuất</label>
+                        <input type="text" id="product-manufacturer">
+                    </div>
+                    <div class="form-group">
+                        <label>Loại *</label>
+                        <select id="product-type" required>
+                            <option value="otc">OTC (Không kê đơn)</option>
+                            <option value="prescription">Kê đơn</option>
+                            <option value="supplement">Thực phẩm chức năng</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Danh mục *</label>
+                        <input type="text" id="product-category" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Danh mục phụ</label>
+                        <input type="text" id="product-subcategory">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Mô tả</label>
+                    <textarea id="product-description" rows="3"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Giá (VNĐ) *</label>
+                        <input type="number" id="product-price" required min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Giá gốc (VNĐ)</label>
+                        <input type="number" id="product-original-price" min="0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tồn kho *</label>
+                        <input type="number" id="product-stock" required min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Đơn vị</label>
+                        <input type="text" id="product-unit" placeholder="viên, chai, hộp...">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Liều dùng</label>
+                    <textarea id="product-dosage" rows="2"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Cách dùng</label>
+                    <textarea id="product-usage" rows="2"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Hình ảnh sản phẩm</label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="file" id="product-image-file" accept="image/*" style="flex: 1;">
+                        <button type="button" class="btn btn-secondary" id="btn-upload-image">📤 Upload</button>
+                    </div>
+                    <small style="color: #666; display: block; margin-top: 5px;">
+                        Hoặc nhập URL trực tiếp:
+                    </small>
+                    <input type="url" id="product-image-url" placeholder="https://..." style="margin-top: 5px;">
+                    <div id="image-preview" style="margin-top: 10px; display: none;">
+                        <img id="preview-img" src="" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 2px solid #e2e8f0;">
+                        <button type="button" class="btn btn-secondary" id="btn-remove-image" style="display: block; margin-top: 5px;">🗑️ Xóa ảnh</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="product-featured">
+                        Sản phẩm nổi bật
+                    </label>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                </div>
+            </form>
         </div>
     </div>
+
+    <script src="api.js"></script>
+    <script src="auth-check.js"></script>
+    <script src="products-main.js"></script>
 </body>
 </html>
