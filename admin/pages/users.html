@@ -69,7 +69,8 @@
         </main>
     </div>
 
-    <script src="/js/api.js"></script>
+    <script src="api.js"></script>
+    <script src="notification.js"></script>
     <script>
         const token = localStorage.getItem('token');
         const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -85,12 +86,9 @@
                 const role = document.getElementById('filter-role').value;
                 const search = document.getElementById('search-input').value;
 
-                // Note: This endpoint might not exist yet, using a workaround
-                const response = await fetch(`/api/users?page=${page}&limit=20`, {
+                // Use admin endpoint
+                const response = await fetch(`/api/users/admin/all?page=${page}&limit=20`, {
                     headers: { 'Authorization': `Bearer ${token}` }
-                }).catch(() => {
-                    // Fallback: Load from seed data
-                    return { json: () => ({ data: [], total: 0, page: 1, pages: 1 }) };
                 });
 
                 const data = await response.json ? await response.json() : { data: [], total: 0 };

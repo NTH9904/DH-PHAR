@@ -118,7 +118,8 @@
         </main>
     </div>
 
-    <script src="/js/api.js"></script>
+    <script src="api.js"></script>
+    <script src="notification.js"></script>
     <script>
         // Check authentication
         const token = localStorage.getItem('token');
@@ -148,7 +149,7 @@
                     fetch('/api/orders/admin/all?limit=1', {
                         headers: { 'Authorization': `Bearer ${token}` }
                     }),
-                    fetch('/api/users?limit=1', {
+                    fetch('/api/users/admin/all?limit=1', {
                         headers: { 'Authorization': `Bearer ${token}` }
                     }).catch(() => ({ json: () => ({ total: 0 }) }))
                 ]);

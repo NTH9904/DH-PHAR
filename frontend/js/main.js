@@ -135,6 +135,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const pauseTime = 1500; // Thời gian dừng lại sau khi gõ xong một từ (ms)
 
     function typeEffect() {
+        // Kiểm tra inputElement tồn tại
+        if (!inputElement) return;
+        
         const currentWord = words[wordIndex % words.length];
         
         // 1. Logic cho trạng thái GÕ (Typing)
@@ -175,6 +178,8 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(typeEffect, delay);
     }
 
-    // Bắt đầu hiệu ứng
-    typeEffect();
+    // Bắt đầu hiệu ứng chỉ khi inputElement tồn tại
+    if (inputElement) {
+        typeEffect();
+    }
 });
