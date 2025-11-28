@@ -1,7 +1,7 @@
 // Zalo Chat Widget
 (function() {
     // Cấu hình Zalo OA ID
-    const ZALO_OA_ID = '1234567890'; // Thay bằng Zalo OA ID thực tế
+    const ZALO_OA_ID = '0344864576'; // Thay bằng Zalo OA ID thực tế
     
     // Tạo chat button
     function createChatButton() {

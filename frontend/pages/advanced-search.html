@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tìm kiếm nâng cao - DH Pharmacy</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .search-advanced {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 40px 0;
+        }
+        .search-section {
+            margin-bottom: 30px;
+        }
+        .search-section h3 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        .tag-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .tag {
+            padding: 8px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .tag:hover {
+            border-color: var(--primary-color);
+            background: var(--primary-light);
+        }
+        .tag.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        .age-slider {
+            width: 100%;
+            margin: 20px 0;
+        }
+        .age-display {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <div class="container">
+                <div>📞 Hotline: 0344864576 | 💬 Zalo: 0344864576</div>
+                <div>🚚 Giao hàng nhanh 2-4 giờ | ✅ Đảm bảo chất lượng</div>
+            </div>
+        </div>
+        <div class="header-main">
+            <div class="container">
+                <a href="/pages/index.html" class="logo">
+                    <span>💊</span>
+                    <span>DH Pharmacy</span>
+                </a>
+                <nav class="nav">
+                    <a href="/pages/index.html" class="nav-link">Trang chủ</a>
+                    <a href="/pages/products.html" class="nav-link">Sản phẩm</a>
+                    <a href="/pages/advanced-search.html" class="nav-link active">Tìm kiếm nâng cao</a>
+                    <a href="/pages/consultation.html" class="nav-link">Tư vấn</a>
+                    <div class="cart-icon">
+                        <a href="/pages/cart.html" class="nav-link">🛒 Giỏ hàng</a>
+                        <span class="cart-badge">0</span>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main style="padding: 40px 0;">
+        <div class="container">
+            <h1 style="margin-bottom: 20px;">🔍 Tìm kiếm thuốc nâng cao</h1>
+            <p style="color: var(--text-light); margin-bottom: 30px;">
+                Tìm thuốc phù hợp theo bệnh, triệu chứng và độ tuổi
+            </p>
+
+            <div class="search-advanced">
+                <!-- Search by Disease -->
+                <div class="search-section">
+                    <h3>🏥 Tìm theo bệnh</h3>
+                    <div class="tag-group" id="disease-tags">
+                        <div class="tag" data-disease="cảm cúm">Cảm cúm</div>
+                        <div class="tag" data-disease="đau đầu">Đau đầu</div>
+                        <div class="tag" data-disease="ho">Ho</div>
+                        <div class="tag" data-disease="sốt">Sốt</div>
+                        <div class="tag" data-disease="viêm họng">Viêm họng</div>
+                        <div class="tag" data-disease="dị ứng">Dị ứng</div>
+                        <div class="tag" data-disease="đau bụng">Đau bụng</div>
+                        <div class="tag" data-disease="tiêu chảy">Tiêu chảy</div>
+                        <div class="tag" data-disease="táo bón">Táo bón</div>
+                        <div class="tag" data-disease="viêm da">Viêm da</div>
+                    </div>
+                </div>
+
+                <!-- Search by Symptom -->
+                <div class="search-section">
+                    <h3>🤒 Tìm theo triệu chứng</h3>
+                    <div class="tag-group" id="symptom-tags">
+                        <div class="tag" data-symptom="sốt">Sốt</div>
+                        <div class="tag" data-symptom="ho">Ho</div>
+                        <div class="tag" data-symptom="đau họng">Đau họng</div>
+                        <div class="tag" data-symptom="sổ mũi">Sổ mũi</div>
+                        <div class="tag" data-symptom="đau đầu">Đau đầu</div>
+                        <div class="tag" data-symptom="buồn nôn">Buồn nôn</div>
+                        <div class="tag" data-symptom="chóng mặt">Chóng mặt</div>
+                        <div class="tag" data-symptom="mệt mỏi">Mệt mỏi</div>
+                        <div class="tag" data-symptom="ngứa">Ngứa</div>
+                        <div class="tag" data-symptom="đau bụng">Đau bụng</div>
+                    </div>
+                </div>
+
+                <!-- Search by Age -->
+                <div class="search-section">
+                    <h3>👶 Tìm theo độ tuổi</h3>
+                    <div class="age-display" id="age-display">Tất cả độ tuổi</div>
+                    <input type="range" class="age-slider" id="age-slider" min="0" max="100" value="0" step="1">
+                    <div style="display: flex; justify-content: space-between; color: var(--text-light); font-size: 14px;">
+                        <span>0 tuổi (Trẻ sơ sinh)</span>
+                        <span>100+ tuổi</span>
+                    </div>
+                </div>
+
+                <!-- Search Button -->
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn btn-primary btn-lg" id="search-btn" style="min-width: 200px;">
+                        🔍 Tìm kiếm
+                    </button>
+                    <button class="btn btn-outline btn-lg" id="reset-btn" style="min-width: 200px; margin-left: 10px;">
+                        🔄 Đặt lại
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div id="search-results" style="margin-top: 40px;"></div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>DH Pharmacy</h3>
+                    <p>Nhà thuốc trực tuyến uy tín</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 DH Pharmacy. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/cart.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/advanced-search.js"></script>
+    <script src="/js/zalo-chat.js"></script>
+</body>
+</html>

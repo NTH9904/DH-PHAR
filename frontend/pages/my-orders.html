@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đơn hàng của tôi - DH Pharmacy</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .orders-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .order-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .order-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .order-number {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        .order-date {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+        .order-status {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status-confirmed {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        .status-processing {
+            background: #cce5ff;
+            color: #004085;
+        }
+        .status-shipping {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-delivered {
+            background: #28a745;
+            color: white;
+        }
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .order-body {
+            padding: 20px;
+        }
+        .order-items {
+            margin-bottom: 15px;
+        }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .order-item:last-child {
+            border-bottom: none;
+        }
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 15px;
+            border-top: 2px solid var(--border-color);
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .order-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .filter-tab {
+            padding: 10px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .filter-tab:hover {
+            border-color: var(--primary-color);
+        }
+        .filter-tab.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <div class="container">
+                <div>📞 Hotline: 0344864576 | 💬 Zalo: 0344864576</div>
+                <div>🚚 Giao hàng nhanh 2-4 giờ | ✅ Đảm bảo chất lượng</div>
+            </div>
+        </div>
+        <div class="header-main">
+            <div class="container">
+                <a href="/pages/index.html" class="logo">
+                    <span>💊</span>
+                    <span>DH Pharmacy</span>
+                </a>
+                <nav class="nav">
+                    <a href="/pages/index.html" class="nav-link">Trang chủ</a>
+                    <a href="/pages/products.html" class="nav-link">Sản phẩm</a>
+                    <a href="/pages/my-orders.html" class="nav-link active">Đơn hàng</a>
+                    <div class="cart-icon">
+                        <a href="/pages/cart.html" class="nav-link">🛒 Giỏ hàng</a>
+                        <span class="cart-badge">0</span>
+                    </div>
+                    <div class="user-menu" id="user-menu">
+                        <a href="/pages/login.html" class="nav-link">Đăng nhập</a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="orders-container">
+            <h1 style="margin-bottom: 30px;">📦 Đơn hàng của tôi</h1>
+
+            <!-- Filter Tabs -->
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-status="all">Tất cả</button>
+                <button class="filter-tab" data-status="pending">Chờ xác nhận</button>
+                <button class="filter-tab" data-status="confirmed">Đã xác nhận</button>
+                <button class="filter-tab" data-status="processing">Đang chuẩn bị</button>
+                <button class="filter-tab" data-status="shipping">Đang giao</button>
+                <button class="filter-tab" data-status="delivered">Đã giao</button>
+                <button class="filter-tab" data-status="cancelled">Đã hủy</button>
+            </div>
+
+            <!-- Orders List -->
+            <div id="orders-list">
+                <div class="text-center">
+                    <div class="spinner"></div>
+                    <p>Đang tải đơn hàng...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>DH Pharmacy</h3>
+                    <p>Nhà thuốc trực tuyến uy tín</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 DH Pharmacy. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/cart.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/my-orders.js"></script>
+    <script src="/js/zalo-chat.js"></script>
+</body>
+</html>
