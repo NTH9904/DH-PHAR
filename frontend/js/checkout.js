@@ -26,19 +26,28 @@ async function loadCheckout() {
         const addressesResponse = await window.API.users.getAddresses();
         const addresses = addressesResponse.data || [];
 
-        // Calculate totals
+        // Calculate totals and check for prescription products
         let subtotal = 0;
         const items = [];
+        let hasPrescriptionProduct = false;
+        
         for (const item of cart.items) {
             const product = await window.API.products.getById(item.productId);
             const productData = product.data;
             const itemTotal = productData.price * item.quantity;
             subtotal += itemTotal;
+            
+            // Check if product requires prescription
+            if (productData.type === 'prescription') {
+                hasPrescriptionProduct = true;
+            }
+            
             items.push({
                 productId: item.productId,
                 quantity: item.quantity,
                 name: productData.name,
-                price: productData.price
+                price: productData.price,
+                type: productData.type
             });
         }
 
@@ -152,6 +161,29 @@ async function loadCheckout() {
                             </div>
                         </div>
 
+                        ${hasPrescriptionProduct ? `
+                        <div class="card" style="margin-top: 24px;">
+                            <div class="card-header">
+                                <h3>⚠️ Đơn thuốc kê đơn</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-warning" style="margin-bottom: 16px;">
+                                    <strong>Lưu ý:</strong> Giỏ hàng của bạn có thuốc kê đơn. Vui lòng upload đơn thuốc từ bác sĩ.
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Upload đơn thuốc *</label>
+                                    <input type="file" class="form-control" id="prescription-file" accept="image/*,.pdf" required>
+                                    <small style="color: var(--text-light); display: block; margin-top: 8px;">
+                                        Chấp nhận: JPG, PNG, PDF (tối đa 5MB)
+                                    </small>
+                                </div>
+                                <div id="prescription-preview" style="margin-top: 16px; display: none;">
+                                    <img id="preview-image" src="" alt="Preview" style="max-width: 100%; max-height: 300px; border-radius: 8px; border: 2px solid var(--border-color);">
+                                </div>
+                            </div>
+                        </div>
+                        ` : ''}
+
                         <div class="card" style="margin-top: 24px;">
                             <div class="card-body">
                                 <div class="form-group">
@@ -213,6 +245,34 @@ async function loadCheckout() {
 
         const showNewBtn = container.querySelector('[data-action="show-new-address"]');
         if (showNewBtn) showNewBtn.addEventListener('click', showNewAddressForm);
+
+        // Prescription file preview
+        const prescriptionFile = document.getElementById('prescription-file');
+        if (prescriptionFile) {
+            prescriptionFile.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // Validate file size (5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('File quá lớn! Vui lòng chọn file nhỏ hơn 5MB.');
+                        e.target.value = '';
+                        return;
+                    }
+                    
+                    // Show preview for images
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const preview = document.getElementById('prescription-preview');
+                            const img = document.getElementById('preview-image');
+                            img.src = e.target.result;
+                            preview.style.display = 'block';
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                }
+            });
+        }
 
         const form = document.getElementById('checkout-form');
         if (form) form.addEventListener('submit', submitOrder);
