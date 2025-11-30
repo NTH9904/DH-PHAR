@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Simple</title>
+</head>
+<body>
+    <h1>Test Page</h1>
+    <button id="test-btn">Click Me</button>
+    <div id="result"></div>
+
+    <script src="api.js"></script>
+    <script>
+        console.log('Script loaded');
+        console.log('window.API:', window.API);
+        
+        document.getElementById('test-btn').addEventListener('click', () => {
+            document.getElementById('result').textContent = 'Button clicked!';
+            console.log('Button clicked');
+        });
+    </script>
+</body>
+</html>

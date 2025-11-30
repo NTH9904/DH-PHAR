@@ -65,11 +65,9 @@ let currentPage = 1;
                     params.search = searchQuery;
                 }
 
-                const priceFilter = document.getElementById('filter-price').value;
-                if (priceFilter) {
-                    const [min, max] = priceFilter.split('-');
-                    if (min) params.minPrice = min;
-                    if (max) params.maxPrice = max;
+                const ageFilter = document.getElementById('filter-age').value;
+                if (ageFilter) {
+                    params.ageGroup = ageFilter;
                 }
 
                 const response = await window.API.products.getAll(params);
@@ -112,10 +110,17 @@ let currentPage = 1;
                             }
 
                             return `
-                            <div class="product-card">
-                                <img data-role="product-image" src="${img}" 
-                                     alt="${product.name}" 
-                                     class="product-card-image">
+                            <div class="product-card" onclick="window.location.href='/pages/product-detail.html?id=${product._id}'" style="cursor: pointer;">
+                                <div class="product-image-link">
+                                    <img data-role="product-image" 
+                                         data-product-id="${product._id}"
+                                         src="${img}" 
+                                         alt="${product.name}" 
+                                         class="product-card-image"
+                                         style="transition: transform 0.3s ease;"
+                                         onmouseover="this.style.transform='scale(1.05)'"
+                                         onmouseout="this.style.transform='scale(1)'">
+                                </div>
                                 <div class="product-card-body">
                                     <h3 class="product-card-title">${product.name}</h3>
                                     <p style="font-size: 14px; color: var(--text-light); margin-bottom: 8px;">
@@ -126,19 +131,27 @@ let currentPage = 1;
                                     </div>
                                     ${product.type === 'prescription' ? '<span class="badge badge-warning">Cần đơn thuốc</span>' : ''}
                                 </div>
-                                <div class="product-card-footer">
-                                    <a href="/pages/product-detail.html?id=${product._id}" class="btn btn-primary btn-block">Xem chi tiết</a>
-                                </div>
                             </div>
                         `}).join('')}
                     </div>
                 `;
 
-                // Attach error handlers for images
+                // Attach error handlers and click handlers for images
                 const imgs = container.querySelectorAll('img[data-role="product-image"]');
                 imgs.forEach(imgEl => {
+                    // Error handler
                     imgEl.addEventListener('error', () => {
                         imgEl.src = PLACEHOLDER;
+                    });
+                    
+                    // Click handler - redirect to product detail
+                    imgEl.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const productId = imgEl.getAttribute('data-product-id');
+                        if (productId) {
+                            console.log('🖱️ Clicked on product image:', productId);
+                            window.location.href = `/pages/product-detail.html?id=${productId}`;
+                        }
                     });
                 });
 
@@ -216,7 +229,7 @@ let currentPage = 1;
         document.getElementById('filter-type').addEventListener('change', () => loadProducts(1));
         document.getElementById('filter-category').addEventListener('change', () => loadProducts(1));
         document.getElementById('sort-by').addEventListener('change', () => loadProducts(1));
-        document.getElementById('filter-price').addEventListener('change', () => loadProducts(1));
+        document.getElementById('filter-age').addEventListener('change', () => loadProducts(1));
 
         document.querySelector('.search-bar form').addEventListener('submit', (e) => {
             e.preventDefault();

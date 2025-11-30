@@ -28,9 +28,7 @@ Website bán thuốc trực tuyến cho thị trường Việt Nam với đầy 
 ## 📋 Tech Stack
 
 ### Frontend
-- HTML5, CSS3, JavaScript (ES6+)
-- Responsive Design (Mobile-first)
-- Progressive Web App (PWA) ready
+- HTML5, CSS, JavaScript (ES6+)
 
 ### Backend
 - Node.js 18+
