@@ -21,7 +21,10 @@ const productsData = [
     description: 'Thuốc giảm đau, hạ sốt',
     indications: ['Giảm đau', 'Hạ sốt'],
     dosage: 'Người lớn: 1-2 viên/lần, 3-4 lần/ngày',
-    usage: 'Uống sau ăn',
+    usage: {
+      instructions: 'Uống sau ăn',
+      ageGroups: ['child', 'teen', 'adult', 'senior']
+    },
     storage: 'Nơi khô ráo, tránh ánh sáng',
     price: 25000,
     stock: 100,
@@ -39,6 +42,10 @@ const productsData = [
     indications: ['Nhiễm khuẩn đường hô hấp', 'Nhiễm khuẩn đường tiết niệu'],
     dosage: 'Người lớn: 500mg x 3 lần/ngày',
     contraindications: ['Dị ứng Penicillin'],
+    usage: {
+      instructions: 'Uống sau ăn, đủ liệu trình',
+      ageGroups: ['child', 'teen', 'adult', 'senior']
+    },
     price: 45000,
     stock: 50,
     images: [{ url: 'https://nhathuoclongchau.com.vn/images/products/2020/08/00003847_amoxicillin-500-1_5e8e8c0e.jpg', isPrimary: true }]
@@ -54,6 +61,10 @@ const productsData = [
     description: 'Bổ sung Vitamin C',
     indications: ['Tăng sức đề kháng', 'Chống oxy hóa'],
     dosage: '1 viên/ngày',
+    usage: {
+      instructions: 'Uống sau ăn sáng',
+      ageGroups: ['teen', 'adult', 'senior']
+    },
     price: 35000,
     stock: 200,
     images: [{ url: 'https://nhathuoclongchau.com.vn/images/products/2020/08/00003847_vitamin-c-1_5e8e8c0e.jpg', isPrimary: true }]
@@ -78,6 +89,15 @@ productsData.forEach(product => {
   }
 });
 
+// Age group mapping for categories
+const categoryAgeGroups = {
+  'Thuốc giảm đau, hạ sốt': ['child', 'teen', 'adult', 'senior'],
+  'Kháng sinh': ['child', 'teen', 'adult', 'senior'],
+  'Thuốc ho': ['toddler', 'child', 'teen', 'adult', 'senior'],
+  'Thuốc cảm': ['toddler', 'child', 'teen', 'adult', 'senior'],
+  'Thực phẩm chức năng': ['teen', 'adult', 'senior']
+};
+
 // Generate more products
 for (let i = 4; i <= 60; i++) {
   const categories = ['Thuốc giảm đau, hạ sốt', 'Kháng sinh', 'Thuốc ho', 'Thuốc cảm', 'Thực phẩm chức năng'];
@@ -96,6 +116,10 @@ for (let i = 4; i <= 60; i++) {
     description: `Mô tả sản phẩm ${i}`,
     indications: ['Công dụng 1', 'Công dụng 2'],
     dosage: 'Theo chỉ định của bác sĩ',
+    usage: {
+      instructions: 'Theo chỉ định của bác sĩ',
+      ageGroups: categoryAgeGroups[randomCategory] || ['adult']
+    },
     price: Math.floor(Math.random() * 200000) + 10000,
     stock: Math.floor(Math.random() * 200) + 10,
     slug: generateSlug(productName) + '-' + i, // Ensure unique slug

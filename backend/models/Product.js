@@ -35,7 +35,13 @@ const ProductSchema = new mongoose.Schema({
   contraindications: [String], // Chống chỉ định
   sideEffects: [String], // Tác dụng phụ
   dosage: String, // Liều dùng
-  usage: String, // Cách dùng
+  usage: {
+    instructions: String, // Cách dùng
+    ageGroups: [{
+      type: String,
+      enum: ['infant', 'toddler', 'child', 'teen', 'adult', 'senior']
+    }] // Nhóm tuổi phù hợp
+  },
   storage: String, // Bảo quản
   // Disease and Age targeting
   diseases: [String], // Bệnh: ['cảm cúm', 'đau đầu', 'ho', 'sốt']

@@ -11,6 +11,7 @@ exports.getProducts = async (req, res, next) => {
       category,
       minPrice,
       maxPrice,
+      ageGroup,
       sort,
       page = 1,
       limit = 20
@@ -32,6 +33,11 @@ exports.getProducts = async (req, res, next) => {
     // Filter by category
     if (category) {
       query.category = category;
+    }
+
+    // Filter by age group
+    if (ageGroup) {
+      query['usage.ageGroups'] = ageGroup;
     }
 
     // Price range

@@ -5,7 +5,7 @@ async function loadCheckout() {
     if (!token) {
         container.innerHTML = `
             <div class="alert alert-warning">
-                <p>Vui lòng <a href="/pages/login.html">đăng nhập</a> để thanh toán</p>
+                <p>Vui lòng <a href="/pages/login.html" class="btn btn-primary">đăng nhập</a> để thanh toán</p>
             </div>
         `;
         return;
@@ -15,7 +15,7 @@ async function loadCheckout() {
     if (cart.items.length === 0) {
         container.innerHTML = `
             <div class="alert alert-warning">
-                <p>Giỏ hàng trống. <a href="/pages/products.html">Tiếp tục mua sắm</a></p>
+                <p>Giỏ hàng trống. <a href="/pages/products.html" class="btn btn-primary">Tiếp tục mua sắm</a></p>
             </div>
         `;
         return;
@@ -30,31 +30,71 @@ async function loadCheckout() {
         let subtotal = 0;
         const items = [];
         let hasPrescriptionProduct = false;
+        const invalidItems = [];
         
         for (const item of cart.items) {
-            const product = await window.API.products.getById(item.productId);
-            const productData = product.data;
-            const itemTotal = productData.price * item.quantity;
-            subtotal += itemTotal;
+            try {
+                const product = await window.API.products.getById(item.productId);
+                const productData = product.data;
+                const itemTotal = productData.price * item.quantity;
+                subtotal += itemTotal;
+                
+                // Check if product requires prescription
+                if (productData.type === 'prescription') {
+                    hasPrescriptionProduct = true;
+                }
+                
+                items.push({
+                    productId: item.productId,
+                    quantity: item.quantity,
+                    name: productData.name,
+                    price: productData.price,
+                    type: productData.type
+                });
+            } catch (error) {
+                console.error('Invalid product in cart:', item.productId, error);
+                invalidItems.push(item.productId);
+            }
+        }
+
+        // Remove invalid items from cart
+        if (invalidItems.length > 0) {
+            const updatedCart = {
+                items: cart.items.filter(item => !invalidItems.includes(item.productId))
+            };
+            window.Cart.saveCart(updatedCart);
             
-            // Check if product requires prescription
-            if (productData.type === 'prescription') {
-                hasPrescriptionProduct = true;
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div class="alert alert-warning">
+                        <h3>⚠️ Giỏ hàng có sản phẩm không hợp lệ</h3>
+                        <p>Tất cả sản phẩm trong giỏ hàng không còn tồn tại và đã được xóa.</p>
+                        <p><a href="/pages/products.html" class="btn btn-primary">Tiếp tục mua sắm</a></p>
+                    </div>
+                `;
+                return;
             }
             
-            items.push({
-                productId: item.productId,
-                quantity: item.quantity,
-                name: productData.name,
-                price: productData.price,
-                type: productData.type
-            });
+            // Auto-reload after showing warning to refresh with clean cart
+            console.log(`✅ Đã xóa ${invalidItems.length} sản phẩm không hợp lệ. Trang sẽ tự động làm mới...`);
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+            return;
         }
 
         const shippingFee = subtotal >= 500000 ? 0 : 30000;
         const total = subtotal + shippingFee;
 
-        container.innerHTML = `
+        // Build warning message if there were invalid items
+        const warningHTML = invalidItems.length > 0 ? `
+            <div class="alert alert-warning" style="margin-bottom: 24px;">
+                <strong>⚠️ Lưu ý:</strong> ${invalidItems.length} sản phẩm không hợp lệ đã được xóa khỏi giỏ hàng. 
+                <a href="/pages/clear-cart.html" style="text-decoration: underline;">Xem chi tiết</a>
+            </div>
+        ` : '';
+
+        container.innerHTML = warningHTML + `
             <form id="checkout-form">
                 <div class="grid grid-2" style="gap: 24px;">
                     <div>
@@ -230,6 +270,11 @@ async function loadCheckout() {
                                 <button type="submit" class="btn btn-primary btn-block btn-lg">
                                     Đặt hàng
                                 </button>
+                                <div style="text-align: center; margin-top: 16px;">
+                                    <a href="/pages/clear-cart.html" style="color: var(--text-light); font-size: 14px; text-decoration: underline;">
+                                        🗑️ Xóa giỏ hàng
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -366,3 +411,27 @@ async function submitOrder(e) {
 document.addEventListener('DOMContentLoaded', () => {
     loadCheckout();
 });
+
+
+// Debug helper - expose to console for troubleshooting
+window.debugCart = function() {
+    const cart = window.Cart.getCart();
+    console.log('=== CART DEBUG INFO ===');
+    console.log('Total items:', cart.items.length);
+    console.log('Cart data:', cart);
+    
+    if (cart.items.length > 0) {
+        console.log('\nTo clear cart, run: clearCartNow()');
+    }
+};
+
+window.clearCartNow = function() {
+    if (confirm('Bạn có chắc muốn xóa toàn bộ giỏ hàng?')) {
+        window.Cart.clearCart();
+        console.log('✅ Cart cleared!');
+        location.reload();
+    }
+};
+
+// Auto-log cart info on checkout page for debugging
+console.log('💡 Tip: Run debugCart() to see cart info, or clearCartNow() to clear cart');

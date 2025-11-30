@@ -65,11 +65,9 @@ let currentPage = 1;
                     params.search = searchQuery;
                 }
 
-                const priceFilter = document.getElementById('filter-price').value;
-                if (priceFilter) {
-                    const [min, max] = priceFilter.split('-');
-                    if (min) params.minPrice = min;
-                    if (max) params.maxPrice = max;
+                const ageFilter = document.getElementById('filter-age').value;
+                if (ageFilter) {
+                    params.ageGroup = ageFilter;
                 }
 
                 const response = await window.API.products.getAll(params);
@@ -231,7 +229,7 @@ let currentPage = 1;
         document.getElementById('filter-type').addEventListener('change', () => loadProducts(1));
         document.getElementById('filter-category').addEventListener('change', () => loadProducts(1));
         document.getElementById('sort-by').addEventListener('change', () => loadProducts(1));
-        document.getElementById('filter-price').addEventListener('change', () => loadProducts(1));
+        document.getElementById('filter-age').addEventListener('change', () => loadProducts(1));
 
         document.querySelector('.search-bar form').addEventListener('submit', (e) => {
             e.preventDefault();
