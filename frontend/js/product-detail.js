@@ -65,13 +65,27 @@ async function loadProductDetail() {
         }
 
         container.innerHTML = `
-                    <div class="grid grid-2" style="gap: 40px; margin-bottom: 40px;">
-                        <div>
+                    <style>
+                        .product-detail-grid {
+                            display: grid;
+                            grid-template-columns: 45% 55%;
+                            gap: 32px;
+                            margin-bottom: 40px;
+                        }
+                        @media (max-width: 768px) {
+                            .product-detail-grid {
+                                grid-template-columns: 1fr;
+                            }
+                        }
+                    </style>
+                    <div class="product-detail-grid">
+                        <div style="background: white; padding: 32px; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: center; min-height: 700px;">
                             <img data-role="product-image" src="${imageSrc}" 
                                  alt="${product.name}" 
-                                 style="width: 100%; border-radius: 12px; box-shadow: var(--shadow-lg);">
+                                 style="width: 100%; height: 650px; border-radius: 12px; object-fit: contain;">
                         </div>
-                        <div>
+                        <div style="background: white; padding: 32px; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+
                             <h1 style="margin-bottom: 16px;">${product.name}</h1>
                             ${product.nameEn ? `<p style="color: var(--text-light); margin-bottom: 16px;">${product.nameEn}</p>` : ''}
                             
@@ -92,98 +106,112 @@ async function loadProductDetail() {
                                 </div>
                             ` : ''}
 
-                            <div style="margin-bottom: 24px;">
-                                <label class="form-label">Số lượng:</label>
-                                    <div style="display: flex; gap: 16px; align-items: center;">
-                                    <button class="btn btn-outline" data-action="qty-decrease">-</button>
+                            <div style="margin-bottom: 24px; background: #f8f9fa; padding: 16px; border-radius: 8px;">
+                                <label class="form-label" style="font-weight: 600; margin-bottom: 12px; display: block;">Số lượng:</label>
+                                <div style="display: flex; gap: 12px; align-items: center;">
+                                    <button class="btn btn-outline" data-action="qty-decrease" 
+                                            style="width: 40px; height: 40px; padding: 0; font-size: 20px; font-weight: bold;">-</button>
                                     <input type="number" id="quantity" value="1" min="1" max="${product.maxOrderQuantity || 10}" 
-                                           style="width: 80px; text-align: center;" class="form-control">
-                                    <button class="btn btn-outline" data-action="qty-increase">+</button>
-                                    <span style="color: var(--text-light);">
-                                        (Còn ${product.stock} sản phẩm)
+                                           style="width: 80px; text-align: center; font-size: 18px; font-weight: 600; height: 40px;" class="form-control">
+                                    <button class="btn btn-outline" data-action="qty-increase" 
+                                            style="width: 40px; height: 40px; padding: 0; font-size: 20px; font-weight: bold;">+</button>
+                                    <span style="color: #28a745; font-weight: 500; margin-left: 8px;">
+                                        ✓ Còn ${product.stock} sản phẩm
                                     </span>
                                 </div>
                             </div>
 
-                            <div style="display: flex; gap: 16px; margin-bottom: 24px;">
-                                <button class="btn btn-primary btn-lg" data-action="add-to-cart" style="flex: 1;">
+                            <div style="display: flex; gap: 12px; margin-bottom: 24px;">
+                                <button class="btn btn-primary btn-lg" data-action="add-to-cart" 
+                                        style="flex: 1; font-size: 16px; font-weight: 600; padding: 14px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);">
                                     🛒 Thêm vào giỏ hàng
                                 </button>
-                                <button class="btn btn-secondary btn-lg" data-action="buy-now" style="flex: 1;">
-                                    Mua ngay
+                                <button class="btn btn-secondary btn-lg" data-action="buy-now" 
+                                        style="flex: 1; font-size: 16px; font-weight: 600; padding: 14px; background: #28a745; border-color: #28a745; box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);">
+                                    ⚡ Mua ngay
                                 </button>
                             </div>
 
-                            <div class="card">
-                                <div class="card-body">
-                                    <h3 style="margin-bottom: 16px;">Thông tin sản phẩm</h3>
-                                    <table style="width: 100%;">
-                                        <tr>
-                                            <td style="padding: 8px 0; font-weight: 600;">Hoạt chất:</td>
-                                            <td style="padding: 8px 0;">${product.genericName || 'N/A'}</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding: 8px 0; font-weight: 600;">Nhà sản xuất:</td>
-                                            <td style="padding: 8px 0;">${product.manufacturer || 'N/A'}</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding: 8px 0; font-weight: 600;">Quy cách:</td>
-                                            <td style="padding: 8px 0;">${product.specifications?.packageSize || 'N/A'}</td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding: 8px 0; font-weight: 600;">Đánh giá:</td>
-                                            <td style="padding: 8px 0;">
-                                                ⭐ ${product.ratings?.average?.toFixed(1) || '0.0'} 
-                                                (${product.ratings?.count || 0} đánh giá)
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
+                            <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; border-left: 4px solid var(--primary-color);">
+                                <h3 style="margin-bottom: 16px; color: var(--primary-color);">📋 Thông tin sản phẩm</h3>
+                                <table style="width: 100%;">
+                                    <tr>
+                                        <td style="padding: 12px 0; font-weight: 600; color: #495057; width: 40%;">Hoạt chất:</td>
+                                        <td style="padding: 12px 0; color: #212529;">${product.genericName || 'N/A'}</td>
+                                    </tr>
+                                    <tr style="border-top: 1px solid #e9ecef;">
+                                        <td style="padding: 12px 0; font-weight: 600; color: #495057;">Nhà sản xuất:</td>
+                                        <td style="padding: 12px 0; color: #212529;">${product.manufacturer || 'N/A'}</td>
+                                    </tr>
+                                    <tr style="border-top: 1px solid #e9ecef;">
+                                        <td style="padding: 12px 0; font-weight: 600; color: #495057;">Quy cách:</td>
+                                        <td style="padding: 12px 0; color: #212529;">${product.specifications?.packageSize || 'N/A'}</td>
+                                    </tr>
+                                    <tr style="border-top: 1px solid #e9ecef;">
+                                        <td style="padding: 12px 0; font-weight: 600; color: #495057;">Đánh giá:</td>
+                                        <td style="padding: 12px 0; color: #212529;">
+                                            <span style="color: #ffc107;">⭐</span> ${product.ratings?.average?.toFixed(1) || '0.0'} 
+                                            <span style="color: #6c757d;">(${product.ratings?.count || 0} đánh giá)</span>
+                                        </td>
+                                    </tr>
+                                </table>
                             </div>
                         </div>
                     </div>
 
-                    <div class="card" style="margin-bottom: 40px;">
-                        <div class="card-body">
-                            <h2 style="margin-bottom: 24px;">Mô tả sản phẩm</h2>
-                            <div style="margin-bottom: 24px;">
-                                <h3>Công dụng:</h3>
-                                <ul>
-                                    ${(product.indications && product.indications.length) ? product.indications.map(ind => `<li>${ind}</li>`).join('') : '<li>N/A</li>'}
-                                </ul>
-                            </div>
+                    <div style="background: white; padding: 32px; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 40px;">
+                        <h2 style="margin-bottom: 32px; color: #212529; font-size: 28px; border-bottom: 3px solid var(--primary-color); padding-bottom: 12px; display: inline-block;">
+                            📖 Mô tả sản phẩm
+                        </h2>
+                        
+                        <div style="display: grid; gap: 24px;">
+                            ${(product.indications && product.indications.length) ? `
+                                <div style="background: #e7f3ff; padding: 20px; border-radius: 12px; border-left: 4px solid #0066cc;">
+                                    <h3 style="color: #0066cc; margin-bottom: 12px; font-size: 18px;">✅ Công dụng</h3>
+                                    <ul style="margin: 0; padding-left: 20px; line-height: 1.8;">
+                                        ${product.indications.map(ind => `<li style="color: #495057;">${ind}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                            
                             ${product.dosage ? `
-                                <div style="margin-bottom: 24px;">
-                                    <h3>Liều dùng:</h3>
-                                    <p>${product.dosage}</p>
+                                <div style="background: #fff3cd; padding: 20px; border-radius: 12px; border-left: 4px solid #ffc107;">
+                                    <h3 style="color: #856404; margin-bottom: 12px; font-size: 18px;">💊 Liều dùng</h3>
+                                    <p style="margin: 0; color: #495057; line-height: 1.8;">${product.dosage}</p>
                                 </div>
                             ` : ''}
+                            
                             ${product.usage ? `
-                                <div style="margin-bottom: 24px;">
-                                    <h3>Cách dùng:</h3>
-                                    <p>${product.usage}</p>
+                                <div style="background: #d1ecf1; padding: 20px; border-radius: 12px; border-left: 4px solid #17a2b8;">
+                                    <h3 style="color: #0c5460; margin-bottom: 12px; font-size: 18px;">📝 Cách dùng</h3>
+                                    <p style="margin: 0; color: #495057; line-height: 1.8;">
+                                        ${typeof product.usage === 'object' ? product.usage.instructions : product.usage}
+                                    </p>
                                 </div>
                             ` : ''}
+                            
                             ${product.contraindications?.length > 0 ? `
-                                <div style="margin-bottom: 24px;">
-                                    <h3>Chống chỉ định:</h3>
-                                    <ul>
-                                        ${product.contraindications.map(cont => `<li>${cont}</li>`).join('')}
+                                <div style="background: #f8d7da; padding: 20px; border-radius: 12px; border-left: 4px solid #dc3545;">
+                                    <h3 style="color: #721c24; margin-bottom: 12px; font-size: 18px;">⚠️ Chống chỉ định</h3>
+                                    <ul style="margin: 0; padding-left: 20px; line-height: 1.8;">
+                                        ${product.contraindications.map(cont => `<li style="color: #495057;">${cont}</li>`).join('')}
                                     </ul>
                                 </div>
                             ` : ''}
+                            
                             ${product.sideEffects?.length > 0 ? `
-                                <div style="margin-bottom: 24px;">
-                                    <h3>Tác dụng phụ:</h3>
-                                    <ul>
-                                        ${product.sideEffects.map(eff => `<li>${eff}</li>`).join('')}
+                                <div style="background: #fff3e0; padding: 20px; border-radius: 12px; border-left: 4px solid #ff9800;">
+                                    <h3 style="color: #e65100; margin-bottom: 12px; font-size: 18px;">⚡ Tác dụng phụ</h3>
+                                    <ul style="margin: 0; padding-left: 20px; line-height: 1.8;">
+                                        ${product.sideEffects.map(eff => `<li style="color: #495057;">${eff}</li>`).join('')}
                                     </ul>
                                 </div>
                             ` : ''}
+                            
                             ${product.storage ? `
-                                <div>
-                                    <h3>Bảo quản:</h3>
-                                    <p>${product.storage}</p>
+                                <div style="background: #e8f5e9; padding: 20px; border-radius: 12px; border-left: 4px solid #4caf50;">
+                                    <h3 style="color: #2e7d32; margin-bottom: 12px; font-size: 18px;">🌡️ Bảo quản</h3>
+                                    <p style="margin: 0; color: #495057; line-height: 1.8;">${product.storage}</p>
                                 </div>
                             ` : ''}
                         </div>
