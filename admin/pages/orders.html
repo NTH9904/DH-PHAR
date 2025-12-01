@@ -1,18 +1,15 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD
     <title>Quản lý Đơn hàng - DH Pharmacy</title>
     <link rel="stylesheet" href="../ad css/main.css">
     <link rel="stylesheet" href="../ad css/responsive.css">
-=======
-    <title>Quản lý Đơn hàng - Admin</title>
-    <link rel="stylesheet" href="main.css">
->>>>>>> 96a7be08267c38a82cef3d6be56654721136045f
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <div class="admin-layout">
         <!-- Sidebar -->
@@ -91,12 +88,8 @@
         </div>
     </div>
 
-<<<<<<< HEAD
     <script src="../ad js/api.js"></script>
-    <script src="../ad js/orders.js"></script>
-=======
-    <script src="api.js"></script>
-    <script src="notification.js"></script>
+    <script src="../ad js/notification.js"></script>
     <script>
         const token = localStorage.getItem('token');
         const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -133,7 +126,7 @@
 
         function renderOrders(orders) {
             const tbody = document.getElementById('orders-tbody');
-            
+
             if (orders.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="7" class="text-center">Không có đơn hàng nào</td></tr>';
                 return;
@@ -274,7 +267,7 @@
         document.getElementById('filter-status').addEventListener('change', () => loadOrders(1));
         document.getElementById('search-input').addEventListener('input', () => loadOrders(1));
 
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             const modal = document.getElementById('order-modal');
             if (event.target === modal) {
                 closeModal();
@@ -283,6 +276,6 @@
 
         loadOrders(1);
     </script>
->>>>>>> 96a7be08267c38a82cef3d6be56654721136045f
 </body>
+
 </html>
