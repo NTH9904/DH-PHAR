@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getStatus, getUsers } = require('../controllers/debugController');
+const { getStatus, getUsers, getLastRawUser } = require('../controllers/debugController');
 
 // NOTE: This route should only be mounted in non-production environments
 router.get('/status', getStatus);

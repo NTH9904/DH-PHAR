@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xóa Giỏ Hàng - DH Pharmacy</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .clear-cart-container {
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 40px;
+            text-align: center;
+        }
+        .cart-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .btn-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="clear-cart-container">
+        <h1>🛒 Quản Lý Giỏ Hàng</h1>
+        
+        <div class="cart-info" id="cart-info">
+            <p>Đang tải thông tin giỏ hàng...</p>
+        </div>
+
+        <div class="btn-group">
+            <button onclick="clearCart()" class="btn btn-danger btn-lg">
+                🗑️ Xóa Giỏ Hàng
+            </button>
+            <a href="/pages/products.html" class="btn btn-primary btn-lg">
+                🛍️ Tiếp Tục Mua Sắm
+            </a>
+        </div>
+
+        <div style="margin-top: 40px; padding: 20px; background: #fff3cd; border-radius: 8px;">
+            <h3>⚠️ Khi nào cần xóa giỏ hàng?</h3>
+            <ul style="text-align: left; margin-top: 16px;">
+                <li>Khi gặp lỗi 404 ở trang thanh toán</li>
+                <li>Khi sản phẩm trong giỏ không còn tồn tại</li>
+                <li>Khi muốn bắt đầu mua sắm mới</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="/js/cart.js"></script>
+    <script>
+        function loadCartInfo() {
+            const cart = window.Cart.getCart();
+            const infoDiv = document.getElementById('cart-info');
+            
+            if (cart.items.length === 0) {
+                infoDiv.innerHTML = `
+                    <p><strong>✅ Giỏ hàng trống</strong></p>
+                    <p>Không có sản phẩm nào trong giỏ hàng.</p>
+                `;
+            } else {
+                infoDiv.innerHTML = `
+                    <p><strong>📦 Số sản phẩm:</strong> ${cart.items.length}</p>
+                    <p><strong>📋 Chi tiết:</strong></p>
+                    <ul style="margin-top: 8px;">
+                        ${cart.items.map(item => `
+                            <li>ID: ${item.productId} - Số lượng: ${item.quantity}</li>
+                        `).join('')}
+                    </ul>
+                `;
+            }
+        }
+
+        function clearCart() {
+            const cart = window.Cart.getCart();
+            
+            if (cart.items.length === 0) {
+                alert('Giỏ hàng đã trống!');
+                return;
+            }
+
+            if (confirm(`Bạn có chắc muốn xóa ${cart.items.length} sản phẩm khỏi giỏ hàng?`)) {
+                window.Cart.clearCart();
+                alert('✅ Đã xóa giỏ hàng thành công!');
+                loadCartInfo();
+            }
+        }
+
+        // Load on page load
+        document.addEventListener('DOMContentLoaded', loadCartInfo);
+    </script>
+</body>
+</html>

@@ -35,8 +35,22 @@ const ProductSchema = new mongoose.Schema({
   contraindications: [String], // Chống chỉ định
   sideEffects: [String], // Tác dụng phụ
   dosage: String, // Liều dùng
-  usage: String, // Cách dùng
+  usage: {
+    instructions: String, // Cách dùng
+    ageGroups: [{
+      type: String,
+      enum: ['infant', 'toddler', 'child', 'teen', 'adult', 'senior']
+    }] // Nhóm tuổi phù hợp
+  },
   storage: String, // Bảo quản
+  // Disease and Age targeting
+  diseases: [String], // Bệnh: ['cảm cúm', 'đau đầu', 'ho', 'sốt']
+  symptoms: [String], // Triệu chứng: ['sốt', 'ho', 'đau họng']
+  ageGroup: {
+    min: Number, // Tuổi tối thiểu (0 = trẻ sơ sinh)
+    max: Number, // Tuổi tối đa (null = không giới hạn)
+    description: String // 'Trẻ em', 'Người lớn', 'Người cao tuổi'
+  },
   // Pricing
   price: {
     type: Number,
@@ -153,7 +167,9 @@ ProductSchema.index({
   name: 'text',
   genericName: 'text',
   description: 'text',
-  indications: 'text'
+  indications: 'text',
+  diseases: 'text',
+  symptoms: 'text'
 });
 
 module.exports = mongoose.model('Product', ProductSchema);

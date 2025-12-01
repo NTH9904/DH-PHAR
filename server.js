@@ -68,11 +68,12 @@ app.use('/admin', express.static('admin'));
 app.use('/uploads', express.static('uploads'));
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/dh-pharmacy', {
+const mongoUri = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb://localhost:27017/dh_pharmacy';
+mongoose.connect(mongoUri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => console.log('✅ MongoDB connected'))
+.then(() => console.log('✅ MongoDB connected to:', mongoUri))
 .catch(err => console.error('❌ MongoDB connection error:', err));
 
 // Routes
