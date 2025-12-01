@@ -68,7 +68,7 @@ app.use('/admin', express.static('admin'));
 app.use('/uploads', express.static('uploads'));
 
 // Database connection
-const mongoUri = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb://localhost:27017/dh_pharmacy';
+const mongoUri = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb://localhost:27017/dh-pharmacy';
 mongoose.connect(mongoUri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,

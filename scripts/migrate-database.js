@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 // Connect to source database (dh_pharmacy with underscore)
-const sourceUri = 'mongodb://localhost:27017/dh_pharmacy';
+const sourceUri = 'mongodb://localhost:27017/dh-pharmacy';
 const targetUri = 'mongodb://localhost:27017/dh-pharmacy';
 
 async function migrateDatabase() {

@@ -3,7 +3,7 @@ require('dotenv').config();
 
 const Product = require('../backend/models/Product');
 
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/dh_pharmacy', {
+mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/dh-pharmacy', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });

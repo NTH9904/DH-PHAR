@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +8,6 @@
     <link rel="stylesheet" href="../ad css/cards.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
     <div class="admin-layout">
         <!-- Sidebar -->
@@ -173,7 +171,7 @@
 
                 // Load recent orders
                 loadRecentOrders();
-
+                
                 // Load low stock products
                 loadLowStockProducts();
             } catch (error) {
@@ -206,7 +204,7 @@
                 `).join('');
             } catch (error) {
                 console.error('Error loading recent orders:', error);
-                document.getElementById('recent-orders').innerHTML =
+                document.getElementById('recent-orders').innerHTML = 
                     '<tr><td colspan="5" class="text-center">Không thể tải đơn hàng</td></tr>';
             }
         }
@@ -237,15 +235,15 @@
                 `).join('');
             } catch (error) {
                 console.error('Error loading low stock products:', error);
-                document.getElementById('low-stock-products').innerHTML =
+                document.getElementById('low-stock-products').innerHTML = 
                     '<tr><td colspan="4" class="text-center">Không thể tải dữ liệu</td></tr>';
             }
         }
 
         function formatCurrency(amount) {
-            return new Intl.NumberFormat('vi-VN', {
-                style: 'currency',
-                currency: 'VND'
+            return new Intl.NumberFormat('vi-VN', { 
+                style: 'currency', 
+                currency: 'VND' 
             }).format(amount);
         }
 
@@ -281,5 +279,4 @@
         loadDashboardData();
     </script>
 </body>
-
 </html>
