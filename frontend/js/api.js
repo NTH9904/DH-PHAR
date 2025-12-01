@@ -115,7 +115,22 @@ const productsAPI = {
 
   getCategories: () => apiRequest('/products/categories'),
 
-  search: (query) => apiRequest(`/products?search=${encodeURIComponent(query)}`)
+  search: (query) => apiRequest(`/products?search=${encodeURIComponent(query)}`),
+
+  // Admin methods
+  create: (productData) => apiRequest('/products', {
+    method: 'POST',
+    body: JSON.stringify(productData)
+  }),
+
+  update: (id, productData) => apiRequest(`/products/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(productData)
+  }),
+
+  delete: (id) => apiRequest(`/products/${id}`, {
+    method: 'DELETE'
+  })
 };
 
 // Orders API
@@ -180,6 +195,23 @@ const prescriptionsAPI = {
   getAll: () => apiRequest('/prescriptions')
 };
 
+// Upload API
+const uploadAPI = {
+  uploadProductImage: (file) => {
+    const token = getToken();
+    const formData = new FormData();
+    formData.append('image', file);
+    
+    return fetch(`${API_BASE_URL}/upload/product`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      body: formData
+    }).then(res => res.json());
+  }
+};
+
 // Export
 window.API = {
   auth: authAPI,
@@ -187,6 +219,7 @@ window.API = {
   orders: ordersAPI,
   users: usersAPI,
   prescriptions: prescriptionsAPI,
+  upload: uploadAPI,
   getToken,
   setToken,
   removeToken,
