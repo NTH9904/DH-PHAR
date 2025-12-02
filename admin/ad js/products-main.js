@@ -34,29 +34,43 @@ function renderProducts(products) {
         return;
     }
 
-    tbody.innerHTML = products.map(product => `
+    tbody.innerHTML = products.map(product => {
+        const stockClass = product.stock > 50 ? 'stock-high' : product.stock > 20 ? 'stock-medium' : 'stock-low';
+        return `
         <tr>
             <td>
-                <img src="${product.images?.[0]?.url || 'https://via.placeholder.com/50'}" 
+                <img src="${product.images?.[0]?.url || '/images/no-image.svg'}" 
                      alt="${product.name}" 
-                     style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                     class="product-image-cell">
             </td>
-            <td><strong>${product.name}</strong><br><small>${product.genericName || ''}</small></td>
+            <td>
+                <div class="table-text-compact">
+                    <strong>${product.name}</strong>
+                    <span class="table-text-small">${product.genericName || ''}</span>
+                </div>
+            </td>
             <td>${product.category}</td>
-            <td><strong>${formatCurrency(product.price)}</strong></td>
-            <td>${product.stock}</td>
             <td><span class="badge badge-${product.type}">${getTypeLabel(product.type)}</span></td>
+            <td><span class="price-value">${formatCurrency(product.price)}</span></td>
+            <td><span class="${stockClass}">${product.stock}</span></td>
             <td><span class="badge badge-${product.isActive ? 'success' : 'danger'}">${product.isActive ? 'Hoạt động' : 'Tạm ngưng'}</span></td>
             <td>
-                <button class="btn-icon btn-edit" data-id="${product._id}" title="Sửa">✏️</button>
-                <button class="btn-icon btn-delete" data-id="${product._id}" title="Xóa">🗑️</button>
+                <div class="table-actions">
+                    <button class="btn-table-action btn-edit" data-id="${product._id}" title="Sửa">✏️</button>
+                    <button class="btn-table-action btn-view" data-id="${product._id}" title="Xem">👁️</button>
+                    <button class="btn-table-action btn-delete" data-id="${product._id}" title="Xóa">🗑️</button>
+                </div>
             </td>
         </tr>
-    `).join('');
+    `;
+    }).join('');
     
-    // Add event listeners for edit and delete buttons
+    // Add event listeners for action buttons
     tbody.querySelectorAll('.btn-edit').forEach(btn => {
         btn.addEventListener('click', () => editProduct(btn.dataset.id));
+    });
+    tbody.querySelectorAll('.btn-view').forEach(btn => {
+        btn.addEventListener('click', () => viewProduct(btn.dataset.id));
     });
     tbody.querySelectorAll('.btn-delete').forEach(btn => {
         btn.addEventListener('click', () => deleteProduct(btn.dataset.id));
@@ -72,6 +86,69 @@ function openAddModal() {
     uploadedImageUrl = null;
     hideImagePreview();
     document.getElementById('product-modal').style.display = 'flex';
+}
+
+// View product details
+async function viewProduct(id) {
+    try {
+        const response = await window.API.products.getById(id);
+        const product = response.data;
+        
+        const details = `
+            <div style="display: grid; grid-template-columns: 150px 1fr; gap: 20px;">
+                <div>
+                    <img src="${product.images?.[0]?.url || '/images/no-image.svg'}" 
+                         style="width: 100%; border-radius: 8px; border: 2px solid #E1E8ED;">
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 12px; color: #2C3E50; font-size: 18px;">${product.name}</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; font-size: 14px;">
+                        <p><strong>Hoạt chất:</strong> ${product.genericName || 'N/A'}</p>
+                        <p><strong>Danh mục:</strong> ${product.category}</p>
+                        <p><strong>Loại:</strong> ${getTypeLabel(product.type)}</p>
+                        <p><strong>Giá:</strong> <span style="color: #3498DB; font-weight: 700;">${formatCurrency(product.price)}</span></p>
+                        <p><strong>Tồn kho:</strong> ${product.stock}</p>
+                        <p><strong>Thương hiệu:</strong> ${product.brand || 'N/A'}</p>
+                        <p><strong>Nhà sản xuất:</strong> ${product.manufacturer || 'N/A'}</p>
+                        <p><strong>Đơn vị:</strong> ${product.specifications?.unit || 'N/A'}</p>
+                    </div>
+                    ${product.description ? `<p style="margin-top: 12px; font-size: 14px;"><strong>Mô tả:</strong> ${product.description}</p>` : ''}
+                    ${product.dosage ? `<p style="margin-top: 8px; font-size: 14px;"><strong>Liều dùng:</strong> ${product.dosage}</p>` : ''}
+                </div>
+            </div>
+        `;
+        
+        // Create a simple modal for viewing
+        const viewModal = document.createElement('div');
+        viewModal.className = 'modal';
+        viewModal.style.display = 'flex';
+        viewModal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Chi tiết sản phẩm</h2>
+                    <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    ${details}
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">Đóng</button>
+                    <button class="btn btn-primary" onclick="this.closest('.modal').remove(); editProduct('${id}')">Chỉnh sửa</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(viewModal);
+        
+        // Close on outside click
+        viewModal.addEventListener('click', (e) => {
+            if (e.target === viewModal) {
+                viewModal.remove();
+            }
+        });
+    } catch (error) {
+        console.error('Error viewing product:', error);
+        showError('Không thể xem chi tiết sản phẩm');
+    }
 }
 
 // Edit product
@@ -376,3 +453,38 @@ document.addEventListener('DOMContentLoaded', function() {
     loadCategories();
     loadProducts(1);
 });
+
+
+// Image handling functions (if not already defined in HTML)
+if (typeof showImagePreview === 'undefined') {
+    window.showImagePreview = function(url) {
+        const preview = document.getElementById('image-preview');
+        const img = document.getElementById('preview-img');
+        if (preview && img) {
+            img.src = url;
+            img.onerror = function() {
+                console.error('Failed to load image:', url);
+            };
+            preview.style.display = 'block';
+        }
+    };
+}
+
+if (typeof hideImagePreview === 'undefined') {
+    window.hideImagePreview = function() {
+        const preview = document.getElementById('image-preview');
+        if (preview) {
+            preview.style.display = 'none';
+        }
+    };
+}
+
+if (typeof removeImage === 'undefined') {
+    window.removeImage = function() {
+        const fileInput = document.getElementById('product-image-file');
+        const urlInput = document.getElementById('product-image-url');
+        if (fileInput) fileInput.value = '';
+        if (urlInput) urlInput.value = '';
+        window.hideImagePreview();
+    };
+}

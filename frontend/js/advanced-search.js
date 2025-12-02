@@ -157,7 +157,7 @@ async function performSearch() {
 }
 
 function renderProductCard(product) {
-    const imageUrl = product.images?.[0]?.url || 'https://via.placeholder.com/300x300?text=No+Image';
+    const imageUrl = product.images?.[0]?.url || '/images/no-image.svg';
     const price = product.price?.toLocaleString('vi-VN') || '0';
     const originalPrice = product.originalPrice?.toLocaleString('vi-VN');
     

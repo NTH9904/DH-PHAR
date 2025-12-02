@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Khuyến mãi - Admin DH Pharmacy</title>
+    <link rel="stylesheet" href="/admin/ad%20css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <h2>💊 DH Pharmacy</h2>
+                <p>Admin Panel</p>
+            </div>
+            <nav class="admin-nav">
+                <a href="dashboard.html">📊 Dashboard</a>
+                <a href="products.html">💊 Sản phẩm</a>
+                <a href="orders.html">📦 Đơn hàng</a>
+                <a href="users.html">👥 Người dùng</a>
+                <a href="prescriptions.html">📋 Đơn thuốc</a>
+                <a href="inventory.html">📦 Kho hàng</a>
+                <a href="promotions.html" class="active">🎁 Khuyến mãi</a>
+                <a href="reports.html">📊 Báo cáo</a>
+                <a href="/pages/index.html" class="home-link">🏠 Trang chủ</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-content">
+            <div class="admin-header">
+                <h1>Quản lý Khuyến mãi</h1>
+                <button class="btn btn-primary" onclick="showAddPromotionModal()">
+                    ➕ Tạo khuyến mãi
+                </button>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🎁</div>
+                    <div class="stat-info">
+                        <h3>Tổng KM</h3>
+                        <p class="stat-value" id="total-promotions">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-info">
+                        <h3>Đang hoạt động</h3>
+                        <p class="stat-value" id="active-promotions">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-info">
+                        <h3>Lượt sử dụng</h3>
+                        <p class="stat-value" id="total-uses">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-info">
+                        <h3>Giảm giá</h3>
+                        <p class="stat-value" id="total-discount">0đ</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Promotions Table -->
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Mã KM</th>
+                            <th>Tên chương trình</th>
+                            <th>Loại</th>
+                            <th>Giá trị</th>
+                            <th>Thời gian</th>
+                            <th>Đã dùng</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="promotions-table">
+                        <tr><td colspan="8" class="text-center">Đang tải...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Promotion Modal -->
+    <div id="promotion-modal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2 id="modal-title">Tạo khuyến mãi</h2>
+                <span class="close" onclick="closePromotionModal()">&times;</span>
+            </div>
+            <form id="promotion-form" class="modal-body">
+                <input type="hidden" id="promotion-id">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Mã khuyến mãi *</label>
+                        <input type="text" id="promo-code" required style="text-transform: uppercase;">
+                    </div>
+                    <div class="form-group">
+                        <label>Tên chương trình *</label>
+                        <input type="text" id="promo-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Loại giảm giá *</label>
+                        <select id="promo-type" required>
+                            <option value="percentage">Phần trăm (%)</option>
+                            <option value="fixed_amount">Số tiền cố định (VNĐ)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Giá trị *</label>
+                        <input type="number" id="promo-value" required min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Giảm tối đa (VNĐ)</label>
+                        <input type="number" id="promo-max-discount" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Đơn hàng tối thiểu (VNĐ)</label>
+                        <input type="number" id="promo-min-order" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Ngày bắt đầu *</label>
+                        <input type="datetime-local" id="promo-start" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Ngày kết thúc *</label>
+                        <input type="datetime-local" id="promo-end" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Số lượng mã</label>
+                        <input type="number" id="promo-limit" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Giới hạn/người dùng</label>
+                        <input type="number" id="promo-user-limit" min="1" value="1">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Mô tả</label>
+                    <textarea id="promo-description" rows="3"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closePromotionModal()">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/admin/ad%20js/sidebar-toggle.js"></script>
+    <script src="/admin/ad%20js/promotions.js"></script>
+</body>
+</html>

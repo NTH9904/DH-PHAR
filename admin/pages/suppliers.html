@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Nhà cung cấp - Admin DH Pharmacy</title>
+    <link rel="stylesheet" href="/admin/ad%20css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <h2>💊 DH Pharmacy</h2>
+                <p>Admin Panel</p>
+            </div>
+            <nav class="admin-nav">
+                <a href="dashboard.html">📊 Dashboard</a>
+                <a href="products.html">💊 Sản phẩm</a>
+                <a href="orders.html">📦 Đơn hàng</a>
+                <a href="users.html">👥 Người dùng</a>
+                <a href="prescriptions.html">📋 Đơn thuốc</a>
+                <a href="inventory.html">📦 Kho hàng</a>
+                <a href="suppliers.html" class="active">🏢 Nhà cung cấp</a>
+                <a href="reports.html">📊 Báo cáo</a>
+                <a href="/pages/index.html" class="home-link">🏠 Trang chủ</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-content">
+            <div class="admin-header">
+                <h1>Quản lý Nhà cung cấp</h1>
+                <button class="btn btn-primary" onclick="showAddSupplierModal()">
+                    ➕ Thêm nhà cung cấp
+                </button>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🏢</div>
+                    <div class="stat-info">
+                        <h3>Tổng NCC</h3>
+                        <p class="stat-value" id="total-suppliers">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-info">
+                        <h3>Đang hoạt động</h3>
+                        <p class="stat-value" id="active-suppliers">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📦</div>
+                    <div class="stat-info">
+                        <h3>Đơn nhập hàng</h3>
+                        <p class="stat-value" id="total-imports">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-info">
+                        <h3>Tổng chi phí</h3>
+                        <p class="stat-value" id="total-cost">0đ</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suppliers Table -->
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Tên nhà cung cấp</th>
+                            <th>Liên hệ</th>
+                            <th>Email</th>
+                            <th>Địa chỉ</th>
+                            <th>Sản phẩm</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="suppliers-table">
+                        <tr><td colspan="7" class="text-center">Đang tải...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Supplier Modal -->
+    <div id="supplier-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Thêm nhà cung cấp</h2>
+                <span class="close" onclick="closeSupplierModal()">&times;</span>
+            </div>
+            <form id="supplier-form" class="modal-body">
+                <input type="hidden" id="supplier-id">
+                <div class="form-group">
+                    <label>Tên nhà cung cấp *</label>
+                    <input type="text" id="supplier-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Số điện thoại *</label>
+                    <input type="tel" id="supplier-phone" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="supplier-email">
+                </div>
+                <div class="form-group">
+                    <label>Địa chỉ</label>
+                    <textarea id="supplier-address" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Ghi chú</label>
+                    <textarea id="supplier-notes" rows="3"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeSupplierModal()">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/admin/ad%20js/sidebar-toggle.js"></script>
+    <script>
+        // Mock data for suppliers (since we don't have backend yet)
+        let suppliers = [
+            {
+                id: 1,
+                name: 'Công ty TNHH Dược phẩm ABC',
+                phone: '0901234567',
+                email: 'abc@pharmacy.com',
+                address: 'Hà Nội',
+                products: 45,
+                status: 'active'
+            },
+            {
+                id: 2,
+                name: 'Công ty CP Dược Việt Nam',
+                phone: '0912345678',
+                email: 'vietnam@pharma.com',
+                address: 'TP.HCM',
+                products: 32,
+                status: 'active'
+            }
+        ];
+
+        function loadSuppliers() {
+            document.getElementById('total-suppliers').textContent = suppliers.length;
+            document.getElementById('active-suppliers').textContent = 
+                suppliers.filter(s => s.status === 'active').length;
+            
+            const tbody = document.getElementById('suppliers-table');
+            tbody.innerHTML = suppliers.map(s => `
+                <tr>
+                    <td><strong>${s.name}</strong></td>
+                    <td>${s.phone}</td>
+                    <td>${s.email}</td>
+                    <td>${s.address}</td>
+                    <td>${s.products}</td>
+                    <td><span class="badge badge-success">Hoạt động</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" onclick="editSupplier(${s.id})">Sửa</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteSupplier(${s.id})">Xóa</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function showAddSupplierModal() {
+            document.getElementById('modal-title').textContent = 'Thêm nhà cung cấp';
+            document.getElementById('supplier-form').reset();
+            document.getElementById('supplier-id').value = '';
+            document.getElementById('supplier-modal').style.display = 'block';
+        }
+
+        function closeSupplierModal() {
+            document.getElementById('supplier-modal').style.display = 'none';
+        }
+
+        function editSupplier(id) {
+            const supplier = suppliers.find(s => s.id === id);
+            if (!supplier) return;
+            
+            document.getElementById('modal-title').textContent = 'Sửa nhà cung cấp';
+            document.getElementById('supplier-id').value = supplier.id;
+            document.getElementById('supplier-name').value = supplier.name;
+            document.getElementById('supplier-phone').value = supplier.phone;
+            document.getElementById('supplier-email').value = supplier.email;
+            document.getElementById('supplier-address').value = supplier.address;
+            document.getElementById('supplier-modal').style.display = 'block';
+        }
+
+        function deleteSupplier(id) {
+            if (confirm('Bạn có chắc muốn xóa nhà cung cấp này?')) {
+                suppliers = suppliers.filter(s => s.id !== id);
+                loadSuppliers();
+            }
+        }
+
+        document.getElementById('supplier-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('supplier-id').value;
+            
+            const supplierData = {
+                name: document.getElementById('supplier-name').value,
+                phone: document.getElementById('supplier-phone').value,
+                email: document.getElementById('supplier-email').value,
+                address: document.getElementById('supplier-address').value,
+                status: 'active',
+                products: 0
+            };
+            
+            if (id) {
+                const index = suppliers.findIndex(s => s.id == id);
+                suppliers[index] = { ...suppliers[index], ...supplierData };
+            } else {
+                suppliers.push({ id: Date.now(), ...supplierData });
+            }
+            
+            closeSupplierModal();
+            loadSuppliers();
+        });
+
+        loadSuppliers();
+    </script>
+</body>
+</html>

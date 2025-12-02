@@ -1,91 +1,483 @@
-/* ============================================
-   Responsive Design - Mobile First
-   ============================================ */
+/* ========================================
+   DH Pharmacy Admin - Responsive Styles
+   ======================================== */
 
-/* Mobile (default) */
-@media (max-width: 575px) {
-  .container {
-    padding: 0 var(--spacing-sm);
+/* Tablet Landscape (1024px and below) */
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
   }
 
-  .header-main .container {
-    flex-wrap: wrap;
+  .admin-table {
+    font-size: 13px;
   }
 
-  .search-bar {
-    order: 3;
+  .admin-table th,
+  .admin-table td {
+    padding: 14px 16px;
+  }
+
+  .modal-content {
+    max-width: 90%;
+  }
+}
+
+/* Tablet Portrait (768px and below) */
+@media (max-width: 768px) {
+  /* Sidebar */
+  .admin-sidebar {
+    width: 200px;
+  }
+
+  .admin-content {
+    margin-left: 200px;
+    padding: 20px;
+  }
+
+  .admin-logo {
+    padding: 20px 16px;
+  }
+
+  .admin-logo h2 {
+    font-size: 18px;
+  }
+
+  .admin-nav {
+    padding: 16px 12px;
+  }
+
+  .admin-nav a {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  /* Header */
+  .admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .admin-header h1 {
+    font-size: 26px;
+  }
+
+  .header-actions {
     width: 100%;
-    max-width: 100%;
-    margin-top: var(--spacing-md);
-    flex: 1 1 100%;
-    min-width: 0; /* allow it to shrink on small screens */
+    justify-content: flex-start;
   }
 
-  .nav {
-    flex-wrap: wrap;
-    gap: var(--spacing-sm);
-  }
-
-  .logo { flex: 0 0 auto; }
-  .nav { order: 2; }
-  .user-menu { order: 4; width: 100%; justify-content: flex-end; }
-
-  .grid-2,
-  .grid-3,
-  .grid-4 {
+  /* Stats */
+  .stats-grid {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
 
-  .footer-content {
+  .stat-card {
+    padding: 20px;
+  }
+
+  .stat-icon {
+    font-size: 44px;
+  }
+
+  .stat-info .stat-value {
+    font-size: 28px;
+  }
+
+  /* Forms */
+  .form-row {
     grid-template-columns: 1fr;
-    gap: var(--spacing-lg);
+    gap: 16px;
   }
 
-  h1 { font-size: var(--font-size-xl); }
-  h2 { font-size: var(--font-size-lg); }
+  /* Filters */
+  .filters-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .search-input,
+  .filter-select,
+  .filter-input {
+    width: 100%;
+    min-width: auto;
+  }
+
+  /* Table */
+  .table-container {
+    overflow-x: auto;
+  }
+
+  .admin-table {
+    min-width: 600px;
+  }
+
+  /* Modal */
+  .modal-content {
+    width: 95%;
+    max-width: none;
+  }
+
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: 24px;
+  }
+
+  /* Pagination */
+  .pagination-container {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .pagination {
+    justify-content: center;
+  }
+}
+
+/* Mobile (480px and below) */
+@media (max-width: 480px) {
+  /* Sidebar - Full width on mobile */
+  .admin-sidebar {
+    width: 100%;
+    position: relative;
+    height: auto;
+    box-shadow: none;
+  }
+
+  .admin-content {
+    margin-left: 0;
+    padding: 16px;
+  }
+
+  .admin-logo {
+    padding: 16px;
+  }
+
+  .admin-logo h2 {
+    font-size: 16px;
+  }
+
+  .admin-nav {
+    padding: 12px;
+  }
+
+  .admin-nav a {
+    padding: 10px;
+    font-size: 12px;
+    gap: 8px;
+  }
+
+  /* Header */
+  .admin-header {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+  }
+
+  .admin-header h1 {
+    font-size: 22px;
+  }
+
+  .header-stats {
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .stat-item {
+    text-align: left;
+  }
+
+  /* Stats Cards */
+  .stat-card {
+    padding: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .stat-icon {
+    font-size: 36px;
+  }
+
+  .stat-info .stat-value {
+    font-size: 24px;
+  }
+
+  .stat-info h3 {
+    font-size: 11px;
+  }
+
+  .stat-change {
+    font-size: 11px;
+  }
+
+  /* Buttons */
+  .btn {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+
+  .btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .btn-lg {
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+
+  .header-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .header-actions .btn {
+    width: 100%;
+  }
+
+  /* Table */
+  .admin-table {
+    font-size: 12px;
+    min-width: 500px;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 10px 12px;
+  }
+
+  .admin-table th {
+    font-size: 11px;
+  }
+
+  /* Modal */
+  .modal-content {
+    width: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .modal-header {
+    padding: 16px;
+  }
+
+  .modal-header h2 {
+    font-size: 18px;
+  }
+
+  .modal-body {
+    padding: 16px;
+  }
+
+  .modal-footer {
+    padding: 16px;
+    flex-direction: column-reverse;
+  }
+
+  .modal-footer .btn {
+    width: 100%;
+  }
+
+  /* Forms */
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group label {
+    font-size: 13px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  /* Dashboard Section */
+  .dashboard-section {
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+
+  .dashboard-section h2 {
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+
+  /* Pagination */
+  .pagination-container {
+    padding: 16px;
+  }
+
+  .pagination-info {
+    font-size: 12px;
+  }
+
+  .pagination .btn {
+    min-width: 32px;
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  /* Badges */
+  .badge {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+
+  /* Filters */
+  .filters-section {
+    padding: 16px;
+  }
+
+  .search-input,
+  .filter-select,
+  .filter-input {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+}
+
+/* Extra Small Mobile (360px and below) */
+@media (max-width: 360px) {
+  .admin-header h1 {
+    font-size: 18px;
+  }
+
+  .stat-card {
+    padding: 12px;
+  }
+
+  .stat-icon {
+    font-size: 32px;
+  }
+
+  .stat-info .stat-value {
+    font-size: 20px;
+  }
+
+  .admin-table {
+    min-width: 400px;
+  }
 
   .btn {
-    padding: var(--spacing-sm) var(--spacing-md);
-    font-size: var(--font-size-sm);
+    padding: 8px 12px;
+    font-size: 12px;
   }
 }
 
-/* Tablet */
-@media (min-width: 576px) and (max-width: 991px) {
-  .grid-3,
-  .grid-4 {
-    grid-template-columns: repeat(2, 1fr);
+/* Landscape Orientation */
+@media (max-height: 600px) and (orientation: landscape) {
+  .admin-sidebar {
+    height: 100vh;
+    overflow-y: auto;
   }
 
-  .footer-content {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* Desktop */
-@media (min-width: 992px) {
-  .grid-3 {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .grid-4 {
-    grid-template-columns: repeat(4, 1fr);
+  .modal-content {
+    max-height: 95vh;
   }
 }
 
-/* Large Desktop */
-@media (min-width: 1200px) {
-  .container {
-    max-width: 1400px;
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger touch targets */
+  .btn {
+    min-height: 44px;
+  }
+
+  .btn-icon {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .admin-nav a {
+    min-height: 44px;
+  }
+
+  /* Remove hover effects on touch devices */
+  .admin-nav a:hover {
+    transform: none;
+  }
+
+  .btn:hover {
+    transform: none;
+  }
+
+  .stat-card:hover {
+    transform: none;
   }
 }
 
-/* Print */
+/* High DPI Displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  /* Sharper borders and shadows */
+  .admin-table th,
+  .admin-table td {
+    border-width: 0.5px;
+  }
+
+  .stat-card,
+  .dashboard-section,
+  .table-container {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  }
+}
+
+/* Dark Mode Support (Optional) */
+@media (prefers-color-scheme: dark) {
+  /* Add dark mode styles here if needed */
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print Styles */
 @media print {
-  .header,
-  .footer,
+  .admin-sidebar,
+  .admin-header,
+  .filters-section,
+  .pagination-container,
   .btn,
-  .nav {
-    display: none;
+  .modal,
+  .header-actions {
+    display: none !important;
+  }
+
+  .admin-content {
+    margin-left: 0;
+    padding: 0;
+  }
+
+  .table-container,
+  .dashboard-section {
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+
+  .admin-table {
+    font-size: 10pt;
+  }
+
+  .stat-card {
+    break-inside: avoid;
+  }
+
+  body {
+    background: white;
   }
 }

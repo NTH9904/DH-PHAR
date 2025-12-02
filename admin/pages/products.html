@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Sản phẩm - Admin</title>
-    <link rel="stylesheet" href="main.css">
-    <link rel="stylesheet" href="products.css">
+    <title>Quản lý Sản phẩm - Admin DH Pharmacy</title>
+    <link rel="stylesheet" href="/admin/ad%20css/main.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -22,7 +21,11 @@
                 <a href="orders.html">📦 Đơn hàng</a>
                 <a href="users.html">👥 Người dùng</a>
                 <a href="prescriptions.html">📋 Đơn thuốc</a>
-                <a href="/" class="logout">🚪 Thoát</a>
+                <a href="inventory.html">📦 Kho hàng</a>
+                <a href="suppliers.html">🏢 Nhà cung cấp</a>
+                <a href="promotions.html">🎁 Khuyến mãi</a>
+                <a href="reports.html">📊 Báo cáo</a>
+                <a href="/pages/index.html" class="home-link">🏠 Trang chủ</a>
             </nav>
         </aside>
 
@@ -30,98 +33,111 @@
         <main class="admin-content">
             <div class="admin-header">
                 <h1>Quản lý Sản phẩm</h1>
-                <button class="btn btn-primary" id="btn-add-product">
+                <button class="btn btn-primary" onclick="openProductModal()">
                     ➕ Thêm sản phẩm mới
                 </button>
             </div>
 
             <!-- Filters -->
-            <div class="filters-bar">
-                <input type="text" id="search-input" placeholder="Tìm kiếm sản phẩm..." class="search-input">
-                <select id="filter-category" class="filter-select">
-                    <option value="">Tất cả danh mục</option>
-                </select>
-                <select id="filter-type" class="filter-select">
-                    <option value="">Tất cả loại</option>
-                    <option value="otc">OTC</option>
-                    <option value="prescription">Kê đơn</option>
-                    <option value="supplement">TPCN</option>
-                </select>
+            <div class="filters-section">
+                <div class="filters-row">
+                    <input type="text" id="search-input" placeholder="Tìm kiếm sản phẩm..." class="search-input">
+                    <select id="category-filter" class="filter-select">
+                        <option value="">Tất cả danh mục</option>
+                        <option value="thuoc-khang-sinh">Thuốc kháng sinh</option>
+                        <option value="thuoc-giam-dau">Thuốc giảm đau</option>
+                        <option value="vitamin">Vitamin & Thực phẩm chức năng</option>
+                        <option value="thuoc-tieu-hoa">Thuốc tiêu hóa</option>
+                        <option value="thuoc-cam-cum">Thuốc cảm cúm</option>
+                    </select>
+                    <select id="type-filter" class="filter-select">
+                        <option value="">Tất cả loại</option>
+                        <option value="prescription">Thuốc kê đơn</option>
+                        <option value="otc">Thuốc không kê đơn</option>
+                        <option value="supplement">Thực phẩm chức năng</option>
+                    </select>
+                    <select id="stock-filter" class="filter-select">
+                        <option value="">Tất cả tồn kho</option>
+                        <option value="in-stock">Còn hàng</option>
+                        <option value="low-stock">Sắp hết</option>
+                        <option value="out-of-stock">Hết hàng</option>
+                    </select>
+                </div>
             </div>
 
             <!-- Products Table -->
             <div class="table-container">
-                <table class="admin-table" id="products-table">
+                <table class="admin-table">
                     <thead>
                         <tr>
                             <th>Hình ảnh</th>
                             <th>Tên sản phẩm</th>
                             <th>Danh mục</th>
+                            <th>Loại</th>
                             <th>Giá</th>
                             <th>Tồn kho</th>
-                            <th>Loại</th>
                             <th>Trạng thái</th>
                             <th>Thao tác</th>
                         </tr>
                     </thead>
-                    <tbody id="products-tbody">
+                    <tbody id="products-table">
                         <tr>
-                            <td colspan="8" class="text-center">
-                                <div class="spinner"></div>
-                                <p>Đang tải dữ liệu...</p>
-                            </td>
+                            <td colspan="8" class="text-center">Đang tải...</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
             <!-- Pagination -->
-            <div class="pagination" id="pagination"></div>
+            <div class="pagination-container">
+                <div class="pagination-info">
+                    Hiển thị <span id="showing-from">0</span> - <span id="showing-to">0</span> 
+                    trong tổng số <span id="total-products">0</span> sản phẩm
+                </div>
+                <div class="pagination" id="pagination">
+                    <!-- Pagination buttons will be generated here -->
+                </div>
+            </div>
         </main>
     </div>
 
-    <!-- Add/Edit Product Modal -->
+    <!-- Product Modal -->
     <div id="product-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 id="modal-title">Thêm sản phẩm mới</h2>
-                <button class="modal-close" id="btn-close-modal">&times;</button>
+                <span class="close" onclick="closeProductModal()">&times;</span>
             </div>
             <form id="product-form" class="modal-body">
-                <input type="hidden" id="product-id">
-                
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Tên sản phẩm *</label>
-                        <input type="text" id="product-name" required>
+                        <label for="product-name">Tên sản phẩm *</label>
+                        <input type="text" id="product-name" name="name" required>
                     </div>
                     <div class="form-group">
-                        <label>Tên tiếng Anh</label>
-                        <input type="text" id="product-name-en">
+                        <label for="product-generic-name">Tên hoạt chất *</label>
+                        <input type="text" id="product-generic-name" name="genericName" required>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Hoạt chất *</label>
-                        <input type="text" id="product-generic" required>
+                        <label for="product-category">Danh mục *</label>
+                        <select id="product-category" name="category" required>
+                            <option value="">Chọn danh mục</option>
+                            <option value="thuoc-khang-sinh">Thuốc kháng sinh</option>
+                            <option value="thuoc-giam-dau">Thuốc giảm đau</option>
+                            <option value="vitamin">Vitamin & Thực phẩm chức năng</option>
+                            <option value="thuoc-tieu-hoa">Thuốc tiêu hóa</option>
+                            <option value="thuoc-cam-cum">Thuốc cảm cúm</option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label>Thương hiệu</label>
-                        <input type="text" id="product-brand">
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Nhà sản xuất</label>
-                        <input type="text" id="product-manufacturer">
-                    </div>
-                    <div class="form-group">
-                        <label>Loại *</label>
-                        <select id="product-type" required>
-                            <option value="otc">OTC (Không kê đơn)</option>
-                            <option value="prescription">Kê đơn</option>
+                        <label for="product-type">Loại thuốc *</label>
+                        <select id="product-type" name="type" required>
+                            <option value="">Chọn loại</option>
+                            <option value="prescription">Thuốc kê đơn</option>
+                            <option value="otc">Thuốc không kê đơn</option>
                             <option value="supplement">Thực phẩm chức năng</option>
                         </select>
                     </div>
@@ -129,86 +145,220 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Danh mục *</label>
-                        <input type="text" id="product-category" required>
+                        <label for="product-price">Giá bán (VNĐ) *</label>
+                        <input type="number" id="product-price" name="price" min="0" required>
                     </div>
                     <div class="form-group">
-                        <label>Danh mục phụ</label>
-                        <input type="text" id="product-subcategory">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Mô tả</label>
-                    <textarea id="product-description" rows="3"></textarea>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Giá (VNĐ) *</label>
-                        <input type="number" id="product-price" required min="0">
-                    </div>
-                    <div class="form-group">
-                        <label>Giá gốc (VNĐ)</label>
-                        <input type="number" id="product-original-price" min="0">
+                        <label for="product-stock">Số lượng tồn kho *</label>
+                        <input type="number" id="product-stock" name="stock" min="0" required>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Tồn kho *</label>
-                        <input type="number" id="product-stock" required min="0">
+                        <label for="product-brand">Thương hiệu</label>
+                        <input type="text" id="product-brand" name="brand">
                     </div>
                     <div class="form-group">
-                        <label>Đơn vị</label>
-                        <input type="text" id="product-unit" placeholder="viên, chai, hộp...">
+                        <label for="product-manufacturer">Nhà sản xuất</label>
+                        <input type="text" id="product-manufacturer" name="manufacturer">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label>Liều dùng</label>
-                    <textarea id="product-dosage" rows="2"></textarea>
+                    <label for="product-description">Mô tả</label>
+                    <textarea id="product-description" name="description" rows="3"></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label>Cách dùng</label>
-                    <textarea id="product-usage" rows="2"></textarea>
+                    <label for="product-indications">Công dụng (mỗi dòng một công dụng)</label>
+                    <textarea id="product-indications" name="indications" rows="3" placeholder="Giảm đau&#10;Hạ sốt&#10;Chống viêm"></textarea>
                 </div>
 
+                <div class="form-group">
+                    <label for="product-dosage">Liều dùng</label>
+                    <textarea id="product-dosage" name="dosage" rows="2" placeholder="Người lớn: 1-2 viên/lần, 2-3 lần/ngày"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="product-package-size">Quy cách đóng gói</label>
+                        <input type="text" id="product-package-size" name="packageSize" placeholder="Hộp 20 viên">
+                    </div>
+                    <div class="form-group">
+                        <label for="product-unit">Đơn vị</label>
+                        <select id="product-unit" name="unit">
+                            <option value="viên">Viên</option>
+                            <option value="chai">Chai</option>
+                            <option value="hộp">Hộp</option>
+                            <option value="tuýp">Tuýp</option>
+                            <option value="gói">Gói</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Image Upload Section -->
                 <div class="form-group">
                     <label>Hình ảnh sản phẩm</label>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <input type="file" id="product-image-file" accept="image/*" style="flex: 1;">
-                        <button type="button" class="btn btn-secondary" id="btn-upload-image">📤 Upload</button>
-                    </div>
-                    <small style="color: #666; display: block; margin-top: 5px;">
-                        Hoặc nhập URL trực tiếp:
-                    </small>
-                    <input type="url" id="product-image-url" placeholder="https://..." style="margin-top: 5px;">
-                    <div id="image-preview" style="margin-top: 10px; display: none;">
-                        <img id="preview-img" src="" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 2px solid #e2e8f0;">
-                        <button type="button" class="btn btn-secondary" id="btn-remove-image" style="display: block; margin-top: 5px;">🗑️ Xóa ảnh</button>
+                    <div class="image-upload-container">
+                        <div class="upload-methods">
+                            <div class="upload-method">
+                                <label class="upload-label">
+                                    <input type="file" id="product-image-file" accept="image/*" style="display: none;" onchange="handleImageFileSelect(event)">
+                                    <div class="upload-box">
+                                        <span class="upload-icon">📤</span>
+                                        <span class="upload-text">Chọn file từ máy tính</span>
+                                        <span class="upload-hint">JPG, PNG, GIF (Max 5MB)</span>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="upload-divider">HOẶC</div>
+                            <div class="upload-method">
+                                <input type="text" id="product-image-url" placeholder="Nhập URL hình ảnh" class="form-control" onchange="handleImageUrlChange(event)">
+                            </div>
+                        </div>
+                        
+                        <!-- Image Preview -->
+                        <div id="image-preview" class="image-preview" style="display: none;">
+                            <div class="preview-header">
+                                <span>Xem trước</span>
+                                <button type="button" class="btn-remove-image" onclick="removeImage()">✕ Xóa</button>
+                            </div>
+                            <img id="preview-img" src="" alt="Preview">
+                        </div>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>
-                        <input type="checkbox" id="product-featured">
+                        <input type="checkbox" id="product-featured" name="isFeatured">
                         Sản phẩm nổi bật
                     </label>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" id="btn-cancel-modal">Hủy</button>
-                    <button type="submit" class="btn btn-primary">Lưu</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeProductModal()">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu sản phẩm</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <script src="/js/api.js"></script>
-    <script src="auth-check.js"></script>
-    <script src="notification.js"></script>
-    <script src="products-main.js"></script>
+    <script src="/admin/ad%20js/sidebar-toggle.js"></script>
+    <script src="/admin/ad%20js/api.js"></script>
+    <script src="/admin/ad%20js/products.js"></script>
+    
+    <script>
+        // Image Upload Handlers
+        let uploadedImageUrl = null;
+
+        function handleImageFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Validate file type
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+            if (!validTypes.includes(file.type)) {
+                alert('❌ Chỉ chấp nhận file ảnh (JPG, PNG, GIF, WebP)');
+                event.target.value = '';
+                return;
+            }
+
+            // Validate file size (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('❌ File ảnh không được vượt quá 5MB');
+                event.target.value = '';
+                return;
+            }
+
+            // Show loading
+            const uploadBox = event.target.closest('.upload-method').querySelector('.upload-box');
+            const originalContent = uploadBox.innerHTML;
+            uploadBox.innerHTML = '<div class="spinner" style="width: 30px; height: 30px; margin: 10px auto;"></div><span class="upload-text">Đang upload...</span>';
+
+            // Upload file
+            uploadImage(file)
+                .then(url => {
+                    uploadedImageUrl = url;
+                    document.getElementById('product-image-url').value = url;
+                    showImagePreview(url);
+                    uploadBox.innerHTML = originalContent;
+                })
+                .catch(error => {
+                    alert('❌ Lỗi khi upload ảnh: ' + error.message);
+                    uploadBox.innerHTML = originalContent;
+                    event.target.value = '';
+                });
+        }
+
+        async function uploadImage(file) {
+            const formData = new FormData();
+            formData.append('image', file);
+
+            const token = localStorage.getItem('token');
+            const response = await fetch('/api/upload/product', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Upload failed');
+            }
+
+            const data = await response.json();
+            return window.location.origin + data.data.url;
+        }
+
+        function handleImageUrlChange(event) {
+            const url = event.target.value.trim();
+            if (url) {
+                uploadedImageUrl = url;
+                showImagePreview(url);
+            } else {
+                hideImagePreview();
+            }
+        }
+
+        function showImagePreview(url) {
+            const preview = document.getElementById('image-preview');
+            const img = document.getElementById('preview-img');
+            img.src = url;
+            img.onerror = function() {
+                alert('❌ Không thể tải hình ảnh từ URL này');
+                hideImagePreview();
+            };
+            preview.style.display = 'block';
+        }
+
+        function hideImagePreview() {
+            const preview = document.getElementById('image-preview');
+            preview.style.display = 'none';
+            uploadedImageUrl = null;
+        }
+
+        function removeImage() {
+            document.getElementById('product-image-file').value = '';
+            document.getElementById('product-image-url').value = '';
+            hideImagePreview();
+        }
+
+        function closeProductModal() {
+            document.getElementById('product-modal').style.display = 'none';
+            document.getElementById('product-form').reset();
+            removeImage();
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('product-modal');
+            if (event.target === modal) {
+                closeProductModal();
+            }
+        };
+    </script>
 </body>
 </html>

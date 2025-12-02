@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quản lý Người dùng - Admin</title>
-    <link rel="stylesheet" href="main.css">
-
+    <title>Quản lý Khách hàng - DH Pharmacy</title>
+    <link rel="stylesheet" href="/admin/ad%20css/main.css">
+    <link rel="stylesheet" href="/admin/ad%20css/responsive.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -22,7 +22,11 @@
                 <a href="orders.html">📦 Đơn hàng</a>
                 <a href="users.html" class="active">👥 Người dùng</a>
                 <a href="prescriptions.html">📋 Đơn thuốc</a>
-                <a href="/" class="logout">🚪 Thoát</a>
+                <a href="inventory.html">📦 Kho hàng</a>
+                <a href="suppliers.html">🏢 Nhà cung cấp</a>
+                <a href="promotions.html">🎁 Khuyến mãi</a>
+                <a href="reports.html">📊 Báo cáo</a>
+                <a href="/pages/index.html" class="home-link">🏠 Trang chủ</a>
             </nav>
         </aside>
 
@@ -70,8 +74,9 @@
         </main>
     </div>
 
-<script src="api.js"></script>
-    <script src="notification.js"></script>
+    <script src="/admin/ad%20js/sidebar-toggle.js"></script>
+    <script src="/admin/ad%20js/api.js"></script>
+    <script src="/admin/ad%20js/users.js"></script>
     <script>
         const token = localStorage.getItem('token');
         const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -217,6 +222,9 @@
 
         loadUsers(1);
     </script>
+<<<<<<< HEAD
 
+=======
+>>>>>>> dc0a15d2cc572eb109d19fe64f477bf9521f722e
 </body>
 </html>

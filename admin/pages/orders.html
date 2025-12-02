@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Đơn hàng - Admin</title>
-    <link rel="stylesheet" href="main.css">
+    <title>Quản lý Đơn hàng - Admin DH Pharmacy</title>
+    <link rel="stylesheet" href="/admin/ad%20css/main.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -21,7 +21,9 @@
                 <a href="orders.html" class="active">📦 Đơn hàng</a>
                 <a href="users.html">👥 Người dùng</a>
                 <a href="prescriptions.html">📋 Đơn thuốc</a>
-                <a href="/" class="logout">🚪 Thoát</a>
+                <a href="inventory.html">📋 Kho hàng</a>
+                <a href="reports.html">📊 Báo cáo</a>
+                <a href="/pages/index.html" class="home-link">🏠 Trang chủ</a>
             </nav>
         </aside>
 
@@ -29,20 +31,40 @@
         <main class="admin-content">
             <div class="admin-header">
                 <h1>Quản lý Đơn hàng</h1>
+                <div class="header-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Chờ xử lý</span>
+                        <span class="stat-value" id="pending-count">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Đang giao</span>
+                        <span class="stat-value" id="shipping-count">0</span>
+                    </div>
+                </div>
             </div>
 
             <!-- Filters -->
-            <div class="filters-bar">
-                <input type="text" id="search-input" placeholder="Tìm mã đơn, khách hàng..." class="search-input">
-                <select id="filter-status" class="filter-select">
-                    <option value="">Tất cả trạng thái</option>
-                    <option value="pending">Chờ xử lý</option>
-                    <option value="confirmed">Đã xác nhận</option>
-                    <option value="processing">Đang xử lý</option>
-                    <option value="shipping">Đang giao</option>
-                    <option value="delivered">Đã giao</option>
-                    <option value="cancelled">Đã hủy</option>
-                </select>
+            <div class="filters-section">
+                <div class="filters-row">
+                    <input type="text" id="search-input" placeholder="Tìm kiếm theo mã đơn, tên khách hàng..." class="search-input">
+                    <select id="status-filter" class="filter-select">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="pending">Chờ xử lý</option>
+                        <option value="confirmed">Đã xác nhận</option>
+                        <option value="processing">Đang xử lý</option>
+                        <option value="shipping">Đang giao</option>
+                        <option value="delivered">Đã giao</option>
+                        <option value="cancelled">Đã hủy</option>
+                    </select>
+                    <select id="payment-filter" class="filter-select">
+                        <option value="">Tất cả thanh toán</option>
+                        <option value="pending">Chưa thanh toán</option>
+                        <option value="paid">Đã thanh toán</option>
+                        <option value="failed">Thanh toán thất bại</option>
+                    </select>
+                    <input type="date" id="date-from" class="filter-input">
+                    <input type="date" id="date-to" class="filter-input">
+                </div>
             </div>
 
             <!-- Orders Table -->
@@ -54,30 +76,39 @@
                             <th>Khách hàng</th>
                             <th>Sản phẩm</th>
                             <th>Tổng tiền</th>
+                            <th>Thanh toán</th>
                             <th>Trạng thái</th>
                             <th>Ngày đặt</th>
                             <th>Thao tác</th>
                         </tr>
                     </thead>
-                    <tbody id="orders-tbody">
+                    <tbody id="orders-table">
                         <tr>
-                            <td colspan="7" class="text-center">Đang tải...</td>
+                            <td colspan="8" class="text-center">Đang tải...</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
             <!-- Pagination -->
-            <div class="pagination" id="pagination"></div>
+            <div class="pagination-container">
+                <div class="pagination-info">
+                    Hiển thị <span id="showing-from">0</span> - <span id="showing-to">0</span> 
+                    trong tổng số <span id="total-orders">0</span> đơn hàng
+                </div>
+                <div class="pagination" id="pagination">
+                    <!-- Pagination buttons will be generated here -->
+                </div>
+            </div>
         </main>
     </div>
 
     <!-- Order Detail Modal -->
     <div id="order-modal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content modal-large">
             <div class="modal-header">
                 <h2>Chi tiết đơn hàng</h2>
-                <button class="modal-close" onclick="closeModal()">&times;</button>
+                <span class="close" onclick="closeOrderModal()">&times;</span>
             </div>
             <div class="modal-body" id="order-detail">
                 <!-- Order details will be loaded here -->
@@ -85,194 +116,43 @@
         </div>
     </div>
 
-<script src="api.js"></script>
-    <script src="notification.js"></script>
-    <script>
-        const token = localStorage.getItem('token');
-        const user = JSON.parse(localStorage.getItem('user') || '{}');
+    <!-- Status Update Modal -->
+    <div id="status-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Cập nhật trạng thái đơn hàng</h2>
+                <span class="close" onclick="closeStatusModal()">&times;</span>
+            </div>
+            <form id="status-form" class="modal-body">
+                <div class="form-group">
+                    <label for="new-status">Trạng thái mới</label>
+                    <select id="new-status" name="status" required>
+                        <option value="pending">Chờ xử lý</option>
+                        <option value="confirmed">Đã xác nhận</option>
+                        <option value="processing">Đang xử lý</option>
+                        <option value="shipping">Đang giao</option>
+                        <option value="delivered">Đã giao</option>
+                        <option value="cancelled">Đã hủy</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="status-note">Ghi chú</label>
+                    <textarea id="status-note" name="note" rows="3" placeholder="Ghi chú về việc cập nhật trạng thái..."></textarea>
+                </div>
+                <div class="form-group" id="tracking-group" style="display: none;">
+                    <label for="tracking-number">Mã vận đơn</label>
+                    <input type="text" id="tracking-number" name="trackingNumber" placeholder="Nhập mã vận đơn">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeStatusModal()">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Cập nhật</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-        if (!token || user.role !== 'admin') {
-            window.location.href = '/pages/login.html';
-        }
-
-        let currentPage = 1;
-
-        async function loadOrders(page = 1) {
-            try {
-                const status = document.getElementById('filter-status').value;
-                const search = document.getElementById('search-input').value;
-
-                let url = `/api/orders/admin/all?page=${page}&limit=20`;
-                if (status) url += `&status=${status}`;
-                if (search) url += `&search=${search}`;
-
-                const response = await fetch(url, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const data = await response.json();
-                const orders = data.data || [];
-
-                renderOrders(orders);
-                renderPagination(data.page, data.pages);
-                currentPage = page;
-            } catch (error) {
-                console.error('Error loading orders:', error);
-                showError('Không thể tải danh sách đơn hàng');
-            }
-        }
-
-        function renderOrders(orders) {
-            const tbody = document.getElementById('orders-tbody');
-            
-            if (orders.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center">Không có đơn hàng nào</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = orders.map(order => `
-                <tr>
-                    <td><strong>${order.orderNumber || order._id.substring(0, 8)}</strong></td>
-                    <td>${order.user?.name || 'N/A'}<br><small>${order.user?.email || ''}</small></td>
-                    <td>${order.items?.length || 0} sản phẩm</td>
-                    <td><strong>${formatCurrency(order.total)}</strong></td>
-                    <td>
-                        <select onchange="updateOrderStatus('${order._id}', this.value)" class="status-select">
-                            <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Chờ xử lý</option>
-                            <option value="confirmed" ${order.status === 'confirmed' ? 'selected' : ''}>Đã xác nhận</option>
-                            <option value="processing" ${order.status === 'processing' ? 'selected' : ''}>Đang xử lý</option>
-                            <option value="shipping" ${order.status === 'shipping' ? 'selected' : ''}>Đang giao</option>
-                            <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Đã giao</option>
-                            <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Đã hủy</option>
-                        </select>
-                    </td>
-                    <td>${formatDate(order.createdAt)}</td>
-                    <td>
-                        <button class="btn-icon" onclick="viewOrder('${order._id}')" title="Xem">👁️</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        async function updateOrderStatus(orderId, newStatus) {
-            try {
-                const response = await fetch(`/api/orders/${orderId}/status`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ status: newStatus })
-                });
-
-                if (!response.ok) throw new Error('Failed to update status');
-
-                showSuccess('Cập nhật trạng thái thành công');
-            } catch (error) {
-                console.error('Error updating status:', error);
-                showError('Không thể cập nhật trạng thái');
-                loadOrders(currentPage);
-            }
-        }
-
-        async function viewOrder(orderId) {
-            try {
-                const response = await fetch(`/api/orders/${orderId}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const data = await response.json();
-                const order = data.data;
-
-                document.getElementById('order-detail').innerHTML = `
-                    <div style="padding: 20px;">
-                        <h3>Đơn hàng: ${order.orderNumber || order._id}</h3>
-                        <p><strong>Khách hàng:</strong> ${order.user?.name || 'N/A'}</p>
-                        <p><strong>Email:</strong> ${order.user?.email || 'N/A'}</p>
-                        <p><strong>Điện thoại:</strong> ${order.deliveryAddress?.phone || 'N/A'}</p>
-                        <p><strong>Địa chỉ:</strong> ${order.deliveryAddress?.address || 'N/A'}</p>
-                        <hr>
-                        <h4>Sản phẩm:</h4>
-                        <table class="admin-table">
-                            <thead>
-                                <tr>
-                                    <th>Tên</th>
-                                    <th>Số lượng</th>
-                                    <th>Giá</th>
-                                    <th>Tổng</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${order.items.map(item => `
-                                    <tr>
-                                        <td>${item.name}</td>
-                                        <td>${item.quantity}</td>
-                                        <td>${formatCurrency(item.price)}</td>
-                                        <td>${formatCurrency(item.subtotal)}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                        <hr>
-                        <p><strong>Tạm tính:</strong> ${formatCurrency(order.subtotal)}</p>
-                        <p><strong>Phí vận chuyển:</strong> ${formatCurrency(order.shippingFee)}</p>
-                        <p><strong>Giảm giá:</strong> ${formatCurrency(order.discount || 0)}</p>
-                        <h3><strong>Tổng cộng:</strong> ${formatCurrency(order.total)}</h3>
-                    </div>
-                `;
-
-                document.getElementById('order-modal').style.display = 'flex';
-            } catch (error) {
-                console.error('Error loading order:', error);
-                showError('Không thể tải chi tiết đơn hàng');
-            }
-        }
-
-        function closeModal() {
-            document.getElementById('order-modal').style.display = 'none';
-        }
-
-        function formatCurrency(amount) {
-            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
-        }
-
-        function formatDate(dateString) {
-            return new Date(dateString).toLocaleString('vi-VN');
-        }
-
-        function showSuccess(message) {
-            alert('✅ ' + message);
-        }
-
-        function showError(message) {
-            alert('❌ ' + message);
-        }
-
-        function renderPagination(current, total) {
-            const container = document.getElementById('pagination');
-            if (total <= 1) {
-                container.innerHTML = '';
-                return;
-            }
-
-            let html = '';
-            for (let i = 1; i <= total; i++) {
-                html += `<button class="btn ${i === current ? 'btn-primary' : 'btn-secondary'}" 
-                                onclick="loadOrders(${i})">${i}</button>`;
-            }
-            container.innerHTML = html;
-        }
-
-        document.getElementById('filter-status').addEventListener('change', () => loadOrders(1));
-        document.getElementById('search-input').addEventListener('input', () => loadOrders(1));
-
-        window.onclick = function(event) {
-            const modal = document.getElementById('order-modal');
-            if (event.target === modal) {
-                closeModal();
-            }
-        }
-
-        loadOrders(1);
-    </script>
-
+    <script src="/admin/ad%20js/sidebar-toggle.js"></script>
+    <script src="/admin/ad%20js/api.js"></script>
+    <script src="/admin/ad%20js/orders.js"></script>
 </body>
 </html>

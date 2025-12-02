@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Kho hàng - Admin DH Pharmacy</title>
+    <link rel="stylesheet" href="/admin/ad%20css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <h2>💊 DH Pharmacy</h2>
+                <p>Admin Panel</p>
+            </div>
+            <nav class="admin-nav">
+                <a href="dashboard.html">📊 Dashboard</a>
+                <a href="products.html">💊 Sản phẩm</a>
+                <a href="orders.html">📦 Đơn hàng</a>
+                <a href="users.html">👥 Người dùng</a>
+                <a href="prescriptions.html">📋 Đơn thuốc</a>
+                <a href="inventory.html" class="active">📦 Kho hàng</a>
+                <a href="reports.html">📊 Báo cáo</a>
+                <a href="/pages/index.html" class="home-link">🏠 Trang chủ</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-content">
+            <div class="admin-header">
+                <h1>Quản lý Kho hàng</h1>
+                <button class="btn btn-primary" onclick="showImportModal()">
+                    ➕ Nhập hàng
+                </button>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📦</div>
+                    <div class="stat-info">
+                        <h3>Tổng sản phẩm</h3>
+                        <p class="stat-value" id="total-products">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⚠️</div>
+                    <div class="stat-info">
+                        <h3>Sắp hết hàng</h3>
+                        <p class="stat-value" id="low-stock">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">❌</div>
+                    <div class="stat-info">
+                        <h3>Hết hàng</h3>
+                        <p class="stat-value" id="out-of-stock">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏰</div>
+                    <div class="stat-info">
+                        <h3>Sắp hết hạn</h3>
+                        <p class="stat-value" id="expiring-soon">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters-section">
+                <input type="text" id="search-input" placeholder="Tìm kiếm sản phẩm..." class="search-input">
+                <select id="stock-filter" class="filter-select">
+                    <option value="">Tất cả</option>
+                    <option value="in-stock">Còn hàng</option>
+                    <option value="low-stock">Sắp hết</option>
+                    <option value="out-of-stock">Hết hàng</option>
+                </select>
+                <select id="category-filter" class="filter-select">
+                    <option value="">Tất cả danh mục</option>
+                </select>
+            </div>
+
+            <!-- Inventory Table -->
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>Danh mục</th>
+                            <th>Tồn kho</th>
+                            <th>Giá</th>
+                            <th>Hạn sử dụng</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventory-table">
+                        <tr><td colspan="7" class="text-center">Đang tải...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Import Stock Modal -->
+    <div id="import-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Nhập hàng</h2>
+                <span class="close" onclick="closeImportModal()">&times;</span>
+            </div>
+            <form id="import-form" class="modal-body">
+                <div class="form-group">
+                    <label>Sản phẩm</label>
+                    <select id="import-product" required>
+                        <option value="">Chọn sản phẩm</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Số lượng nhập</label>
+                    <input type="number" id="import-quantity" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label>Hạn sử dụng</label>
+                    <input type="date" id="import-expiry" required>
+                </div>
+                <div class="form-group">
+                    <label>Ghi chú</label>
+                    <textarea id="import-note" rows="3"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeImportModal()">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Nhập hàng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/admin/ad%20js/sidebar-toggle.js"></script>
+    <script src="/admin/ad%20js/api.js"></script>
+    <script src="/admin/ad%20js/inventory.js"></script>
+</body>
+</html>

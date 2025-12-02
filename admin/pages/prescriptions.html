@@ -3,201 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Đơn thuốc - DH Pharmacy</title>
-    <link rel="stylesheet" href="../ad css/main.css">
-    <link rel="stylesheet" href="../ad css/responsive.css">
+    <title>Quản lý Đơn thuốc - Admin DH Pharmacy</title>
+    <link rel="stylesheet" href="/admin/ad%20css/main.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Các style chung */
-        :root {
-            --primary-color: #007bff;
-            --text-dark: #2C3E50;
-            --text-light: #6c757d;
-            --border-color: #dee2e6;
-            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-            --transition: all 0.3s ease;
-            --success-color: #28a745;
-            --warning-color: #ffc107;
-            --danger-color: #dc3545;
-            --info-color: #17a2b8; /* Màu xanh da trời nhạt */
-        }
-        .admin-sidebar {
-            width: 250px;
-            background: var(--text-dark);
-            color: white;
-            min-height: 100vh;
-            position: fixed;
-            left: 0;
-            top: 0;
-            padding: 24px;
-        }
-        .admin-content {
-            margin-left: 250px;
-            padding: 24px;
-        }
-        .admin-sidebar a {
-            display: block;
-            color: rgba(255,255,255,0.8);
-            padding: 12px;
-            margin-bottom: 8px;
-            border-radius: 8px;
-            transition: var(--transition);
-        }
-        .admin-sidebar a:hover, .admin-sidebar a.active {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        /* Style cho các control và bảng */
-        .controls-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
-        .search-input {
-            padding: 10px 15px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            width: 300px;
-        }
-        
-        .prescriptions-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: var(--shadow-md);
-        }
-
-        .prescriptions-table th, .prescriptions-table td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .prescriptions-table th {
-            background-color: #f8f9fa;
-            font-weight: 600;
-            color: var(--text-dark);
-        }
-
-        .prescriptions-table tr:hover {
-            background-color: #f1f1f1;
-        }
-        
-        .action-btn {
-            background: none;
-            border: none;
-            color: var(--primary-color);
-            cursor: pointer;
-            padding: 4px 8px;
-            margin-right: 4px;
-            border-radius: 4px;
-            transition: var(--transition);
-        }
-        .action-btn:hover {
-            background: rgba(0, 123, 255, 0.1);
-        }
-
-        /* Style cho trạng thái đơn thuốc (badge) */
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 16px;
-            font-size: 12px;
-            font-weight: 500;
-            text-transform: capitalize;
-        }
-        .badge-pending { background-color: var(--warning-color); color: var(--text-dark); }
-        .badge-approved { background-color: var(--success-color); color: white; }
-        .badge-rejected { background-color: var(--danger-color); color: white; }
-        .badge-processing { background-color: var(--info-color); color: white; }
-    </style>
 </head>
 <body>
-    <div class="admin-sidebar">
-        <h2 style="margin-bottom: 32px; color: white;">💊 DH Pharmacy</h2>
-        <a href="dashboard.html">📊 Dashboard</a>
-        <a href="products.html">💊 Sản phẩm</a>
-        <a href="orders.html">📦 Đơn hàng</a>
-        <a href="users.html">👥 Khách hàng</a>
-        <a href="prescriptions.html" class="active">📋 Đơn thuốc</a> <a href="index.html" style="margin-top: 32px;">🏠 Về trang chủ</a>
-    </div>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <h2>💊 DH Pharmacy</h2>
+                <p>Admin Panel</p>
+            </div>
+            <nav class="admin-nav">
+                <a href="dashboard.html">📊 Dashboard</a>
+                <a href="products.html">💊 Sản phẩm</a>
+                <a href="orders.html">📦 Đơn hàng</a>
+                <a href="users.html">👥 Người dùng</a>
+                <a href="prescriptions.html" class="active">📋 Đơn thuốc</a>
+                <a href="inventory.html">📦 Kho hàng</a>
+                <a href="suppliers.html">🏢 Nhà cung cấp</a>
+                <a href="promotions.html">🎁 Khuyến mãi</a>
+                <a href="reports.html">📊 Báo cáo</a>
+                <a href="/pages/index.html" class="home-link">🏠 Trang chủ</a>
+            </nav>
+        </aside>
 
-    <div class="admin-content">
-        <h1 style="margin-bottom: 30px;">Quản lý Đơn thuốc</h1>
-
-        <div class="controls-bar">
-            <input type="text" class="search-input" placeholder="Tìm kiếm theo mã đơn, tên khách hàng...">
-            <button class="btn btn-primary">+ Thêm đơn thuốc thủ công</button> 
+        <!-- Main Content -->
+        <main class="admin-content">
+            <div class="admin-header">
+                <h1>Quản lý Đơn thuốc</h1>
+                <div class="header-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Chờ duyệt</span>
+                        <span class="stat-value" id="pending-count">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Đã duyệt</span>
+                        <span class="stat-value" id="approved-count">0</span>
+                    </div>
+                </div>
             </div>
 
-        <div class="card" style="padding: 0;">
-            <table class="prescriptions-table">
-                <thead>
-                    <tr>
-                        <th>Mã Đơn</th>
-                        <th>Khách hàng</th>
-                        <th>Ngày gửi</th>
-                        <th>Trạng thái</th>
-                        <th>Bác sĩ/Nguồn</th>
-                        <th>Hành động</th>
-                    </tr>
-                </thead>
-                <tbody id="prescriptions-list">
-                    <tr>
-                        <td>P001</td>
-                        <td>Nguyễn Văn A</td>
-                        <td>22/11/2025</td>
-                        <td><span class="badge badge-pending">Chờ xử lý</span></td>
-                        <td>Upload từ app</td>
-                        <td>
-                            <button class="action-btn">Xem ảnh</button>
-                            <button class="action-btn" style="color: var(--success-color);">Phê duyệt</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>P002</td>
-                        <td>Phạm Thị B</td>
-                        <td>21/11/2025</td>
-                        <td><span class="badge badge-approved">Đã phê duyệt</span></td>
-                        <td>Bệnh viện X</td>
-                        <td>
-                            <button class="action-btn">Tạo đơn hàng</button>
-                            <button class="action-btn">Chi tiết</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>P003</td>
-                        <td>Trần Minh C</td>
-                        <td>20/11/2025</td>
-                        <td><span class="badge badge-rejected">Đã từ chối</span></td>
-                        <td>Upload từ web</td>
-                        <td>
-                            <button class="action-btn">Chi tiết</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>P004</td>
-                        <td>Lê Thu D</td>
-                        <td>19/11/2025</td>
-                        <td><span class="badge badge-processing">Đang xử lý</span></td>
-                        <td>Upload từ web</td>
-                        <td>
-                            <button class="action-btn">Xem ảnh</button>
-                            <button class="action-btn">Chi tiết</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <!-- Filters -->
+            <div class="filters-section">
+                <input type="text" id="search-input" placeholder="Tìm kiếm theo tên bệnh nhân..." class="search-input">
+                <select id="status-filter" class="filter-select">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="pending">Chờ duyệt</option>
+                    <option value="approved">Đã duyệt</option>
+                    <option value="rejected">Từ chối</option>
+                </select>
+                <input type="date" id="date-filter" class="filter-input">
+            </div>
 
-        </div>
+            <!-- Prescriptions Table -->
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Mã đơn</th>
+                            <th>Bệnh nhân</th>
+                            <th>Bác sĩ</th>
+                            <th>Ngày kê</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="prescriptions-table">
+                        <tr>
+                            <td colspan="6" class="text-center">Đang tải...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-    <script src="../ad js/api.js"></script>
-    <script src="../ad js/prescriptions.js"></script>
+            <!-- Pagination -->
+            <div class="pagination-container">
+                <div class="pagination-info">
+                    Hiển thị <span id="showing-from">0</span> - <span id="showing-to">0</span> 
+                    trong tổng số <span id="total-prescriptions">0</span> đơn thuốc
+                </div>
+                <div class="pagination" id="pagination"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Prescription Detail Modal -->
+    <div id="prescription-modal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Chi tiết đơn thuốc</h2>
+                <span class="close" onclick="closePrescriptionModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="prescription-detail">
+                <!-- Prescription details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="/admin/ad%20js/sidebar-toggle.js"></script>
+    <script src="/admin/ad%20js/api.js"></script>
+    <script src="/admin/ad%20js/prescriptions.js"></script>
 </body>
 </html>
