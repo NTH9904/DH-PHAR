@@ -136,7 +136,7 @@ async function loadProductDetail() {
                                 <h3 style="margin-bottom: 16px; color: var(--primary-color);">📋 Thông tin sản phẩm</h3>
                                 <table style="width: 100%;">
                                     <tr>
-                                        <td style="padding: 12px 0; font-weight: 600; color: #495057; width: 40%;">Hoạt chất:</td>
+                                        <td style="padding: 12px 0; font-weight: 600; color: #495057; width: 40%;">Thành phần:</td>
                                         <td style="padding: 12px 0; color: #212529;">${product.genericName || 'N/A'}</td>
                                     </tr>
                                     <tr style="border-top: 1px solid #e9ecef;">

@@ -103,7 +103,7 @@ async function viewProduct(id) {
                 <div>
                     <h3 style="margin-bottom: 12px; color: #2C3E50; font-size: 18px;">${product.name}</h3>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; font-size: 14px;">
-                        <p><strong>Hoạt chất:</strong> ${product.genericName || 'N/A'}</p>
+                        <p><strong>Thành phần:</strong> ${product.genericName || 'N/A'}</p>
                         <p><strong>Danh mục:</strong> ${product.category}</p>
                         <p><strong>Loại:</strong> ${getTypeLabel(product.type)}</p>
                         <p><strong>Giá:</strong> <span style="color: #3498DB; font-weight: 700;">${formatCurrency(product.price)}</span></p>
@@ -114,6 +114,7 @@ async function viewProduct(id) {
                     </div>
                     ${product.description ? `<p style="margin-top: 12px; font-size: 14px;"><strong>Mô tả:</strong> ${product.description}</p>` : ''}
                     ${product.dosage ? `<p style="margin-top: 8px; font-size: 14px;"><strong>Liều dùng:</strong> ${product.dosage}</p>` : ''}
+                    ${product.usage?.instructions || product.usage ? `<p style="margin-top: 8px; font-size: 14px;"><strong>Cách dùng:</strong> ${product.usage?.instructions || product.usage}</p>` : ''}
                 </div>
             </div>
         `;

@@ -233,14 +233,16 @@ body {
 
 .stat-card {
   background: white;
-  padding: 28px;
+  padding: 24px;
   border-radius: 16px;
   box-shadow: var(--shadow-md);
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
   transition: var(--transition);
   border: 1px solid transparent;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .stat-card:hover {
@@ -257,6 +259,8 @@ body {
 
 .stat-info {
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .stat-info h3 {
@@ -269,11 +273,14 @@ body {
 }
 
 .stat-info .stat-value {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 700;
   color: var(--text-dark);
   margin-bottom: 6px;
-  line-height: 1;
+  line-height: 1.1;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
 }
 
 .stat-change {

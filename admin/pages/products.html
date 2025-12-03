@@ -44,11 +44,6 @@
                     <input type="text" id="search-input" placeholder="Tìm kiếm sản phẩm..." class="search-input">
                     <select id="category-filter" class="filter-select">
                         <option value="">Tất cả danh mục</option>
-                        <option value="thuoc-khang-sinh">Thuốc kháng sinh</option>
-                        <option value="thuoc-giam-dau">Thuốc giảm đau</option>
-                        <option value="vitamin">Vitamin & Thực phẩm chức năng</option>
-                        <option value="thuoc-tieu-hoa">Thuốc tiêu hóa</option>
-                        <option value="thuoc-cam-cum">Thuốc cảm cúm</option>
                     </select>
                     <select id="type-filter" class="filter-select">
                         <option value="">Tất cả loại</option>
@@ -115,8 +110,8 @@
                         <input type="text" id="product-name" name="name" required>
                     </div>
                     <div class="form-group">
-                        <label for="product-generic-name">Tên hoạt chất *</label>
-                        <input type="text" id="product-generic-name" name="genericName" required>
+                        <label for="product-generic-name">Thành phần *</label>
+                        <input type="text" id="product-generic-name" name="genericName" required placeholder="Paracetamol 500mg, Caffeine 30mg...">
                     </div>
                 </div>
 
@@ -125,11 +120,6 @@
                         <label for="product-category">Danh mục *</label>
                         <select id="product-category" name="category" required>
                             <option value="">Chọn danh mục</option>
-                            <option value="thuoc-khang-sinh">Thuốc kháng sinh</option>
-                            <option value="thuoc-giam-dau">Thuốc giảm đau</option>
-                            <option value="vitamin">Vitamin & Thực phẩm chức năng</option>
-                            <option value="thuoc-tieu-hoa">Thuốc tiêu hóa</option>
-                            <option value="thuoc-cam-cum">Thuốc cảm cúm</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -175,9 +165,15 @@
                     <textarea id="product-indications" name="indications" rows="3" placeholder="Giảm đau&#10;Hạ sốt&#10;Chống viêm"></textarea>
                 </div>
 
-                <div class="form-group">
-                    <label for="product-dosage">Liều dùng</label>
-                    <textarea id="product-dosage" name="dosage" rows="2" placeholder="Người lớn: 1-2 viên/lần, 2-3 lần/ngày"></textarea>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="product-dosage">Liều dùng</label>
+                        <textarea id="product-dosage" name="dosage" rows="2" placeholder="Người lớn: 1-2 viên/lần, 2-3 lần/ngày"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-usage">Cách dùng</label>
+                        <textarea id="product-usage" name="usage" rows="2" placeholder="Uống sau ăn, ngậm dưới lưỡi, bôi ngoài da..."></textarea>
+                    </div>
                 </div>
 
                 <div class="form-row">
@@ -245,6 +241,7 @@
     </div>
 
     <script src="/admin/ad%20js/sidebar-toggle.js"></script>
+    <script src="/admin/ad%20js/auto-refresh.js"></script>
     <script src="/admin/ad%20js/api.js"></script>
     <script src="/admin/ad%20js/products.js"></script>
     

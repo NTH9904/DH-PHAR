@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Danh sách các từ khóa gợi ý sẽ được 'đánh máy'
     const words = [
         "Tìm kiếm thuốc ho,cảm cúm.....",
-        "Tìm kiếm hoạt chất Paracetamol......",
+        "Tìm kiếm thành phần Paracetamol......",
         "Tìm kiếm triệu chứng đau đầu.....",
         "Tìm kiếm vitamin, thực phẩm chức năng....."
     ];

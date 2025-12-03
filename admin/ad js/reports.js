@@ -283,7 +283,14 @@ function renderTopProductsTable(orders, products) {
 }
 
 function formatCurrency(amount) {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+    if (amount >= 1000000000) {
+        return (amount / 1000000000).toFixed(1) + ' tỷ đ';
+    } else if (amount >= 1000000) {
+        return (amount / 1000000).toFixed(1) + ' tr đ';
+    } else if (amount >= 1000) {
+        return (amount / 1000).toFixed(0) + 'k đ';
+    }
+    return new Intl.NumberFormat('vi-VN').format(amount) + ' đ';
 }
 
 function exportReport() {

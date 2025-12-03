@@ -13,8 +13,73 @@ if (!token || user.role !== 'admin') {
     window.location.href = '/pages/login.html';
 }
 
+// Load categories from API
+async function loadCategories() {
+    try {
+        const response = await fetch('/api/products/categories', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        
+        if (data.success) {
+            const categories = data.data || [];
+            
+            // Update filter dropdown
+            const filterSelect = document.getElementById('category-filter');
+            filterSelect.innerHTML = '<option value="">Tất cả danh mục</option>';
+            
+            // Update form dropdown
+            const formSelect = document.getElementById('product-category');
+            formSelect.innerHTML = '<option value="">Chọn danh mục</option>';
+            
+            // Add categories to both dropdowns
+            categories.forEach(category => {
+                // Filter dropdown
+                const filterOption = document.createElement('option');
+                filterOption.value = category;
+                filterOption.textContent = category;
+                filterSelect.appendChild(filterOption);
+                
+                // Form dropdown
+                const formOption = document.createElement('option');
+                formOption.value = category;
+                formOption.textContent = category;
+                formSelect.appendChild(formOption);
+            });
+        }
+    } catch (error) {
+        console.error('Error loading categories:', error);
+        // Fallback categories if API fails (match API response order)
+        const fallbackCategories = [
+            'Kháng sinh',
+            'Thuốc cảm', 
+            'Thuốc giảm đau, hạ sốt',
+            'Thuốc ho',
+            'Thực phẩm chức năng'
+        ];
+        
+        const filterSelect = document.getElementById('category-filter');
+        const formSelect = document.getElementById('product-category');
+        
+        fallbackCategories.forEach(category => {
+            // Filter dropdown
+            const filterOption = document.createElement('option');
+            filterOption.value = category;
+            filterOption.textContent = category;
+            filterSelect.appendChild(filterOption);
+            
+            // Form dropdown
+            const formOption = document.createElement('option');
+            formOption.value = category;
+            formOption.textContent = category;
+            formSelect.appendChild(formOption);
+        });
+    }
+}
+
 // Load products on page load
 document.addEventListener('DOMContentLoaded', function() {
+    loadCategories();
     loadProducts();
     setupEventListeners();
 });
@@ -223,6 +288,7 @@ async function loadProductForEdit(productId) {
         document.getElementById('product-dosage').value = product.dosage || '';
         document.getElementById('product-package-size').value = product.specifications?.packageSize || '';
         document.getElementById('product-unit').value = product.specifications?.unit || '';
+        document.getElementById('product-usage').value = product.usage?.instructions || product.usage || '';
         document.getElementById('product-featured').checked = product.isFeatured || false;
         
         // Load image if exists
@@ -257,6 +323,9 @@ async function handleProductSubmit(e) {
             description: formData.get('description'),
             indications: formData.get('indications') ? formData.get('indications').split('\n').filter(i => i.trim()) : [],
             dosage: formData.get('dosage'),
+            usage: {
+                instructions: formData.get('usage')
+            },
             specifications: {
                 packageSize: formData.get('packageSize'),
                 unit: formData.get('unit')
