@@ -184,6 +184,7 @@ function showImportModal() {
     select.innerHTML = '<option value="">Chọn sản phẩm</option>' +
         products.map(p => `<option value="${p._id}">${p.name}</option>`).join('');
     
+    // Default is 12 months (already selected in HTML)
     modal.classList.add('show');
 }
 
@@ -197,7 +198,12 @@ document.getElementById('import-form').addEventListener('submit', async (e) => {
     
     const productId = document.getElementById('import-product').value;
     const quantity = parseInt(document.getElementById('import-quantity').value);
-    const expiryDate = document.getElementById('import-expiry').value;
+    const expiryMonths = parseInt(document.getElementById('import-expiry').value);
+    
+    // Calculate expiry date from months
+    const today = new Date();
+    const expiryDate = new Date(today.setMonth(today.getMonth() + expiryMonths));
+    const expiryDateString = expiryDate.toISOString().split('T')[0];
     
     try {
         const product = products.find(p => p._id === productId);
@@ -213,7 +219,7 @@ document.getElementById('import-form').addEventListener('submit', async (e) => {
                 stock: newStock,
                 specifications: {
                     ...product.specifications,
-                    expiryDate: expiryDate
+                    expiryDate: expiryDateString
                 }
             })
         });
