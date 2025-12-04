@@ -32,9 +32,20 @@ body::before {
   backdrop-filter: none;
   z-index: -1;
 }
-/* Make all common blocks fully transparent */
- .header-top, .header-main,
- .footer-content, .footer-section,
+/* Hide header-top */
+.header-top {
+  display: none !important;
+}
+
+/* Make header solid white */
+.header-main,
+.header-nav {
+  background: white !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Make other blocks transparent */
+.footer-content, .footer-section,
 .section, .hero, .features, .why-choose,
 .card, .product-card, .product-card-body,
 .grid, .grid-2, .grid-3, .grid-4 {
@@ -49,9 +60,44 @@ body, h1 {
   text-shadow: 0 0 4px rgba(0,0,0,0.8);
 }
 
+/* Header text normal - override transparent styles */
+.header .logo,
+.header .header-search input,
+.header .header-search button,
+.header .header-actions a {
+  background: transparent !important;
+  text-shadow: none !important;
+}
+
+.header .logo span,
+.header .header-actions span {
+  display: inline-block !important;
+  padding: inherit !important;
+  color: inherit !important;
+}
+
+/* Navigation menu - black text */
+.header-nav {
+  display: block !important;
+}
+
+.header-nav a {
+  background: transparent !important;
+  color: #2C3E50 !important;
+  text-shadow: none !important;
+  display: block !important;
+  padding: 16px 8px !important;
+  border-radius: 0 !important;
+}
+
+.header-nav a:hover,
+.header-nav a.active {
+  color: var(--primary-color) !important;
+}
+
 /* Wrap all text inside small white boxes for readability */
-  h4, h5, h6,
-.nav-link, .header *, .card *, .product-card * {
+h4, h5, h6,
+.card *, .product-card * {
   background: rgba(255, 255, 255, 0.85) !important;
   color: #000 !important;
   padding: 4px 8px;
@@ -76,29 +122,31 @@ body, h1 {
                     <span>💊</span>
                     <span>DH Pharmacy</span>
                 </a>
-                <div class="search-bar">
-                    <form>
-                        <div class="input-search">
-                            <input type="text" placeholder="Tìm kiếm thuốc, hoạt chất, triệu chứng...">
-                        </div>
-                        <div class="submit-button">
-                        </div>
-                    </form>
+                
+                <div class="header-search">
+                    <input type="text" id="header-search-input" placeholder="Mua thuốc, thực phẩm chức năng...">
+                    <button type="button" onclick="performSearch()">🔍</button>
                 </div>
-                <nav class="nav">
-                    <a href="/pages/index.html" class="nav-link">Trang chủ</a>
-                    <a href="/pages/products.html" class="nav-link">Sản phẩm</a>
-                    <a href="/pages/consultation.html" class="nav-link">Tư vấn</a>
-                    <a href="/pages/about.html" class="nav-link">Giới thiệu</a>
-                    <div class="cart-icon">
-                        <a href="/pages/cart.html" class="nav-link">🛒 Giỏ hàng</a>
-                        <span class="cart-badge">0</span>
-                    </div>
-                    <div class="user-menu">
-                        <a href="/pages/login.html" class="nav-link">Đăng nhập</a>
-                        <a href="/pages/register.html" class="nav-link">Đăng ký</a>
-                    </div>
-                </nav>
+                
+                <div class="header-actions">
+                    <a href="/pages/account.html" class="header-user-icon" id="header-user-link">
+                        <span>👤</span>
+                    </a>
+                    <a href="/pages/cart.html" class="header-cart-icon">
+                        <span>🛒</span>
+                        <span>Giỏ hàng</span>
+                        <span class="header-cart-badge">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="header-nav">
+            <div class="container">
+                <a href="/pages/index.html">Trang chủ</a>
+                <a href="/pages/products.html">Sản phẩm</a>
+                <a href="/pages/consultation.html" class="active">Tư vấn</a>
+                <a href="/pages/about.html">Giới thiệu</a>
             </div>
         </div>
     </header>
@@ -189,6 +237,7 @@ body, h1 {
     </footer>
 
     <script src="/js/api.js"></script>
+    <script src="/js/header-menu.js"></script>
     <script src="/js/main.js"></script>
     <script src="/js/zalo-chat.js"></script>
 </body>

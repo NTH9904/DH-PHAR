@@ -122,6 +122,8 @@ app.use('/api/orders', require('./backend/routes/orders'));
 app.use('/api/users', require('./backend/routes/users'));
 app.use('/api/prescriptions', require('./backend/routes/prescriptions'));
 app.use('/api/upload', require('./backend/routes/upload'));
+app.use('/api/stats', require('./backend/routes/stats'));
+app.use('/api/reports', require('./backend/routes/reports'));
 
 // Dev-only debug routes
 if (process.env.NODE_ENV !== 'production') {

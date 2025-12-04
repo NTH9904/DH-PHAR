@@ -1,8 +1,10 @@
 // Auto-refresh functionality for admin pages
 (function() {
     // Configuration
-    const REFRESH_INTERVAL = 30000; // 30 seconds
+    const REFRESH_INTERVAL = 60000; // 60 seconds (increased to reduce 429 errors)
     const NOTIFICATION_SOUND = true;
+    const MAX_RETRIES = 3;
+    let retryCount = 0;
     
     let lastOrderCount = 0;
     let lastPendingCount = 0;
@@ -120,6 +122,11 @@
         
         const token = localStorage.getItem('token');
         if (!token) return;
+        
+        // Don't auto-refresh on products page to avoid conflicts
+        if (window.location.pathname.includes('products.html')) {
+            return;
+        }
 
         try {
             // Check orders
@@ -127,13 +134,33 @@
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             
+            // Handle 429 Too Many Requests
+            if (ordersRes.status === 429) {
+                console.warn('Auto-refresh: Rate limited, increasing interval');
+                retryCount++;
+                if (retryCount >= MAX_RETRIES) {
+                    stopAutoRefresh();
+                    showNotification('⚠️ Tạm dừng tự động cập nhật do quá nhiều request', 'warning');
+                }
+                return;
+            }
+            
             if (!ordersRes.ok) {
                 console.warn('Auto-refresh: Orders API not available');
                 return;
             }
             
+            // Reset retry count on success
+            retryCount = 0;
+            
             if (ordersRes.ok) {
-                const ordersData = await ordersRes.json();
+                let ordersData;
+                try {
+                    ordersData = await ordersRes.json();
+                } catch (jsonError) {
+                    console.warn('Auto-refresh: Invalid JSON response from orders API');
+                    return;
+                }
                 const currentOrderCount = ordersData.total || 0;
                 
                 // New order detected
@@ -165,13 +192,25 @@
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             
+            // Handle 429 Too Many Requests
+            if (pendingRes.status === 429) {
+                console.warn('Auto-refresh: Rate limited on pending orders');
+                return;
+            }
+            
             if (!pendingRes.ok) {
                 console.warn('Auto-refresh: Pending orders API not available');
                 return;
             }
             
             if (pendingRes.ok) {
-                const pendingData = await pendingRes.json();
+                let pendingData;
+                try {
+                    pendingData = await pendingRes.json();
+                } catch (jsonError) {
+                    console.warn('Auto-refresh: Invalid JSON response from pending API');
+                    return;
+                }
                 const currentPendingCount = pendingData.total || 0;
                 
                 // Update pending count if element exists

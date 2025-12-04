@@ -1,11 +1,8 @@
-// Check authentication
+
+
+// Get auth info (auth check is done in common.js)
 const token = localStorage.getItem('token');
 const user = JSON.parse(localStorage.getItem('user') || '{}');
-
-if (!token || user.role !== 'admin') {
-    alert('Bạn cần đăng nhập với tài khoản admin');
-    window.location.href = '/pages/login.html';
-}
 
 let products = [];
 let categories = [];
@@ -187,11 +184,11 @@ function showImportModal() {
     select.innerHTML = '<option value="">Chọn sản phẩm</option>' +
         products.map(p => `<option value="${p._id}">${p.name}</option>`).join('');
     
-    modal.style.display = 'block';
+    modal.classList.add('show');
 }
 
 function closeImportModal() {
-    document.getElementById('import-modal').style.display = 'none';
+    document.getElementById('import-modal').classList.remove('show');
     document.getElementById('import-form').reset();
 }
 
@@ -308,3 +305,4 @@ document.getElementById('category-filter').addEventListener('change', renderInve
 
 // Initialize
 loadInventory();
+// Logout function is defined in common.js

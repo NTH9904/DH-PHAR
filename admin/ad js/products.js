@@ -3,6 +3,7 @@ let currentPage = 1;
 let totalPages = 1;
 let currentFilters = {};
 let editingProductId = null;
+let loadProductsTimeout = null;
 
 // Check authentication
 const token = localStorage.getItem('token');
@@ -13,39 +14,38 @@ if (!token || user.role !== 'admin') {
     window.location.href = '/pages/login.html';
 }
 
+// Cache for categories
+let categoriesCache = null;
+let categoriesCacheTime = 0;
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
 // Load categories from API
 async function loadCategories() {
+    // Use cache if available and fresh
+    if (categoriesCache && (Date.now() - categoriesCacheTime < CACHE_DURATION)) {
+        populateCategoryDropdowns(categoriesCache);
+        return;
+    }
+    
     try {
         const response = await fetch('/api/products/categories', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
+        
+        if (!response.ok) {
+            throw new Error('Failed to load categories');
+        }
+        
         const data = await response.json();
         
         if (data.success) {
             const categories = data.data || [];
             
-            // Update filter dropdown
-            const filterSelect = document.getElementById('category-filter');
-            filterSelect.innerHTML = '<option value="">Tất cả danh mục</option>';
+            // Cache the categories
+            categoriesCache = categories;
+            categoriesCacheTime = Date.now();
             
-            // Update form dropdown
-            const formSelect = document.getElementById('product-category');
-            formSelect.innerHTML = '<option value="">Chọn danh mục</option>';
-            
-            // Add categories to both dropdowns
-            categories.forEach(category => {
-                // Filter dropdown
-                const filterOption = document.createElement('option');
-                filterOption.value = category;
-                filterOption.textContent = category;
-                filterSelect.appendChild(filterOption);
-                
-                // Form dropdown
-                const formOption = document.createElement('option');
-                formOption.value = category;
-                formOption.textContent = category;
-                formSelect.appendChild(formOption);
-            });
+            populateCategoryDropdowns(categories);
         }
     } catch (error) {
         console.error('Error loading categories:', error);
@@ -58,21 +58,33 @@ async function loadCategories() {
             'Thực phẩm chức năng'
         ];
         
-        const filterSelect = document.getElementById('category-filter');
-        const formSelect = document.getElementById('product-category');
-        
-        fallbackCategories.forEach(category => {
-            // Filter dropdown
-            const filterOption = document.createElement('option');
-            filterOption.value = category;
-            filterOption.textContent = category;
-            filterSelect.appendChild(filterOption);
-            
-            // Form dropdown
-            const formOption = document.createElement('option');
-            formOption.value = category;
-            formOption.textContent = category;
-            formSelect.appendChild(formOption);
+        populateCategoryDropdowns(fallbackCategories);
+    }
+}
+
+// Helper function to populate category dropdowns
+function populateCategoryDropdowns(categories) {
+    // Update filter dropdown
+    const filterSelect = document.getElementById('category-filter');
+    if (filterSelect) {
+        filterSelect.innerHTML = '<option value="">Tất cả danh mục</option>';
+        categories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category;
+            option.textContent = category;
+            filterSelect.appendChild(option);
+        });
+    }
+    
+    // Update form dropdown
+    const formSelect = document.getElementById('product-category');
+    if (formSelect) {
+        formSelect.innerHTML = '<option value="">Chọn danh mục</option>';
+        categories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category;
+            option.textContent = category;
+            formSelect.appendChild(option);
         });
     }
 }
@@ -86,24 +98,41 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function setupEventListeners() {
     // Search input
-    document.getElementById('search-input').addEventListener('input', debounce(function() {
-        currentFilters.search = this.value;
-        currentPage = 1;
-        loadProducts();
-    }, 500));
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', debounce(function() {
+            currentFilters.search = this.value;
+            currentPage = 1;
+            loadProducts();
+        }, 500));
+    }
 
     // Filter selects
     ['category-filter', 'type-filter', 'stock-filter'].forEach(id => {
-        document.getElementById(id).addEventListener('change', function() {
-            const filterName = id.replace('-filter', '');
-            currentFilters[filterName] = this.value;
-            currentPage = 1;
-            loadProducts();
-        });
+        const element = document.getElementById(id);
+        if (element) {
+            element.addEventListener('change', function() {
+                const filterName = id.replace('-filter', '');
+                currentFilters[filterName] = this.value;
+                currentPage = 1;
+                loadProductsDebounced();
+            });
+        }
     });
 
     // Product form
-    document.getElementById('product-form').addEventListener('submit', handleProductSubmit);
+    const productForm = document.getElementById('product-form');
+    if (productForm) {
+        productForm.addEventListener('submit', handleProductSubmit);
+    }
+}
+
+// Debounced version of loadProducts
+function loadProductsDebounced() {
+    clearTimeout(loadProductsTimeout);
+    loadProductsTimeout = setTimeout(() => {
+        loadProducts();
+    }, 300);
 }
 
 async function loadProducts() {
@@ -152,11 +181,18 @@ function displayProducts(products) {
         return;
     }
 
-    tbody.innerHTML = products.map(product => `
+    tbody.innerHTML = products.map(product => {
+        const imageUrl = product.images && product.images[0] && product.images[0].url 
+            ? product.images[0].url 
+            : 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100"%3E%3Crect fill="%23f0f0f0" width="100" height="100"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" text-anchor="middle" dy=".3em" font-family="Arial" font-size="14"%3ENo Image%3C/text%3E%3C/svg%3E';
+        
+        return `
         <tr>
             <td>
-                <img src="${product.images && product.images[0] ? product.images[0].url : '/images/no-image.png'}" 
-                     alt="${product.name}" class="product-image">
+                <img src="${imageUrl}" 
+                     alt="${product.name}" 
+                     class="product-image"
+                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22100%22 height=%22100%22/%3E%3Ctext fill=%22%23999%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-family=%22Arial%22 font-size=%2214%22%3ENo Image%3C/text%3E%3C/svg%3E'">
             </td>
             <td>
                 <div class="product-info">
@@ -192,7 +228,8 @@ function displayProducts(products) {
                 </div>
             </td>
         </tr>
-    `).join('');
+    `;
+    }).join('');
 }
 
 function updatePagination(data) {
@@ -274,27 +311,51 @@ async function loadProductForEdit(productId) {
         const data = await response.json();
         const product = data.data;
         
-        // Fill form with product data
-        document.getElementById('product-name').value = product.name || '';
-        document.getElementById('product-generic-name').value = product.genericName || '';
-        document.getElementById('product-category').value = product.category || '';
-        document.getElementById('product-type').value = product.type || '';
-        document.getElementById('product-price').value = product.price || '';
-        document.getElementById('product-stock').value = product.stock || '';
-        document.getElementById('product-brand').value = product.brand || '';
-        document.getElementById('product-manufacturer').value = product.manufacturer || '';
-        document.getElementById('product-description').value = product.description || '';
-        document.getElementById('product-indications').value = product.indications ? product.indications.join('\n') : '';
-        document.getElementById('product-dosage').value = product.dosage || '';
-        document.getElementById('product-package-size').value = product.specifications?.packageSize || '';
-        document.getElementById('product-unit').value = product.specifications?.unit || '';
-        document.getElementById('product-usage').value = product.usage?.instructions || product.usage || '';
-        document.getElementById('product-featured').checked = product.isFeatured || false;
+        // Fill form with product data - with null checks
+        const setValueIfExists = (id, value) => {
+            const element = document.getElementById(id);
+            if (element) {
+                if (element.type === 'checkbox') {
+                    element.checked = value || false;
+                } else {
+                    element.value = value || '';
+                }
+            }
+        };
+        
+        setValueIfExists('product-name', product.name);
+        setValueIfExists('product-generic-name', product.genericName);
+        setValueIfExists('product-category', product.category);
+        setValueIfExists('product-type', product.type);
+        setValueIfExists('product-price', product.price);
+        setValueIfExists('product-stock', product.stock);
+        setValueIfExists('product-brand', product.brand);
+        setValueIfExists('product-manufacturer', product.manufacturer);
+        setValueIfExists('product-description', product.description);
+        setValueIfExists('product-indications', product.indications ? product.indications.join('\n') : '');
+        setValueIfExists('product-dosage', product.dosage);
+        setValueIfExists('product-package-size', product.specifications?.packageSize);
+        setValueIfExists('product-unit', product.specifications?.unit);
+        setValueIfExists('product-usage', product.usage?.instructions || product.usage);
+        setValueIfExists('product-featured', product.isFeatured);
+        
+        // Set expiry date
+        if (product.expiryDate) {
+            const date = new Date(product.expiryDate);
+            setValueIfExists('product-expiry', date.toISOString().split('T')[0]);
+        }
+        
+        // Set age groups (multiple select)
+        const ageGroups = product.usage?.ageGroups || [];
+        const ageGroupSelect = document.getElementById('product-age-group');
+        Array.from(ageGroupSelect.options).forEach(option => {
+            option.selected = ageGroups.includes(option.value);
+        });
         
         // Load image if exists
         const imageUrl = product.images?.[0]?.url || '';
         if (imageUrl) {
-            document.getElementById('product-image-url').value = imageUrl;
+            setValueIfExists('product-image-url', imageUrl);
             if (typeof showImagePreview === 'function') {
                 showImagePreview(imageUrl);
             }
@@ -311,6 +372,10 @@ async function handleProductSubmit(e) {
     
     try {
         const formData = new FormData(e.target);
+        // Get age groups (multiple select)
+        const ageGroupSelect = document.getElementById('product-age-group');
+        const selectedAgeGroups = Array.from(ageGroupSelect.selectedOptions).map(option => option.value);
+        
         const productData = {
             name: formData.get('name'),
             genericName: formData.get('genericName'),
@@ -324,12 +389,14 @@ async function handleProductSubmit(e) {
             indications: formData.get('indications') ? formData.get('indications').split('\n').filter(i => i.trim()) : [],
             dosage: formData.get('dosage'),
             usage: {
-                instructions: formData.get('usage')
+                instructions: formData.get('usage'),
+                ageGroups: selectedAgeGroups
             },
             specifications: {
                 packageSize: formData.get('packageSize'),
                 unit: formData.get('unit')
             },
+            expiryDate: formData.get('expiryDate') || null,
             isFeatured: formData.get('isFeatured') === 'on'
         };
         
