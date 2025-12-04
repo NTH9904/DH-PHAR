@@ -166,7 +166,7 @@ for (let i = 4; i <= 30; i++) {
 async function seedDatabase() {
   try {
     // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/dh-pharmacy', {
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/dh_pharmacy', {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });

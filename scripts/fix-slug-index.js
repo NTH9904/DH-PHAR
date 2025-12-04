@@ -6,7 +6,7 @@ const Product = require('../backend/models/Product');
 
 async function fixSlugIndex() {
   try {
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/dh-pharmacy', {
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/dh_pharmacy', {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });

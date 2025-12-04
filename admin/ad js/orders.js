@@ -8,8 +8,8 @@ let currentOrderId = null;
 const token = localStorage.getItem('token');
 const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-if (!token || user.role !== 'admin') {
-    alert('Bạn cần đăng nhập với tài khoản admin');
+if (!token || (user.role !== 'admin' && user.role !== 'pharmacist')) {
+    alert('Bạn cần đăng nhập với tài khoản admin hoặc dược sĩ');
     window.location.href = '/pages/login.html';
 }
 

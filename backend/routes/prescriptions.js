@@ -29,6 +29,52 @@ router.post('/upload', protect, upload.single('prescription'), async (req, res, 
   }
 });
 
+// @desc    Get all prescriptions (Admin/Pharmacist)
+// @route   GET /api/prescriptions/all
+// @access  Private/Pharmacist
+router.get('/all', protect, pharmacist, async (req, res, next) => {
+  try {
+    const { status, page = 1, limit = 20, search } = req.query;
+    
+    const query = {};
+    
+    // Filter by status
+    if (status) {
+      query.verificationStatus = status;
+    }
+    
+    // Search by patient name or doctor name
+    if (search) {
+      query.$or = [
+        { doctorName: { $regex: search, $options: 'i' } },
+        { hospitalName: { $regex: search, $options: 'i' } }
+      ];
+    }
+    
+    const skip = (page - 1) * limit;
+    
+    const prescriptions = await Prescription.find(query)
+      .populate('user', 'name email phone')
+      .populate('verifiedBy', 'name')
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .skip(skip);
+    
+    const total = await Prescription.countDocuments(query);
+    
+    res.json({
+      success: true,
+      count: prescriptions.length,
+      total,
+      page: parseInt(page),
+      pages: Math.ceil(total / limit),
+      data: prescriptions
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 // @desc    Get user prescriptions
 // @route   GET /api/prescriptions
 // @access  Private

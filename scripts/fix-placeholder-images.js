@@ -3,7 +3,7 @@ require('dotenv').config();
 
 const Product = require('../backend/models/Product');
 
-const mongoUri = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb://localhost:27017/dh-pharmacy';
+const mongoUri = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb://localhost:27017/dh_pharmacy';
 
 async function fixPlaceholderImages() {
   try {

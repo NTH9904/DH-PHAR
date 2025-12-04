@@ -62,7 +62,7 @@ FRONTEND_URL=http://localhost:3000
 
 # Database (chọn một trong hai)
 # Local MongoDB:
-MONGODB_URI=mongodb://localhost:27017/dh-pharmacy
+MONGODB_URI=mongodb://localhost:27017/dh_pharmacy
 
 # Hoặc MongoDB Atlas:
 # MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/dh-pharmacy

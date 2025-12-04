@@ -4,7 +4,7 @@ require('dotenv').config();
 
 async function updateProducts() {
     try {
-        await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/dh-pharmacy');
+        await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/dh_pharmacy');
         console.log('✅ Connected to MongoDB\n');
 
         // Update products with diseases and age groups

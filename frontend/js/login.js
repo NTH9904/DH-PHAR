@@ -12,12 +12,14 @@ async function handleLogin(e) {
         window.API.setToken(response.token);
         window.API.setCurrentUser(response.user);
 
-                // Redirect: prefer explicit `redirect` query param, otherwise send admins to admin dashboard
+                // Redirect: prefer explicit `redirect` query param, otherwise send to appropriate page
                 const redirectParam = new URLSearchParams(window.location.search).get('redirect');
                 if (redirectParam) {
                     window.location.href = redirectParam;
                 } else if (response.user && response.user.role === 'admin') {
                     window.location.href = '/admin/pages/dashboard.html';
+                } else if (response.user && response.user.role === 'pharmacist') {
+                    window.location.href = '/admin/pages/prescriptions.html';
                 } else {
                     window.location.href = '/pages/index.html';
                 }
@@ -29,13 +31,13 @@ async function handleLogin(e) {
 }
 
 function loginWithGoogle() {
-    // TODO: Implement Google OAuth
-    alert('Tính năng đang phát triển');
+    // Redirect to Google OAuth
+    window.location.href = '/api/auth/google';
 }
 
 function loginWithFacebook() {
-    // TODO: Implement Facebook OAuth
-    alert('Tính năng đang phát triển');
+    // Redirect to Facebook OAuth
+    window.location.href = '/api/auth/facebook';
 }
 
 document.addEventListener('DOMContentLoaded', () => {

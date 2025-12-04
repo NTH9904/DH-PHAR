@@ -26,7 +26,12 @@
                 
                 <div class="header-search">
                     <input type="text" id="header-search-input" placeholder="Mua thuốc, thực phẩm chức năng...">
-                    <button type="button" onclick="performSearch()">🔍</button>
+                    <button type="button" onclick="performSearch()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </button>
                 </div>
                 
                 <div class="header-actions">
@@ -52,79 +57,59 @@
         </div>
     </header>
 
-    <main style="padding: 40px 0;">
-        <div class="container">
-            <h1 style="margin-bottom: 30px;">Tài khoản của tôi</h1>
+    <main style="padding: 60px 0; min-height: 70vh;">
+        <div class="container" style="max-width: 800px;">
+            <h1 style="margin-bottom: 40px; text-align: center; color: #2C3E50;">Tài khoản của tôi</h1>
 
-            <div class="grid grid-2" style="gap: 24px;">
-                <div>
-                    <div class="card" style="margin-bottom: 24px;">
-                        <div class="card-header">
-                            <h3>Thông tin cá nhân</h3>
-                        </div>
-                        <div class="card-body">
-                            <form id="profile-form">
-                                <div class="form-group">
-                                    <label class="form-label">Họ tên</label>
-                                    <input type="text" class="form-control" id="name">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="email" disabled>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Số điện thoại</label>
-                                    <input type="tel" class="form-control" id="phone">
-                                </div>
-                                <button type="submit" class="btn btn-primary">Cập nhật</button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div class="card" style="margin-bottom: 24px;">
-                        <div class="card-header">
-                            <h3>Đổi mật khẩu</h3>
-                        </div>
-                        <div class="card-body">
-                            <form id="password-form">
-                                <div class="form-group">
-                                    <label class="form-label">Mật khẩu hiện tại</label>
-                                    <input type="password" class="form-control" id="current-password" required>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Mật khẩu mới</label>
-                                    <input type="password" class="form-control" id="new-password" required minlength="6">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Xác nhận mật khẩu mới</label>
-                                    <input type="password" class="form-control" id="confirm-new-password" required>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Đổi mật khẩu</button>
-                            </form>
-                        </div>
-                    </div>
+            <div class="card" style="margin-bottom: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <div class="card-header" style="background: linear-gradient(135deg, #2C5AA0 0%, #27AE60 100%); color: white; padding: 20px;">
+                    <h3 style="margin: 0; color: white;">👤 Thông tin cá nhân</h3>
                 </div>
+                <div class="card-body" style="padding: 30px;">
+                    <form id="profile-form">
+                        <div class="form-group">
+                            <label class="form-label" style="font-weight: 600; color: #2C3E50;">Họ tên</label>
+                            <input type="text" class="form-control" id="name" style="padding: 14px; font-size: 15px;">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" style="font-weight: 600; color: #2C3E50;">Email</label>
+                            <input type="email" class="form-control" id="email" disabled style="padding: 14px; font-size: 15px; background: #F8F9FA;">
+                            <small style="color: #7F8C8D; font-size: 13px;">Email không thể thay đổi</small>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" style="font-weight: 600; color: #2C3E50;">Số điện thoại</label>
+                            <input type="tel" class="form-control" id="phone" placeholder="0900000000" style="padding: 14px; font-size: 15px;">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="padding: 14px 40px; font-size: 16px; font-weight: 600;">
+                            💾 Cập nhật thông tin
+                        </button>
+                    </form>
+                </div>
+            </div>
 
-                <div>
-                    <div class="card" style="margin-bottom: 24px;">
-                        <div class="card-header">
-                            <h3>Địa chỉ giao hàng</h3>
+            <div class="card" style="box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <div class="card-header" style="background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%); color: white; padding: 20px;">
+                    <h3 style="margin: 0; color: white;">🔐 Đổi mật khẩu</h3>
+                </div>
+                <div class="card-body" style="padding: 30px;">
+                    <form id="password-form">
+                        <div class="form-group">
+                            <label class="form-label" style="font-weight: 600; color: #2C3E50;">Mật khẩu hiện tại</label>
+                            <input type="password" class="form-control" id="current-password" required style="padding: 14px; font-size: 15px;">
                         </div>
-                            <div class="card-body">
-                            <div id="addresses-list"></div>
-                            <button class="btn btn-outline" data-action="add-address" style="margin-top: 16px;">Thêm địa chỉ</button>
+                        <div class="form-group">
+                            <label class="form-label" style="font-weight: 600; color: #2C3E50;">Mật khẩu mới</label>
+                            <input type="password" class="form-control" id="new-password" required minlength="6" style="padding: 14px; font-size: 15px;">
+                            <small style="color: #7F8C8D; font-size: 13px;">Tối thiểu 6 ký tự</small>
                         </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <h3>Hồ sơ sức khỏe</h3>
+                        <div class="form-group">
+                            <label class="form-label" style="font-weight: 600; color: #2C3E50;">Xác nhận mật khẩu mới</label>
+                            <input type="password" class="form-control" id="confirm-new-password" required style="padding: 14px; font-size: 15px;">
                         </div>
-                        <div class="card-body">
-                            <p>Quản lý thông tin sức khỏe để được tư vấn tốt hơn</p>
-                            <a href="/pages/health-profile.html" class="btn btn-outline">Cập nhật hồ sơ</a>
-                        </div>
-                    </div>
+                        <button type="submit" class="btn btn-primary" style="padding: 14px 40px; font-size: 16px; font-weight: 600; background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);">
+                            🔑 Đổi mật khẩu
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

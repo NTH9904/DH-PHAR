@@ -11,7 +11,7 @@ if not exist .env (
     (
         echo PORT=3000
         echo NODE_ENV=development
-        echo MONGODB_URI=mongodb://localhost:27017/dh-pharmacy
+        echo MONGODB_URI=mongodb://localhost:27017/dh_pharmacy
         echo JWT_SECRET=dh-pharmacy-secret-key-change-in-production
         echo JWT_EXPIRE=7d
     ) > .env

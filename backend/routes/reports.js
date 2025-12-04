@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { protect, admin } = require('../middleware/auth');
+const { protect, pharmacist } = require('../middleware/auth');
 const {
     getKeyMetrics,
     getDailyRevenue,
@@ -8,9 +8,9 @@ const {
     getCustomerAnalytics
 } = require('../controllers/reportsController');
 
-// All routes require admin authentication
+// All routes require admin or pharmacist authentication
 router.use(protect);
-router.use(admin);
+router.use(pharmacist);
 
 // Get key metrics (revenue, orders, customers, avg order value)
 router.post('/metrics', getKeyMetrics);

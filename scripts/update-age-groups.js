@@ -4,7 +4,7 @@ require('dotenv').config();
 const Product = require('../backend/models/Product');
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/dh-pharmacy', {
+mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/dh_pharmacy', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });

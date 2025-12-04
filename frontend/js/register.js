@@ -95,8 +95,8 @@ async function handleRegister(e) {
             console.log('💾 Saving user to localStorage...');
             window.API.setCurrentUser(response.user);
             
-            // Show success message
-            alert('Đăng ký thành công! Chào mừng ' + response.user.name);
+            // Show success message with email verification notice
+            alert('Đăng ký thành công! Chào mừng ' + response.user.name + '\n\n📧 Vui lòng kiểm tra email để xác thực tài khoản.');
             
             // Redirect to home page
             console.log('🔄 Redirecting to home page...');

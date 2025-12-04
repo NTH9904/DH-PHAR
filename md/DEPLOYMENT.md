@@ -34,7 +34,7 @@ NODE_ENV=production
 FRONTEND_URL=https://yourdomain.com
 
 # Database
-MONGODB_URI=mongodb://localhost:27017/dh-pharmacy
+MONGODB_URI=mongodb://localhost:27017/dh_pharmacy
 # Or MongoDB Atlas:
 # MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/dh-pharmacy
 
@@ -301,10 +301,10 @@ GET /api/health
 ### 1. Database Backup
 ```bash
 # MongoDB backup
-mongodump --uri="mongodb://localhost:27017/dh-pharmacy" --out=/backup/$(date +%Y%m%d)
+mongodump --uri="mongodb://localhost:27017/dh_pharmacy" --out=/backup/$(date +%Y%m%d)
 
 # Restore
-mongorestore --uri="mongodb://localhost:27017/dh-pharmacy" /backup/20240115
+mongorestore --uri="mongodb://localhost:27017/dh_pharmacy" /backup/20240115
 ```
 
 ### 2. Automated Backup Script

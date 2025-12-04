@@ -91,6 +91,7 @@ function populateCategoryDropdowns(categories) {
 
 // Load products on page load
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('✅ Products page loaded');
     loadCategories();
     loadProducts();
     setupEventListeners();
@@ -99,12 +100,25 @@ document.addEventListener('DOMContentLoaded', function() {
 function setupEventListeners() {
     // Search input
     const searchInput = document.getElementById('search-input');
+    console.log('🔍 Search input element:', searchInput);
+    
     if (searchInput) {
-        searchInput.addEventListener('input', debounce(function() {
-            currentFilters.search = this.value;
+        console.log('✅ Search input found, adding event listener');
+        searchInput.addEventListener('input', debounce(function(e) {
+            const searchValue = (e.target.value || '').trim();
+            console.log('🔍 Search input changed:', searchValue);
+            
+            if (searchValue) {
+                currentFilters.search = searchValue;
+            } else {
+                delete currentFilters.search;
+            }
+            
             currentPage = 1;
             loadProducts();
         }, 500));
+    } else {
+        console.error('❌ Search input not found!');
     }
 
     // Filter selects
@@ -139,11 +153,21 @@ async function loadProducts() {
     try {
         showLoading();
         
+        console.log('📦 Loading products with filters:', currentFilters);
+        
         const params = new URLSearchParams({
             page: currentPage,
-            limit: 20,
-            ...currentFilters
+            limit: 20
         });
+        
+        // Add filters only if they have values
+        Object.keys(currentFilters).forEach(key => {
+            if (currentFilters[key] && currentFilters[key] !== 'undefined' && currentFilters[key] !== '') {
+                params.set(key, currentFilters[key]);
+            }
+        });
+        
+        console.log('🔗 API URL:', `/api/products?${params}`);
 
         // Handle stock filter
         if (currentFilters.stock === 'in-stock') {

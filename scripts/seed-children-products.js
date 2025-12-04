@@ -381,7 +381,7 @@ async function seedChildrenProducts() {
     console.log('╚═══════════════════════════════════════════════════════════════╝\n');
 
     // Connect to MongoDB
-    const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/dh-pharmacy';
+    const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/dh_pharmacy';
     console.log('📡 Connecting to MongoDB...');
     await mongoose.connect(mongoURI, {
       useNewUrlParser: true,
