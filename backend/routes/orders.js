@@ -8,17 +8,17 @@ const {
   cancelOrder,
   getAllOrders
 } = require('../controllers/orderController');
-const { protect, admin } = require('../middleware/auth');
+const { protect, admin, pharmacist } = require('../middleware/auth');
 
 router.post('/', protect, createOrder);
 router.get('/', protect, getMyOrders);
-router.get('/admin/all', protect, admin, getAllOrders);
+router.get('/admin/all', protect, pharmacist, getAllOrders);
 router.get('/:id', protect, getOrder);
-router.put('/:id/status', protect, admin, updateOrderStatus);
+router.put('/:id/status', protect, pharmacist, updateOrderStatus);
 router.put('/:id/cancel', protect, cancelOrder);
 router.put('/:id/pay', protect, require('../controllers/orderController').payOrder);
 
-// @desc    Delete order (Admin)
+// @desc    Delete order (Admin only)
 // @route   DELETE /api/orders/:id
 // @access  Private/Admin
 router.delete('/:id', protect, admin, async (req, res, next) => {

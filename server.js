@@ -30,6 +30,25 @@ if (!process.env.JWT_SECRET) {
 
 const app = express();
 
+// Passport configuration
+const passport = require('./backend/config/passport');
+const session = require('express-session');
+
+// Session middleware (required for passport)
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'dh-pharmacy-session-secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
+
+// Initialize passport
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Security middleware - Disable CSP for development
 app.use(helmet({
   contentSecurityPolicy: false
@@ -124,6 +143,7 @@ app.use('/api/prescriptions', require('./backend/routes/prescriptions'));
 app.use('/api/upload', require('./backend/routes/upload'));
 app.use('/api/stats', require('./backend/routes/stats'));
 app.use('/api/reports', require('./backend/routes/reports'));
+app.use('/api/chat', require('./backend/routes/chat'));
 
 // Dev-only debug routes
 if (process.env.NODE_ENV !== 'production') {

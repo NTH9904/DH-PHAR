@@ -1802,11 +1802,7 @@ body {
   gap: 15px;
 }
 
-.topnav-left::before {
-  content: "💊";
-  font-size: 28px;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-}
+/* Icon removed to avoid duplication with HTML */
 
 .topnav-left h1 {
   font-size: 22px;
@@ -2025,9 +2021,7 @@ body {
     font-size: 16px;
   }
   
-  .topnav-left::before {
-    font-size: 24px;
-  }
+  /* Icon removed */
   
   .topnav-right {
     gap: 10px;
@@ -2058,14 +2052,7 @@ opnav-right .btn {
   box-shadow: 0 4px 16px rgba(231, 76, 60, 0.4);
 }
 
-/* Enhanced navigation icons */
-.topnav-center a[href*="dashboard"]::before { content: "📊 "; }
-.topnav-center a[href*="products"]::before { content: "💊 "; }
-.topnav-center a[href*="orders"]::before { content: "📦 "; }
-.topnav-center a[href*="users"]::before { content: "👥 "; }
-.topnav-center a[href*="prescriptions"]::before { content: "📋 "; }
-.topnav-center a[href*="inventory"]::before { content: "📦 "; }
-.topnav-center a[href*="reports"]::before { content: "📊 "; }
+/* Enhanced navigation icons - Removed to avoid duplication with HTML icons */
 
 /* Remove glassmorphism effect for better text clarity */
 
@@ -2081,4 +2068,36 @@ opnav-right .btn {
   background: #FFD700;
   border-radius: 50%;
   box-shadow: 0 0 10px #FFD700;
+}
+
+/* M
+ultiple Select Enhancement */
+select[multiple] {
+  padding: 8px !important;
+  border: 2px solid #E1E8ED !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+}
+
+select[multiple]:focus {
+  border-color: #3498DB !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1) !important;
+}
+
+select[multiple] option {
+  padding: 8px 12px !important;
+  border-radius: 4px !important;
+  margin: 2px 0 !important;
+  cursor: pointer !important;
+}
+
+select[multiple] option:hover {
+  background: #F0F8FF !important;
+}
+
+select[multiple] option:checked {
+  background: linear-gradient(135deg, #3498DB 0%, #2980B9 100%) !important;
+  color: white !important;
+  font-weight: 600 !important;
 }

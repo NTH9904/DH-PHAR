@@ -832,6 +832,22 @@ textarea.form-control {
   .product-card-image {
     height: 250px;
   }
+  
+  .header-search input {
+    padding: 14px 50px 14px 20px;
+    font-size: 14px;
+  }
+  
+  .header-search button {
+    width: 36px;
+    height: 36px;
+    right: 6px;
+  }
+  
+  .header-search button svg {
+    width: 16px;
+    height: 16px;
+  }
 }
 
 /* Hover effect for entire card */
@@ -897,7 +913,7 @@ textarea.form-control {
   font-size: 2rem;
 }
 
-/* Search bar */
+/* Enhanced Search bar */
 .header-search {
   flex: 1;
   max-width: 650px;
@@ -906,44 +922,64 @@ textarea.form-control {
 
 .header-search input {
   width: 100%;
-  padding: 14px 120px 14px 24px;
-  border: 2px solid #E1E8ED;
-  border-radius: 30px;
-  font-size: 15px;
-  transition: all 0.3s ease;
-  background: #F8F9FA;
+  padding: 18px 60px 18px 28px;
+  border: 2px solid #E5E7EB;
+  border-radius: 50px;
+  font-size: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #F9FAFB;
+  color: #374151;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .header-search input:focus {
   outline: none;
-  border-color: var(--primary-color);
+  border-color: #3B82F6;
   background: white;
-  box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.08);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1), 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
 }
 
 .header-search input::placeholder {
-  color: #95A5A6;
+  color: #9CA3AF;
+  font-weight: 400;
 }
 
 .header-search button {
   position: absolute;
-  right: 6px;
+  right: 8px;
   top: 50%;
   transform: translateY(-50%);
-  background: var(--primary-color);
+  background: #3B82F6;
   color: white;
   border: none;
-  padding: 10px 28px;
-  border-radius: 24px;
+  padding: 12px;
+  border-radius: 50%;
   cursor: pointer;
-  font-size: 18px;
   transition: all 0.2s ease;
-  font-weight: 500;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.header-search button svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 2.5;
 }
 
 .header-search button:hover {
-  background: var(--accent-color);
-  transform: translateY(-50%) scale(1.02);
+  background: #2563EB;
+  transform: translateY(-50%) scale(1.05);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.header-search button:active {
+  transform: translateY(-50%) scale(0.95);
 }
 
 /* Header actions */
@@ -1062,6 +1098,21 @@ textarea.form-control {
     max-width: 100%;
   }
   
+  .header-search input {
+    padding: 16px 55px 16px 24px;
+    font-size: 15px;
+  }
+  
+  .header-search button {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .header-search button svg {
+    width: 18px;
+    height: 18px;
+  }
+  
   .header-nav .container {
     gap: 20px;
     overflow-x: auto;
@@ -1095,4 +1146,31 @@ textarea.form-control {
   color: #5A6C7D !important;
   font-weight: 600 !important;
   letter-spacing: 0.3px;
+}
+/* Header-top responsive */
+@media (max-width: 768px) {
+  .header-top {
+    font-size: 12px;
+    padding: 8px 0;
+  }
+  
+  .header-top .container {
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+  }
+  
+  .header-top .container > div {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-top {
+    padding: 6px 0;
+  }
+  
+  .header-top .container > div {
+    font-size: 10px;
+  }
 }

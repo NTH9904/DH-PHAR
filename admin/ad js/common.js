@@ -14,8 +14,9 @@ function checkAdminAuth() {
         return false;
     }
 
-    if (user.role !== 'admin') {
-        alert('Bạn cần quyền admin để truy cập trang này');
+    // Allow both admin and pharmacist
+    if (user.role !== 'admin' && user.role !== 'pharmacist') {
+        alert('Bạn cần quyền admin hoặc dược sĩ để truy cập trang này');
         window.location.href = '/pages/index.html';
         return false;
     }

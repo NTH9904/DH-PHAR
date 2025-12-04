@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Giới thiệu - DH Pharmacy</title>
-    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/main.css?v=5">
     <link rel="stylesheet" href="/css/responsive.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -32,9 +32,9 @@ body::before {
   backdrop-filter: none;
   z-index: -1;
 }
-/* Hide header-top */
+/* Show header-top */
 .header-top {
-  display: none !important;
+  display: block !important;
 }
 
 /* Make header solid white */
@@ -63,9 +63,15 @@ body, h1{
 /* Header text normal - override transparent styles */
 .header .logo,
 .header .header-search input,
-.header .header-search button,
 .header .header-actions a {
   background: transparent !important;
+  text-shadow: none !important;
+}
+
+/* Keep search button visible */
+.header .header-search button {
+  background: #3B82F6 !important;
+  color: white !important;
   text-shadow: none !important;
 }
 
@@ -125,7 +131,12 @@ h4, h5, h6,
                 
                 <div class="header-search">
                     <input type="text" id="header-search-input" placeholder="Mua thuốc, thực phẩm chức năng...">
-                    <button type="button" onclick="performSearch()">🔍</button>
+                    <button type="button" onclick="performSearch()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </button>
                 </div>
                 
                 <div class="header-actions">

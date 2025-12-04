@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập thành công - DH Pharmacy</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #2C5AA0 0%, #27AE60 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+        }
+        
+        .success-container {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 400px;
+        }
+        
+        .success-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 1s ease;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        h1 {
+            color: #27AE60;
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+        
+        p {
+            color: #7F8C8D;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2C5AA0;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <div class="success-icon">✅</div>
+        <h1>Đăng nhập thành công!</h1>
+        <p>Đang chuyển hướng...</p>
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        // Get token from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+        
+        if (token) {
+            // Decode JWT to get user info
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                
+                // Store token and redirect
+                localStorage.setItem('token', token);
+                
+                // Fetch user info
+                fetch('/api/auth/me', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success && data.data) {
+                        localStorage.setItem('user', JSON.stringify(data.data));
+                        
+                        // Redirect based on role
+                        if (data.data.role === 'admin') {
+                            window.location.href = '/admin/pages/dashboard.html';
+                        } else if (data.data.role === 'pharmacist') {
+                            window.location.href = '/admin/pages/prescriptions.html';
+                        } else {
+                            window.location.href = '/pages/index.html';
+                        }
+                    } else {
+                        window.location.href = '/pages/index.html';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching user:', error);
+                    window.location.href = '/pages/index.html';
+                });
+            } catch (error) {
+                console.error('Error parsing token:', error);
+                window.location.href = '/pages/login.html';
+            }
+        } else {
+            window.location.href = '/pages/login.html';
+        }
+    </script>
+</body>
+</html>

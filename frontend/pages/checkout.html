@@ -26,7 +26,12 @@
                 
                 <div class="header-search">
                     <input type="text" id="header-search-input" placeholder="Mua thuốc, thực phẩm chức năng...">
-                    <button type="button" onclick="performSearch()">🔍</button>
+                    <button type="button" onclick="performSearch()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </button>
                 </div>
                 
                 <div class="header-actions">
@@ -52,13 +57,16 @@
         </div>
     </header>
 
-    <main style="padding: 40px 0;">
-        <div class="container">
-            <h1 style="margin-bottom: 30px;">Thanh toán</h1>
+    <main style="padding: 60px 0; min-height: 70vh; background: #F8F9FA;">
+        <div class="container" style="max-width: 900px; margin: 0 auto;">
+            <h1 style="margin-bottom: 40px; text-align: center; color: #2C3E50; font-size: 32px;">
+                🛒 Thanh toán
+            </h1>
 
             <div id="checkout-content">
                 <div class="text-center">
                     <div class="spinner"></div>
+                    <p style="margin-top: 20px; color: #7F8C8D;">Đang tải thông tin...</p>
                 </div>
             </div>
         </div>

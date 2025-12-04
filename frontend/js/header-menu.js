@@ -13,9 +13,14 @@
             userLink.onclick = null;
             
             if (isLoggedIn) {
+                // Show avatar icon
+                userLink.innerHTML = '<span>👤</span>';
+                userLink.title = user.name || 'Tài khoản';
                 // Create dropdown menu
                 createUserDropdown(user);
             } else {
+                // Show "Đăng nhập" text
+                userLink.innerHTML = '<span style="font-size: 15px; font-weight: 500;">Đăng nhập</span>';
                 userLink.href = '/pages/login.html';
                 userLink.title = 'Đăng nhập';
             }
@@ -59,23 +64,44 @@
         }
         
         // Build dropdown content based on role
+        const roleText = user.role === 'admin' ? 'Quản trị viên' : user.role === 'pharmacist' ? 'Dược sĩ' : 'Khách hàng';
+        const roleIcon = user.role === 'admin' ? '👑' : user.role === 'pharmacist' ? '💊' : '👤';
+        const roleBadgeColor = user.role === 'admin' ? '#E74C3C' : user.role === 'pharmacist' ? '#27AE60' : '#3498DB';
+        
         let dropdownHTML = `
             <div style="padding: 12px 16px; border-bottom: 1px solid #E1E8ED;">
-                <strong style="color: #2C3E50;">${user.name || 'User'}</strong>
-                <div style="font-size: 12px; color: #7F8C8D; margin-top: 4px;">${user.email || ''}</div>
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                    <strong style="color: #2C3E50;">${user.name || 'User'}</strong>
+                    <span style="background: ${roleBadgeColor}; color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 600;">${roleIcon} ${roleText}</span>
+                </div>
+                <div style="font-size: 12px; color: #7F8C8D;">${user.email || ''}</div>
             </div>
         `;
         
-        if (user.role === 'admin') {
+        if (user.role === 'admin' || user.role === 'pharmacist') {
+            const roleText = user.role === 'admin' ? 'Quản trị viên' : 'Dược sĩ';
+            const roleIcon = user.role === 'admin' ? '👑' : '💊';
+            
             dropdownHTML += `
                 <a href="/admin/pages/dashboard.html" class="dropdown-item">
-                    <span>⚙️</span> Quản trị hệ thống
+                    <span>📊</span> Dashboard
                 </a>
-                <a href="/admin/pages/products.html" class="dropdown-item">
-                    <span>💊</span> Quản lý sản phẩm
-                </a>
+                ${user.role === 'admin' ? `
+                    <a href="/admin/pages/products.html" class="dropdown-item">
+                        <span>💊</span> Quản lý sản phẩm
+                    </a>
+                    <a href="/admin/pages/users.html" class="dropdown-item">
+                        <span>👥</span> Quản lý người dùng
+                    </a>
+                ` : ''}
                 <a href="/admin/pages/orders.html" class="dropdown-item">
                     <span>📦</span> Quản lý đơn hàng
+                </a>
+                <a href="/admin/pages/prescriptions.html" class="dropdown-item">
+                    <span>📋</span> Đơn thuốc
+                </a>
+                <a href="/admin/pages/inventory.html" class="dropdown-item">
+                    <span>📦</span> Kho hàng
                 </a>
                 <div style="height: 1px; background: #E1E8ED; margin: 8px 0;"></div>
             `;

@@ -96,13 +96,13 @@ async function loadCheckout() {
 
         container.innerHTML = warningHTML + `
             <form id="checkout-form">
-                <div class="grid grid-2" style="gap: 24px;">
+                <div style="max-width: 100%;">
                     <div>
-                        <div class="card" style="margin-bottom: 24px;">
-                            <div class="card-header">
-                                <h3>Địa chỉ giao hàng</h3>
+                        <div class="card" style="margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            <div class="card-header" style="background: linear-gradient(135deg, #2C5AA0 0%, #27AE60 100%); color: white; padding: 18px 24px;">
+                                <h3 style="margin: 0; color: white; font-size: 18px;">📍 Địa chỉ giao hàng</h3>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body" style="padding: 24px;">
                                 ${addresses.length > 0 ? `
                                     <div class="form-group">
                                         <label class="form-label">Chọn địa chỉ:</label>
@@ -149,11 +149,11 @@ async function loadCheckout() {
                             </div>
                         </div>
 
-                        <div class="card" style="margin-bottom: 24px;">
-                            <div class="card-header">
-                                <h3>Thời gian giao hàng</h3>
+                        <div class="card" style="margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            <div class="card-header" style="background: linear-gradient(135deg, #3498DB 0%, #2980B9 100%); color: white; padding: 18px 24px;">
+                                <h3 style="margin: 0; color: white; font-size: 18px;">🕐 Thời gian giao hàng</h3>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body" style="padding: 24px;">
                                 <div class="form-group">
                                     <label class="form-label">Ngày giao hàng *</label>
                                     <input type="date" class="form-control" id="delivery-date" required min="${new Date().toISOString().split('T')[0]}">
@@ -169,9 +169,9 @@ async function loadCheckout() {
                             </div>
                         </div>
 
-                        <div class="card">
-                            <div class="card-header">
-                                <h3>Phương thức thanh toán</h3>
+                        <div class="card" style="box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            <div class="card-header" style="background: linear-gradient(135deg, #F39C12 0%, #E67E22 100%); color: white; padding: 18px 24px;">
+                                <h3 style="margin: 0; color: white; font-size: 18px;">💳 Phương thức thanh toán</h3>
                             </div>
                             <div class="card-body">
                                 <div class="form-group">
@@ -234,10 +234,10 @@ async function loadCheckout() {
                         </div>
                     </div>
 
-                    <div>
-                        <div class="card" style="position: sticky; top: 100px;">
-                            <div class="card-header">
-                                <h3>Đơn hàng</h3>
+                    <div style="margin-top: 30px;">
+                        <div class="card" style="box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                            <div class="card-header" style="background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%); color: white; padding: 18px 24px;">
+                                <h3 style="margin: 0; color: white; font-size: 18px;">🛍️ Đơn hàng</h3>
                             </div>
                             <div class="card-body">
                                 <div id="order-items">
@@ -267,8 +267,8 @@ async function loadCheckout() {
                                         ${window.utils?.formatCurrency(total) || total.toLocaleString('vi-VN') + ' đ'}
                                     </strong>
                                 </div>
-                                <button type="submit" class="btn btn-primary btn-block btn-lg">
-                                    Đặt hàng
+                                <button type="submit" class="btn btn-primary btn-block btn-lg" style="padding: 16px; font-size: 18px; font-weight: 700; background: linear-gradient(135deg, #27AE60 0%, #229954 100%); border: none; margin-top: 20px;">
+                                    🛒 Đặt hàng
                                 </button>
                                 <div style="text-align: center; margin-top: 16px;">
                                     <a href="/pages/clear-cart.html" style="color: var(--text-light); font-size: 14px; text-decoration: underline;">
