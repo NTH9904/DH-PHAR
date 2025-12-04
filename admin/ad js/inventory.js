@@ -1,11 +1,8 @@
-// Check authentication
+
+
+// Get auth info (auth check is done in common.js)
 const token = localStorage.getItem('token');
 const user = JSON.parse(localStorage.getItem('user') || '{}');
-
-if (!token || user.role !== 'admin') {
-    alert('Bạn cần đăng nhập với tài khoản admin');
-    window.location.href = '/pages/login.html';
-}
 
 let products = [];
 let categories = [];
@@ -23,8 +20,49 @@ async function loadInventory() {
         loadCategories();
         renderInventory();
     } catch (error) {
-        console.error('Error loading inventory:', error);
-        showNotification('Không thể tải dữ liệu kho hàng', 'error');
+        console.warn('Inventory: Database not connected, using mock data');
+        // Use mock data when API is not available
+        products = [
+            {
+                _id: '1',
+                name: 'Paracetamol 500mg',
+                genericName: 'Paracetamol',
+                category: 'Thuốc giảm đau',
+                stock: 150,
+                price: 25000,
+                images: [{ url: '/images/no-image.svg' }],
+                specifications: { expiryDate: '2025-12-31' }
+            },
+            {
+                _id: '2',
+                name: 'Vitamin C 1000mg',
+                genericName: 'Ascorbic Acid',
+                category: 'Vitamin',
+                stock: 5,
+                price: 35000,
+                images: [{ url: '/images/no-image.svg' }],
+                specifications: { expiryDate: '2025-06-30' }
+            },
+            {
+                _id: '3',
+                name: 'Amoxicillin 500mg',
+                genericName: 'Amoxicillin',
+                category: 'Kháng sinh',
+                stock: 0,
+                price: 45000,
+                images: [{ url: '/images/no-image.svg' }],
+                specifications: { expiryDate: '2025-03-15' }
+            }
+        ];
+        
+        updateStats();
+        loadCategories();
+        renderInventory();
+        
+        // Show info message instead of error
+        setTimeout(() => {
+            showNotification('Đang sử dụng dữ liệu mẫu (Database chưa kết nối)', 'info');
+        }, 1000);
     }
 }
 
@@ -146,11 +184,11 @@ function showImportModal() {
     select.innerHTML = '<option value="">Chọn sản phẩm</option>' +
         products.map(p => `<option value="${p._id}">${p.name}</option>`).join('');
     
-    modal.style.display = 'block';
+    modal.classList.add('show');
 }
 
 function closeImportModal() {
-    document.getElementById('import-modal').style.display = 'none';
+    document.getElementById('import-modal').classList.remove('show');
     document.getElementById('import-form').reset();
 }
 
@@ -227,8 +265,37 @@ async function adjustStock(productId) {
     }
 }
 
-function showNotification(message, type) {
-    alert(message);
+function showNotification(message, type = 'info') {
+    // Create a better notification system
+    const notification = document.createElement('div');
+    const colors = {
+        success: '#27AE60',
+        error: '#E74C3C',
+        warning: '#F39C12',
+        info: '#3498DB'
+    };
+    
+    notification.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        background: ${colors[type] || colors.info};
+        color: white;
+        padding: 16px 24px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 10000;
+        font-weight: 500;
+        max-width: 400px;
+        animation: slideIn 0.3s ease;
+    `;
+    
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 5000);
 }
 
 // Event listeners
@@ -238,3 +305,4 @@ document.getElementById('category-filter').addEventListener('change', renderInve
 
 // Initialize
 loadInventory();
+// Logout function is defined in common.js

@@ -91,12 +91,29 @@ app.use('/uploads', express.static('uploads'));
 
 // Database connection
 const mongoUri = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb://localhost:27017/dh-pharmacy';
-mongoose.connect(mongoUri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('✅ MongoDB connected to:', mongoUri))
-.catch(err => console.error('❌ MongoDB connection error:', err));
+
+async function connectDB() {
+  try {
+    await mongoose.connect(mongoUri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+    });
+    console.log('✅ MongoDB connected to:', mongoUri);
+  } catch (err) {
+    console.error('❌ MongoDB connection error:', err.message);
+    console.log('💡 Để khắc phục:');
+    console.log('   1. Cài đặt MongoDB: https://www.mongodb.com/try/download/community');
+    console.log('   2. Khởi động MongoDB service');
+    console.log('   3. Hoặc sử dụng MongoDB Atlas (cloud)');
+    console.log('   4. Cập nhật MONGO_URI trong file .env');
+    console.log('');
+    console.log('🔄 Server vẫn chạy nhưng database không khả dụng');
+    console.log('   Một số chức năng có thể không hoạt động');
+  }
+}
+
+connectDB();
 
 // Routes
 app.use('/api/auth', require('./backend/routes/auth'));
@@ -105,6 +122,8 @@ app.use('/api/orders', require('./backend/routes/orders'));
 app.use('/api/users', require('./backend/routes/users'));
 app.use('/api/prescriptions', require('./backend/routes/prescriptions'));
 app.use('/api/upload', require('./backend/routes/upload'));
+app.use('/api/stats', require('./backend/routes/stats'));
+app.use('/api/reports', require('./backend/routes/reports'));
 
 // Dev-only debug routes
 if (process.env.NODE_ENV !== 'production') {

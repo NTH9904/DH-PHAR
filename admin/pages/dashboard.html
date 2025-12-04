@@ -4,33 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Admin DH Pharmacy</title>
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="/admin/ad%20css/main.css?v=3">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="admin-layout">
-        <!-- Sidebar -->
-        <aside class="admin-sidebar">
-            <div class="admin-logo">
-                <h2>💊 DH Pharmacy</h2>
-                <p>Admin Panel</p>
+        <!-- Top Navigation -->
+        <nav class="admin-topnav">
+            <div class="topnav-left">
+                <h1>💊 DH Pharmacy - Admin Panel</h1>
             </div>
-            <nav class="admin-nav">
+            <div class="topnav-center">
                 <a href="dashboard.html" class="active">📊 Dashboard</a>
                 <a href="products.html">💊 Sản phẩm</a>
                 <a href="orders.html">📦 Đơn hàng</a>
                 <a href="users.html">👥 Người dùng</a>
                 <a href="prescriptions.html">📋 Đơn thuốc</a>
                 <a href="inventory.html">📦 Kho hàng</a>
-                <a href="suppliers.html">🏢 Nhà cung cấp</a>
-                <a href="promotions.html">🎁 Khuyến mãi</a>
                 <a href="reports.html">📊 Báo cáo</a>
+            </div>
+            <div class="topnav-right">
                 <a href="/pages/index.html" class="home-link">🏠 Trang chủ</a>
-            </nav>
-        </aside>
+                <button class="btn btn-outline" onclick="logout()">Đăng xuất</button>
+            </div>
+        </nav>
 
         <!-- Main Content -->
-        <main class="admin-content">
+        <main class="admin-content-full">
             <div class="admin-header">
                 <h1>Dashboard</h1>
                 <div id="admin-user-info"></div>
@@ -122,26 +122,27 @@
         </main>
     </div>
 
-    <script src="/admin/ad%20js/sidebar-toggle.js"></script>
+    <script src="/admin/ad%20js/common.js"></script>
+    <script src="/admin/ad%20js/auto-refresh.js"></script>
     <script src="/admin/ad%20js/api.js"></script>
     <script src="/admin/ad%20js/dashboard.js"></script>
     <script>
-        // Check authentication
+        // Get auth info (auth check is done in common.js)
         const token = localStorage.getItem('token');
         const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-        if (!token || user.role !== 'admin') {
-            alert('Bạn cần đăng nhập với tài khoản admin');
-            window.location.href = '/pages/login.html';
-        }
-
         // Display user info
-        document.getElementById('admin-user-info').innerHTML = `
-            <div style="text-align: right;">
-                <strong>${user.name || 'Admin'}</strong><br>
-                <small>${user.email || ''}</small>
-            </div>
-        `;
+        document.addEventListener('DOMContentLoaded', function() {
+            const userInfoElement = document.getElementById('admin-user-info');
+            if (userInfoElement) {
+                userInfoElement.innerHTML = `
+                    <div style="text-align: right;">
+                        <strong>${user.name || 'Admin User'}</strong><br>
+                        <small>${user.email || 'admin@dhpharmacy.com'}</small>
+                    </div>
+                `;
+            }
+        });
 
         // Load dashboard data
         async function loadDashboardData() {

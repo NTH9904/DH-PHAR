@@ -6,10 +6,15 @@ let currentPage = 1;
         const searchQuery = urlParams.get('search') || '';
         const categoryFilter = urlParams.get('category') || '';
 
-        // Initialize filters
-        document.getElementById('search-input').value = searchQuery;
-        if (categoryFilter) {
-            document.getElementById('filter-category').value = categoryFilter;
+        // Initialize filters - with null checks
+        const searchInput = document.getElementById('search-input') || document.getElementById('header-search-input');
+        if (searchInput && searchQuery) {
+            searchInput.value = searchQuery;
+        }
+        
+        const categorySelect = document.getElementById('filter-category');
+        if (categorySelect && categoryFilter) {
+            categorySelect.value = categoryFilter;
         }
 
         // Load categories
@@ -55,19 +60,32 @@ let currentPage = 1;
 
                 const params = {
                     page,
-                    limit,
-                    type: document.getElementById('filter-type').value,
-                    category: document.getElementById('filter-category').value,
-                    sort: document.getElementById('sort-by').value
+                    limit
                 };
+                
+                // Add filters with null checks
+                const typeFilter = document.getElementById('filter-type');
+                if (typeFilter && typeFilter.value) {
+                    params.type = typeFilter.value;
+                }
+                
+                const catFilter = document.getElementById('filter-category');
+                if (catFilter && catFilter.value) {
+                    params.category = catFilter.value;
+                }
+                
+                const sortBy = document.getElementById('sort-by');
+                if (sortBy && sortBy.value) {
+                    params.sort = sortBy.value;
+                }
 
                 if (searchQuery) {
                     params.search = searchQuery;
                 }
 
-                const ageFilter = document.getElementById('filter-age').value;
-                if (ageFilter) {
-                    params.ageGroup = ageFilter;
+                const ageFilter = document.getElementById('filter-age');
+                if (ageFilter && ageFilter.value) {
+                    params.ageGroup = ageFilter.value;
                 }
 
                 const response = await window.API.products.getAll(params);
@@ -225,17 +243,36 @@ let currentPage = 1;
             }
         }
 
-        // Event listeners
-        document.getElementById('filter-type').addEventListener('change', () => loadProducts(1));
-        document.getElementById('filter-category').addEventListener('change', () => loadProducts(1));
-        document.getElementById('sort-by').addEventListener('change', () => loadProducts(1));
-        document.getElementById('filter-age').addEventListener('change', () => loadProducts(1));
+        // Event listeners - with null checks
+        const filterType = document.getElementById('filter-type');
+        if (filterType) {
+            filterType.addEventListener('change', () => loadProducts(1));
+        }
+        
+        const filterCategory = document.getElementById('filter-category');
+        if (filterCategory) {
+            filterCategory.addEventListener('change', () => loadProducts(1));
+        }
+        
+        const sortBySelect = document.getElementById('sort-by');
+        if (sortBySelect) {
+            sortBySelect.addEventListener('change', () => loadProducts(1));
+        }
+        
+        const filterAge = document.getElementById('filter-age');
+        if (filterAge) {
+            filterAge.addEventListener('change', () => loadProducts(1));
+        }
 
-        document.querySelector('.search-bar form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const query = document.getElementById('search-input').value;
-            window.location.href = `/pages/products.html?search=${encodeURIComponent(query)}`;
-        });
+        const searchForm = document.querySelector('.search-bar form');
+        if (searchForm) {
+            searchForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const searchInput = document.getElementById('search-input') || document.getElementById('header-search-input');
+                const query = searchInput ? searchInput.value : '';
+                window.location.href = `/pages/products.html?search=${encodeURIComponent(query)}`;
+            });
+        }
 
         // Initialize
         loadCategories();

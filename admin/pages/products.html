@@ -4,33 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản lý Sản phẩm - Admin DH Pharmacy</title>
-    <link rel="stylesheet" href="/admin/ad%20css/main.css">
+    <link rel="stylesheet" href="/admin/ad%20css/main.css?v=3">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="admin-layout">
-        <!-- Sidebar -->
-        <aside class="admin-sidebar">
-            <div class="admin-logo">
-                <h2>💊 DH Pharmacy</h2>
-                <p>Admin Panel</p>
+        <!-- Top Navigation -->
+        <nav class="admin-topnav">
+            <div class="topnav-left">
+                <h1>💊 DH Pharmacy - Admin Panel</h1>
             </div>
-            <nav class="admin-nav">
+            <div class="topnav-center">
                 <a href="dashboard.html">📊 Dashboard</a>
                 <a href="products.html" class="active">💊 Sản phẩm</a>
                 <a href="orders.html">📦 Đơn hàng</a>
                 <a href="users.html">👥 Người dùng</a>
                 <a href="prescriptions.html">📋 Đơn thuốc</a>
                 <a href="inventory.html">📦 Kho hàng</a>
-                <a href="suppliers.html">🏢 Nhà cung cấp</a>
-                <a href="promotions.html">🎁 Khuyến mãi</a>
                 <a href="reports.html">📊 Báo cáo</a>
+            </div>
+            <div class="topnav-right">
                 <a href="/pages/index.html" class="home-link">🏠 Trang chủ</a>
-            </nav>
-        </aside>
+                <button class="btn btn-outline" onclick="logout()">Đăng xuất</button>
+            </div>
+        </nav>
 
         <!-- Main Content -->
-        <main class="admin-content">
+        <main class="admin-content-full">
             <div class="admin-header">
                 <h1>Quản lý Sản phẩm</h1>
                 <button class="btn btn-primary" onclick="openProductModal()">
@@ -44,11 +44,6 @@
                     <input type="text" id="search-input" placeholder="Tìm kiếm sản phẩm..." class="search-input">
                     <select id="category-filter" class="filter-select">
                         <option value="">Tất cả danh mục</option>
-                        <option value="thuoc-khang-sinh">Thuốc kháng sinh</option>
-                        <option value="thuoc-giam-dau">Thuốc giảm đau</option>
-                        <option value="vitamin">Vitamin & Thực phẩm chức năng</option>
-                        <option value="thuoc-tieu-hoa">Thuốc tiêu hóa</option>
-                        <option value="thuoc-cam-cum">Thuốc cảm cúm</option>
                     </select>
                     <select id="type-filter" class="filter-select">
                         <option value="">Tất cả loại</option>
@@ -115,8 +110,8 @@
                         <input type="text" id="product-name" name="name" required>
                     </div>
                     <div class="form-group">
-                        <label for="product-generic-name">Tên hoạt chất *</label>
-                        <input type="text" id="product-generic-name" name="genericName" required>
+                        <label for="product-generic-name">Thành phần *</label>
+                        <input type="text" id="product-generic-name" name="genericName" required placeholder="Paracetamol 500mg, Caffeine 30mg...">
                     </div>
                 </div>
 
@@ -125,11 +120,6 @@
                         <label for="product-category">Danh mục *</label>
                         <select id="product-category" name="category" required>
                             <option value="">Chọn danh mục</option>
-                            <option value="thuoc-khang-sinh">Thuốc kháng sinh</option>
-                            <option value="thuoc-giam-dau">Thuốc giảm đau</option>
-                            <option value="vitamin">Vitamin & Thực phẩm chức năng</option>
-                            <option value="thuoc-tieu-hoa">Thuốc tiêu hóa</option>
-                            <option value="thuoc-cam-cum">Thuốc cảm cúm</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -175,9 +165,15 @@
                     <textarea id="product-indications" name="indications" rows="3" placeholder="Giảm đau&#10;Hạ sốt&#10;Chống viêm"></textarea>
                 </div>
 
-                <div class="form-group">
-                    <label for="product-dosage">Liều dùng</label>
-                    <textarea id="product-dosage" name="dosage" rows="2" placeholder="Người lớn: 1-2 viên/lần, 2-3 lần/ngày"></textarea>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="product-dosage">Liều dùng</label>
+                        <textarea id="product-dosage" name="dosage" rows="2" placeholder="Người lớn: 1-2 viên/lần, 2-3 lần/ngày"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-usage">Cách dùng</label>
+                        <textarea id="product-usage" name="usage" rows="2" placeholder="Uống sau ăn, ngậm dưới lưỡi, bôi ngoài da..."></textarea>
+                    </div>
                 </div>
 
                 <div class="form-row">
@@ -194,6 +190,25 @@
                             <option value="tuýp">Tuýp</option>
                             <option value="gói">Gói</option>
                         </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="product-expiry">Hạn sử dụng</label>
+                        <input type="date" id="product-expiry" name="expiryDate" placeholder="dd/mm/yyyy">
+                    </div>
+                    <div class="form-group">
+                        <label for="product-age-group">Độ tuổi sử dụng</label>
+                        <select id="product-age-group" name="ageGroup" multiple style="height: 120px;">
+                            <option value="infant">Trẻ sơ sinh (0-1 tuổi)</option>
+                            <option value="toddler">Trẻ nhỏ (1-3 tuổi)</option>
+                            <option value="child">Trẻ em (3-12 tuổi)</option>
+                            <option value="teen">Thanh thiếu niên (12-18 tuổi)</option>
+                            <option value="adult">Người lớn (18-60 tuổi)</option>
+                            <option value="senior">Người cao tuổi (>60 tuổi)</option>
+                        </select>
+                        <small style="color: #7F8C8D; font-size: 12px;">Giữ Ctrl (hoặc Cmd) để chọn nhiều độ tuổi</small>
                     </div>
                 </div>
 
@@ -244,7 +259,8 @@
         </div>
     </div>
 
-    <script src="/admin/ad%20js/sidebar-toggle.js"></script>
+    <script src="/admin/ad%20js/common.js"></script>
+    <script src="/admin/ad%20js/auto-refresh.js"></script>
     <script src="/admin/ad%20js/api.js"></script>
     <script src="/admin/ad%20js/products.js"></script>
     

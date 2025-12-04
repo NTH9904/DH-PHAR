@@ -23,30 +23,31 @@
                     <span>💊</span>
                     <span>DH Pharmacy</span>
                 </a>
-                <div class="search-bar">
-                    <form>
-                        <div class="input-search">
-                            <input type="text" placeholder="Tìm kiếm thuốc, hoạt chất, triệu chứng...">
-                        </div>
-                        <div class="submit-button">
-                            <button type="submit">🔍</button>
-                        </div>
-                    </form>
+                
+                <div class="header-search">
+                    <input type="text" id="header-search-input" placeholder="Mua thuốc, thực phẩm chức năng...">
+                    <button type="button" onclick="performSearch()">🔍</button>
                 </div>
-                <nav class="nav">
-                    <a href="../pages/index.html" class="nav-link">Trang chủ</a>
-                    <a href="../pages/products.html" class="nav-link">Sản phẩm</a>
-                    <a href="../pages/consultation.html" class="nav-link">Tư vấn</a>
-                    <a href="../pages/about.html" class="nav-link">Giới thiệu</a>
-                    <div class="cart-icon">
-                        <a href="/pages/cart.html" class="nav-link">🛒 Giỏ hàng</a>
-                        <span class="cart-badge">0</span>
-                    </div>
-                    <div class="user-menu">
-                        <a href="/pages/login.html" class="nav-link">Đăng nhập</a>
-                        <a href="/pages/register.html" class="nav-link">Đăng ký</a>
-                    </div>
-                </nav>
+                
+                <div class="header-actions">
+                    <a href="/pages/account.html" class="header-user-icon" id="header-user-link">
+                        <span>👤</span>
+                    </a>
+                    <a href="/pages/cart.html" class="header-cart-icon">
+                        <span>🛒</span>
+                        <span>Giỏ hàng</span>
+                        <span class="header-cart-badge">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="header-nav">
+            <div class="container">
+                <a href="/pages/index.html">Trang chủ</a>
+                <a href="/pages/products.html">Sản phẩm</a>
+                <a href="/pages/consultation.html">Tư vấn</a>
+                <a href="/pages/about.html">Giới thiệu</a>
             </div>
         </div>
     </header>
@@ -126,6 +127,7 @@
     </footer>
 
     <script src="/js/api.js"></script>
+    <script src="/js/header-menu.js"></script>
     <script src="/js/main.js"></script>
     <script>
         async function handleRegister(e) {

@@ -856,3 +856,243 @@ textarea.form-control {
 .product-card:active {
   transform: translateY(-2px);
 }
+
+
+
+
+/* ============================================
+   New Header Design with Search Bar
+   ============================================ */
+
+/* Header main with search */
+.header-main {
+  background: white;
+  padding: 20px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.header-main .container {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Logo */
+.header-main .logo {
+  flex: 0 0 200px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.header-main .logo span:first-child {
+  font-size: 2rem;
+}
+
+/* Search bar */
+.header-search {
+  flex: 1;
+  max-width: 650px;
+  position: relative;
+}
+
+.header-search input {
+  width: 100%;
+  padding: 14px 120px 14px 24px;
+  border: 2px solid #E1E8ED;
+  border-radius: 30px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  background: #F8F9FA;
+}
+
+.header-search input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.08);
+}
+
+.header-search input::placeholder {
+  color: #95A5A6;
+}
+
+.header-search button {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 28px;
+  border-radius: 24px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.header-search button:hover {
+  background: var(--accent-color);
+  transform: translateY(-50%) scale(1.02);
+}
+
+/* Header actions */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex: 0 0 auto;
+}
+
+.header-user-icon,
+.header-cart-icon {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--text-dark);
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  position: relative;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+.header-user-icon:hover,
+.header-cart-icon:hover {
+  color: var(--primary-color);
+  background: #F8F9FA;
+}
+
+.header-user-icon span:first-child,
+.header-cart-icon span:first-child {
+  font-size: 28px;
+}
+
+.header-cart-icon {
+  padding-right: 16px;
+}
+
+.header-cart-badge {
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  background: var(--error-color);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 7px;
+  border-radius: 12px;
+  min-width: 20px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(231, 76, 60, 0.3);
+}
+
+/* Navigation bar */
+.header-nav {
+  background: white;
+  border-top: 1px solid #E1E8ED;
+  border-bottom: 3px solid var(--primary-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.header-nav .container {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.header-nav a {
+  display: block;
+  padding: 16px 8px;
+  color: #5A6C7D;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  position: relative;
+  transition: all 0.2s ease;
+  letter-spacing: 0.3px;
+}
+
+.header-nav a:hover,
+.header-nav a.active {
+  color: var(--primary-color);
+}
+
+.header-nav a::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: var(--primary-color);
+  transition: width 0.3s ease;
+}
+
+.header-nav a:hover::after,
+.header-nav a.active::after {
+  width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header-main .container {
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .header-search {
+    order: 3;
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+  
+  .header-nav .container {
+    gap: 20px;
+    overflow-x: auto;
+    justify-content: flex-start;
+  }
+  
+  .header-nav a {
+    white-space: nowrap;
+  }
+}
+
+
+/* ============================================
+   Fix blurry text in header
+   ============================================ */
+.header,
+.header *,
+.header-nav,
+.header-nav a {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-smoothing: antialiased;
+  text-shadow: none !important;
+  filter: none !important;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.header-nav a {
+  color: #5A6C7D !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.3px;
+}

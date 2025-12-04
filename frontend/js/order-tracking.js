@@ -159,14 +159,7 @@ function renderOrderTracking(order) {
     `;
 }
 
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleString('vi-VN');
-}
-
-function formatCurrency(amount) {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
-}
+// formatDate and formatCurrency are already defined in main.js
 
 function formatAddress(address) {
     if (!address) return 'N/A';

@@ -14,12 +14,6 @@ if (!token || !user) {
         </div>
     `;
 } else {
-    // Update user menu
-    document.getElementById('user-menu').innerHTML = `
-        <span class="nav-link">Xin chào, ${user.name}</span>
-        <a href="#" class="nav-link" onclick="logout()">Đăng xuất</a>
-    `;
-    
     // Load orders
     loadOrders();
 }
@@ -161,14 +155,7 @@ function getStatusIcon(status) {
     return icons[status] || '📋';
 }
 
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleString('vi-VN');
-}
-
-function formatCurrency(amount) {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
-}
+// formatDate and formatCurrency are already defined in main.js
 
 async function cancelOrder(orderId) {
     if (!confirm('Bạn có chắc muốn hủy đơn hàng này?')) return;
@@ -207,8 +194,4 @@ async function reorder(orderId) {
     }
 }
 
-function logout() {
-    window.API.removeToken();
-    window.API.removeCurrentUser();
-    window.location.href = '/pages/login.html';
-}
+// Logout function is already defined in main.js
