@@ -16,9 +16,9 @@
             </div>
             <div class="topnav-center">
                 <a href="dashboard.html">📊 Dashboard</a>
-                <a href="products.html">�  Sản phẩm</a>
-                <a href="orders.html">� Đơn hàng</a>a
-                <a href="users.html">� NĐgười dùng</a>
+                <a href="products.html">💊 Sản phẩm</a>
+                <a href="orders.html">📦 Đơn hàng</a>
+                <a href="users.html">👥 Người dùng</a>
                 <a href="prescriptions.html">📋 Đơn thuốc</a>
                 <a href="inventory.html" class="active">📦 Kho hàng</a>
                 <a href="reports.html">📊 Báo cáo</a>
@@ -126,7 +126,15 @@
                 </div>
                 <div class="form-group">
                     <label>Hạn sử dụng</label>
-                    <input type="date" id="import-expiry" required>
+                    <select id="import-expiry" required>
+                        <option value="6">6 tháng</option>
+                        <option value="12" selected>12 tháng</option>
+                        <option value="18">18 tháng</option>
+                        <option value="24">24 tháng</option>
+                        <option value="36">36 tháng</option>
+                        <option value="48">48 tháng</option>
+                        <option value="60">60 tháng</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label>Ghi chú</label>

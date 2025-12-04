@@ -363,10 +363,21 @@ async function loadProductForEdit(productId) {
         setValueIfExists('product-usage', product.usage?.instructions || product.usage);
         setValueIfExists('product-featured', product.isFeatured);
         
-        // Set expiry date
+        // Set expiry date - calculate months from now
         if (product.expiryDate) {
-            const date = new Date(product.expiryDate);
-            setValueIfExists('product-expiry', date.toISOString().split('T')[0]);
+            const expiryDate = new Date(product.expiryDate);
+            const today = new Date();
+            const monthsDiff = Math.round((expiryDate - today) / (1000 * 60 * 60 * 24 * 30));
+            
+            // Find closest option
+            const expirySelect = document.getElementById('product-expiry');
+            if (expirySelect) {
+                const options = [6, 12, 18, 24, 36, 48, 60];
+                const closest = options.reduce((prev, curr) => 
+                    Math.abs(curr - monthsDiff) < Math.abs(prev - monthsDiff) ? curr : prev
+                );
+                expirySelect.value = closest;
+            }
         }
         
         // Set age groups (multiple select)
@@ -389,6 +400,14 @@ async function loadProductForEdit(productId) {
         console.error('Error loading product:', error);
         showError('Không thể tải thông tin sản phẩm');
     }
+}
+
+// Helper function to calculate expiry date from months
+function calculateExpiryDate(months) {
+    if (!months) return null;
+    const today = new Date();
+    const expiryDate = new Date(today.setMonth(today.getMonth() + parseInt(months)));
+    return expiryDate.toISOString().split('T')[0];
 }
 
 async function handleProductSubmit(e) {
@@ -420,7 +439,7 @@ async function handleProductSubmit(e) {
                 packageSize: formData.get('packageSize'),
                 unit: formData.get('unit')
             },
-            expiryDate: formData.get('expiryDate') || null,
+            expiryDate: calculateExpiryDate(formData.get('expiryDate')),
             isFeatured: formData.get('isFeatured') === 'on'
         };
         
